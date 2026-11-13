@@ -134,6 +134,69 @@ Tiap rilis memuat daftar kelurahan, jumlah RT, ketinggian air, dan penyebab.
 - Uji sampel 16 baris: halaman sumber dibuka ulang dan memuat nama kelurahan serta jumlah RT
   yang sama (16/16 cocok).
 
+## `kelurahan_rawan.csv` → tabel `flood_prone_subdistricts`
+
+116 kelurahan di 38 kecamatan yang masih tergenang pada 2023, dengan jumlah RW tergenang per
+kelurahan. Dipakai `scripts/seed-banjir.ts` untuk komponen "+30 ada kelurahan rawan" di
+`base_vulnerability` (`docs/06` §2).
+
+| Kolom CSV | Kolom tabel | Keterangan |
+|---|---|---|
+| `district_slug` | `district_id` | Slug kecamatan dari `kecamatan.csv`; seed memetakan ke `id`. |
+| `subdistrict` | `subdistrict` | Nama resmi kelurahan (Kemendagri), bukan ejaan mentah dataset. |
+| `rw_count` | `rw_count` | Jumlah RW di kelurahan itu yang tergenang pada 2023. |
+| `data_year` | `data_year` | `2023`. |
+| `source_url` | `source_url` | Halaman dataset di Satu Data Jakarta. |
+
+### Sumber
+
+Dataset resmi **"Luasan Daerah Tergenang Tahun 2023"** milik Dinas Sumber Daya Air Provinsi DKI
+Jakarta (organisasi `org50`), di Satu Data Jakarta:
+<https://satudata.jakarta.go.id/open-data/detail?kategori=dataset&page_url=luasan-daerah-tergenang-tahun-2023>.
+
+Data diambil lewat API publik portal (566 → 479 baris, satu baris per RT):
+
+```
+https://ws.jakarta.go.id/gateway/DataPortalSatuDataJakarta/1.0/satudata
+  ?kategori=dataset&tipe=detail&url=luasan-daerah-tergenang-tahun-2023
+```
+
+### Catatan metode
+
+1. **`rw_count` = jumlah RW berbeda** di satu kelurahan yang punya
+   `luas_genangan_tahun_2023 > 0`. Hanya baris dengan luas > 0 yang dihitung; baris dengan
+   luas 0 berarti RT itu tidak tergenang pada 2023.
+2. **Baris agregat tidak dihitung sebagai RW.** Sebagian kelurahan punya baris dengan
+   `rw = 0` / `rt = 0` (luas total kelurahan yang tidak bisa dipetakan ke RW tertentu).
+   Baris itu dibuang dari hitungan RW, bukan dianggap "RW 0".
+3. **Nama kelurahan memakai ejaan resmi Kemendagri.** Satu salah ketik di dataset dipetakan:
+   `KERENDANG` → `Krendang` (`31.73.04.1005`, Tambora).
+4. **Kenapa dataset 2023, bukan daftar lain.** Ada tiga dataset resmi yang mirip; yang dipakai
+   adalah yang paling baru dan paling rinci (per RW, berbasis genangan nyata):
+
+   | Dataset | Organisasi | Tahun | Isi | Dipakai? |
+   |---|---|---|---|---|
+   | Luasan Daerah Tergenang Tahun 2023 | Dinas SDA | 2023 | Luas genangan per RT/RW | **Ya** |
+   | Data Daerah Rawan Banjir DKI Jakarta | Dinas SDA | 2014 | 566 RW rawan di 112 kelurahan | Tidak (terlalu lama) |
+   | Daerah Rawan Banjir Provinsi DKI Jakarta | BPBD | 2017 (update 2020) | 82 kelurahan, tanpa jumlah RW | Tidak (tanpa `rw_count`) |
+
+   Dataset 2014 dan 2017 tetap dicatat di sini sebagai pembanding, bukan bahan CSV, karena
+   `rw_count` tidak boleh dikarang.
+5. **Asal angka 2023.** Menurut deskripsi dataset, luas genangan dihitung dari selisih
+   "Peta Sebaran Genangan Berbasis Rumah Tangga Tahun 2021" (Pantau Banjir Jakarta Smart City)
+   dikurangi reduksi akibat pembangunan polder/waduk Dinas SDA.
+6. **Rentang tahun tidak seragam dengan `riwayat_banjir.csv`.** `riwayat_banjir.csv` memakai
+   rilis 2025–2026; file ini memakai data 2023 karena itu tahun terakhir yang tersedia per RW.
+   Keduanya diisi apa adanya, tidak disamakan tahunnya.
+
+### Verifikasi
+
+- Diambil 13 November 2026 dari API Satu Data Jakarta (479 baris; 263 baris dengan luas 2023 > 0).
+- Dihitung ulang dengan jalur kode terpisah: 116/116 `rw_count` cocok, 0 duplikat
+  `(district_slug, subdistrict)`, 116/116 `district_slug` ada di `kecamatan.csv`.
+- Total 206 RW di 116 kelurahan; 0 kelurahan tanpa RW setelah baris `rw = 0` dibuang.
+- 0 `source_url` kosong, 0 `rw_count <= 0`.
+
 ## File data lain (belum ada)
 
 Header di bawah sudah disesuaikan dengan migrasi `0001_init.sql`. Untuk file yang merujuk
@@ -142,7 +205,6 @@ script seed yang memetakan slug → `id`.
 
 | File | Tabel | Header | Target |
 |---|---|---|---|
-| `kelurahan_rawan.csv` | `flood_prone_subdistricts` | `district_slug,subdistrict,rw_count,data_year,source_url` | daftar RW/kelurahan rawan BPBD |
 | `posko.csv` | `shelters` | `district_slug,name,type,address,lat,lng,is_verified,source_url` | ≥ 2 per kecamatan untuk 15 kecamatan paling rawan; `type`: `official_post`/`subdistrict_office`/`school`/`mosque`/`other` |
 | `kontak.csv` | `emergency_contacts` | `name,phone,scope,sort_order` | minimal `112` (Jakarta Siaga) + kontak resmi lain |
 
