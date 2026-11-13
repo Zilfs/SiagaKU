@@ -13,6 +13,8 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - [zod](https://zod.dev) - validasi data dan env
 - [Supabase](https://supabase.com) (@supabase/supabase-js) - klien basis data Postgres dan penyimpanan
 - server-only (Vercel) - menjaga modul sisi server tidak masuk ke bundel browser
+- [Vercel AI SDK](https://ai-sdk.dev) (`ai`) - panggilan model AI, streaming, structured output
+- [@ai-sdk/google](https://ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai), [@ai-sdk/groq](https://ai-sdk.dev/providers/ai-sdk-providers/groq), dan [@ai-sdk/openai-compatible](https://ai-sdk.dev/providers/openai-compatible-providers) - provider AI dan fallback
 - [Vitest](https://vitest.dev) dan @vitejs/plugin-react - pengujian
 - [Prettier](https://prettier.io) - pemformat kode
 - [tsx](https://tsx.is) - menjalankan skrip TypeScript
