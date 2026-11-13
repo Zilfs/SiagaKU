@@ -29,6 +29,7 @@ describe("getOrSet", () => {
   it("fn fails + expired value exists -> returns old value, stale=true", async () => {
     const store = memoryCacheStore();
     await store.set("k", "old", t0);
+    const setSpy = vi.spyOn(store, "set");
     const r = await getOrSet(
       "k",
       60,
@@ -39,6 +40,7 @@ describe("getOrSet", () => {
       () => later,
     );
     expect(r).toEqual({ value: "old", stale: true });
+    expect(setSpy).not.toHaveBeenCalled();
   });
 
   it("fn fails + no value -> throws original error", async () => {
@@ -71,5 +73,25 @@ describe("getOrSet", () => {
       () => t0,
     );
     expect(r).toEqual({ value: "v", stale: false });
+  });
+
+  it("store.set throwing still returns the value and logs", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const store: CacheStore = {
+      get: async () => null,
+      set: async () => {
+        throw new Error("write failed");
+      },
+    };
+    const r = await getOrSet(
+      "k",
+      60,
+      async () => "v",
+      store,
+      () => t0,
+    );
+    expect(r).toEqual({ value: "v", stale: false });
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
   });
 });
