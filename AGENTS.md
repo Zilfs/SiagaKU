@@ -9,7 +9,7 @@ SiagaKU is a flood-preparedness web app for DKI Jakarta residents, built for the
 All product and technical docs live in `docs/` (written in Indonesian). Read in this order:
 
 1. `docs/00 Handover.md`: current status, decisions, open risks, next steps. **Always read this first.**
-2. `docs/superpowers/plans/2026-11-13-siagaku.md`: the implementation plan (17 tasks, global constraints, interfaces, tests). `docs/13 Implementation Plan.md` is the same plan.
+2. `docs/13 Implementation Plan.md`: the implementation plan (17 tasks, global constraints, interfaces, tests). It is plain Markdown and needs no special tooling. Each task lists its files, interfaces, tests and steps.
 3. The spec docs the task points to:
 
 | Doc | Use it for |
