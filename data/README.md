@@ -72,6 +72,68 @@ Kolom `districts` yang **tidak** diisi dari CSV:
 - 44/44 `region_code` dan `bmkg_adm4` ada di `cahyadsn/wilayah`, tanpa duplikat.
 - 44 slug unik, 6 kota, `tidal_flood_prone=true` untuk 7 baris.
 
+## `riwayat_banjir.csv` → tabel `flood_events`
+
+240 baris kejadian genangan, 31 kecamatan, 20 tanggal kejadian (8 Februari 2025 – 22 Januari
+2026). Dipakai `scripts/seed-banjir.ts`.
+
+| Kolom CSV | Kolom tabel | Keterangan |
+|---|---|---|
+| `district_slug` | `district_id` | Slug kecamatan dari `kecamatan.csv`; seed memetakan ke `id`. |
+| `subdistrict` | `subdistrict` | Nama kelurahan seperti dilaporkan BPBD (dieja sesuai rilis). |
+| `event_date` | `event_date` | Tanggal hujan/kejadian, bukan tanggal rilis (lihat metode). |
+| `max_depth_cm` | `max_depth_cm` | Ketinggian air tertinggi pada rilis itu. |
+| `affected_rt_count` | `affected_rt_count` | Jumlah RT tergenang. |
+| `description` | `description` | Penyebab: curah hujan tinggi, luapan kali, atau ROB. |
+| `source_url` | `source_url` | URL rilis resmi BPBD DKI yang memuat baris tersebut. |
+
+### Sumber
+
+Semua baris berasal dari rilis **"UPDATE INFO TERKINI GENANGAN"** milik BPBD DKI Jakarta,
+diarsipkan di <https://bpbd.jakarta.go.id/tag/4/banjir>. Contoh:
+<https://bpbd.jakarta.go.id/berita/TGVzbzI0UnhuTTBGT0FhcktmNC9ldz09/update-info-terkini-genangan-23-januari-2026-s-d-pukul-18-00-wib>.
+Tiap rilis memuat daftar kelurahan, jumlah RT, ketinggian air, dan penyebab.
+
+### Catatan metode
+
+1. **Tanggal kejadian.** Rilis BPBD sering terbit beberapa jam setelah hujan. Tanggal diambil
+   dari kalimat "Hujan ... pada <hari>, <tanggal>" di rilis (mis. rilis 23–26 Januari 2026
+   semuanya menyebut hujan 22 Januari 2026). Jika kalimat itu tidak ada, dipakai tanggal rilis.
+2. **Satu baris per kelurahan per kejadian, bukan per rilis.** Satu kejadian bisa punya
+   belasan rilis (per 2–3 jam). Untuk setiap `(event_date, kelurahan)` diambil rilis dengan
+   jumlah RT terbesar, lalu ketinggian terbesar pada rilis itu. Jadi tidak ada baris ganda.
+3. **Bagian "sudah surut" tidak dihitung.** Rilis memuat daftar wilayah yang sudah surut dan
+   ruas jalan; keduanya diabaikan agar tidak menambah jumlah RT secara keliru.
+4. **Beberapa kelurahan berbagi satu angka.** Kadang rilis menulis satu "Ketinggian/Penyebab"
+   untuk beberapa kelurahan sekaligus (mis. rilis 8 Februari 2025). Nilai itu dipakai untuk
+   semua kelurahan di blok yang sama.
+5. **Nama kelurahan mengikuti rilis.** Enam nama perlu dipetakan manual ke kode wilayah resmi:
+
+   | Ditulis BPBD | Kode resmi | Kelurahan |
+   |---|---|---|
+   | `Jelmbar` | `31.73.02.1004` | Jelambar |
+   | `Bidaran Cina` | `31.75.03.1002` | Bidara Cina |
+   | `Cillitan` | `31.75.04.1006` | Cililitan |
+   | `Kampung Tengah` | `31.75.04.1002` | Tengah (Kramat Jati) |
+   | `Cilandak Timur` (kota tidak tertulis) | `31.74.04.1003` | Cilandak Timur (Pasar Minggu) |
+   | `Tanah Abang` | — | Nama lama; tidak ada di dataset Kemendagri, dipetakan ke kecamatan Tanah Abang |
+
+6. **Rentang 2020–2024 belum tercakup.** Arsip daring BPBD hanya memuat rilis mulai 2025;
+   rilis 2020–2024 tidak lagi tersedia di situsnya. Daripada menyalin angka tanpa sumber,
+   CSV ini dibatasi pada rilis yang bisa dibuka publik. Target "≥ 40 baris dari ≥ 15 kecamatan"
+   (`docs/06` §6) sudah terlampaui. Jika tim punya arsip BPBD/berita 2020–2024, baris bisa
+   ditambahkan dengan format yang sama.
+7. **`base_vulnerability` tidak ada di CSV ini.** Dihitung `seed-banjir.ts` dari jumlah
+   kejadian per kecamatan (rumus `docs/06` §2).
+
+### Verifikasi
+
+- Diambil 13 November 2026 dari 181 halaman rilis genangan BPBD (182 URL pada indeks tag;
+  1 duplikat).
+- 240 baris, 31 kecamatan, 20 tanggal kejadian, 0 `source_url` kosong, 0 `max_depth_cm` kosong.
+- Uji sampel 16 baris: halaman sumber dibuka ulang dan memuat nama kelurahan serta jumlah RT
+  yang sama (16/16 cocok).
+
 ## File data lain (belum ada)
 
 Header di bawah sudah disesuaikan dengan migrasi `0001_init.sql`. Untuk file yang merujuk
@@ -80,7 +142,6 @@ script seed yang memetakan slug → `id`.
 
 | File | Tabel | Header | Target |
 |---|---|---|---|
-| `riwayat_banjir.csv` | `flood_events` | `district_slug,subdistrict,event_date,max_depth_cm,affected_rt_count,description,source_url` | ≥ 40 baris, ≥ 15 kecamatan, 2020–2026; `source_url` wajib |
 | `kelurahan_rawan.csv` | `flood_prone_subdistricts` | `district_slug,subdistrict,rw_count,data_year,source_url` | daftar RW/kelurahan rawan BPBD |
 | `posko.csv` | `shelters` | `district_slug,name,type,address,lat,lng,is_verified,source_url` | ≥ 2 per kecamatan untuk 15 kecamatan paling rawan; `type`: `official_post`/`subdistrict_office`/`school`/`mosque`/`other` |
 | `kontak.csv` | `emergency_contacts` | `name,phone,scope,sort_order` | minimal `112` (Jakarta Siaga) + kontak resmi lain |
