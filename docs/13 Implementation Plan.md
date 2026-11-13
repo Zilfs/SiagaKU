@@ -46,6 +46,8 @@ tags: [siagaku, plan, implementation]
 
 ## Peta File
 
+> [!warning] Path di tabel ini sudah digantikan struktur feature-based. Terjemahkan ke path baru dengan [[14 Struktur Kode#6. Pemetaan path Plan → struktur baru]].
+
 | File | Tanggung jawab | Task |
 |---|---|---|
 | `src/lib/env.ts` | Validasi env (zod) | 1 |
