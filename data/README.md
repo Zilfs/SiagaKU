@@ -1,81 +1,89 @@
 # Data SiagaKU
 
-Folder ini berisi data kurasi yang dipakai untuk seeding database. Semua file di sini
-di-commit ke repo publik supaya juri bisa memeriksa asal datanya.
+Folder ini berisi data kurasi untuk seeding database. Semua file di-commit ke repo publik
+supaya juri bisa memeriksa asal datanya.
 
-> Catatan bahasa: header CSV memakai nama kolom database (Inggris), isi dan dokumentasi
-> memakai Bahasa Indonesia.
+> **Konvensi nama:** skema database memakai nama Inggris
+> (`supabase/migrations/0001_init.sql`, branch `feature/database`). Karena itu header CSV
+> memakai nama kolom tabel, bukan nama Indonesia di `docs/06 Data & Database.md`.
+> Terjemahan: `kecamatan`→`districts`, `riwayat_banjir`→`flood_events`,
+> `kelurahan_rawan`→`flood_prone_subdistricts`, `posko_evakuasi`→`shelters`,
+> `kontak_darurat`→`emergency_contacts`, `kerawanan_dasar`→`base_vulnerability`,
+> `pesisir_rob`→`tidal_flood_prone`, `sumber_url`→`source_url`.
 
-## `kecamatan.csv`
+## `kecamatan.csv` → tabel `districts`
 
 44 kecamatan DKI Jakarta, satu baris per kecamatan. Dipakai oleh `scripts/seed-kecamatan.ts`
 (Task 4 di `docs/13 Implementation Plan.md`).
 
-| Kolom | Tipe | Keterangan |
+| Kolom CSV | Kolom tabel | Keterangan |
 |---|---|---|
-| `slug` | teks | ID URL, huruf kecil dan tanda hubung, mis. `jatinegara`. Unik. |
-| `nama` | teks | Nama tampilan kecamatan. |
-| `kota` | teks | Kota administrasi: `Jakarta Pusat/Utara/Barat/Selatan/Timur/Kepulauan Seribu`. |
-| `kode_wilayah` | teks | Kode Kemendagri (Kepmendagri 100.1.1-6117/2022), format `31.71.01`. Unik. |
-| `adm4_bmkg` | teks | Kode kelurahan perwakilan untuk API BMKG, format `31.71.01.1001`. |
-| `lat`, `lng` | desimal | Koordinat pusat kecamatan (lihat catatan di bawah). |
-| `pesisir_rob` | boolean | `true` jika kecamatan masuk wilayah pesisir rawan rob. |
-| `sumber_url` | teks | URL verifikasi BMKG untuk `adm4_bmkg` (bukti kode valid dan koordinat berasal dari sana). |
+| `id` | `id` | 1–44, urut `region_code`. Stabil karena `flood_events`/`shelters` merujuk `district_id`. |
+| `slug` | `slug` | ID URL, huruf kecil + tanda hubung. Unik. |
+| `name` | `name` | Nama tampilan kecamatan. |
+| `city` | `city` | `Jakarta Pusat/Utara/Barat/Selatan/Timur/Kepulauan Seribu`. |
+| `region_code` | `region_code` | Kode Kemendagri, format `31.71.01`. Unik. |
+| `bmkg_adm4` | `bmkg_adm4` | Kode kelurahan perwakilan untuk API BMKG, format `31.71.01.1001`. |
+| `lat`, `lng` | `lat`, `lng` | Koordinat pusat kecamatan (lihat catatan metode). |
+| `tidal_flood_prone` | `tidal_flood_prone` | `true` jika masuk wilayah pesisir rawan rob. |
+| `notes` | `notes` | Jejak verifikasi: kode adm4 + kelurahan + tanggal cek. |
+
+Kolom `districts` yang **tidak** diisi dari CSV:
+
+- `base_vulnerability` — dihitung `seed-banjir.ts` dari `flood_events` + `flood_prone_subdistricts`
+  + `tidal_flood_prone` (rumus `docs/06` §2).
+- `geojson` — kosong sampai ada GeoJSON batas kecamatan dengan lisensi jelas.
 
 ### Sumber
 
-- **Daftar kecamatan, kelurahan, dan kode wilayah:** dataset publik Kemendagri via
-  <https://wilayah.id> (level 3 `districts`, level 4 `villages`, `updated_at` 2025-07-04).
-  Contoh: <https://wilayah.id/api/districts/31.71.json>.
-- **Kode `adm4_bmkg` dan koordinat:** API prakiraan cuaca BMKG,
+- **Kecamatan, kelurahan, kode wilayah:** dataset publik Kemendagri di
+  <https://github.com/cahyadsn/wilayah> (`db/wilayah.sql`; versi daring: <https://wilayah.id>).
+  Repo itu memuat 44 kecamatan dan 267 kelurahan untuk kode `31.xx`.
+- **`bmkg_adm4` + koordinat:** API prakiraan cuaca BMKG,
   `https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4={kode}`. Objek `data[0].lokasi`
-  mengembalikan `desa`, `kecamatan`, `kotkab`, `lat`, dan `lon` untuk kode tersebut.
-- **Daftar wilayah pesisir rawan rob:** BPBD DKI Jakarta melalui detikNews,
-  2 Mei 2026 — <https://news.detik.com/berita/d-8471199/waspada-potensi-banjir-rob-di-12-wilayah-pesisir-jakarta-sampai-8-mei>.
-  Daftar 12 wilayah: Kamal Muara, Kapuk Muara, Penjaringan, Pluit, Ancol, Kamal, Marunda,
+  mengembalikan `desa`, `kecamatan`, `kotkab`, `lat`, `lon`.
+- **Wilayah pesisir rawan rob:** BPBD DKI Jakarta via detikNews, 2 Mei 2026 —
+  <https://news.detik.com/berita/d-8471199/waspada-potensi-banjir-rob-di-12-wilayah-pesisir-jakarta-sampai-8-mei>.
+  12 wilayah: Kamal Muara, Kapuk Muara, Penjaringan, Pluit, Ancol, Kamal, Marunda,
   Cilincing, Kalibaru, Muara Angke, Tanjung Priok, Kepulauan Seribu.
 
 ### Catatan metode
 
-1. **Kelurahan perwakilan.** BMKG menerima kode level kelurahan (`adm4`). Untuk tiap kecamatan
-   dipilih kelurahan yang namanya sama dengan kecamatan; jika tidak ada, dipakai kelurahan
-   pertama pada dataset (mis. Jatinegara memakai `Kampung Melayu`, Cakung memakai `Jatinegara`).
-2. **Koordinat** adalah titik kelurahan perwakilan dari BMKG, bukan centroid poligon
-   kecamatan. Selisihnya kecil (skala kecamatan) dan cukup untuk peta marker serta pencarian
-   "kecamatan terdekat" (batas 15 km di Task 4). Jika nanti dipakai choropleth GeoJSON,
-   koordinat ini tidak berpengaruh.
-3. **`pesisir_rob`** dipetakan dari 12 wilayah BPBD ke kecamatan induknya, sehingga
-   menghasilkan 7 kecamatan:
-   `Penjaringan`, `Pademangan`, `Tanjung Priok`, `Cilincing`, `Kalideres`,
-   `Kepulauan Seribu Utara`, `Kepulauan Seribu Selatan`.
-   `Koja` dan `Kelapa Gading` **tidak** ditandai walau berbatasan dengan pesisir, karena tidak
-   masuk daftar BPBD di atas. Konsekuensinya skor mereka tidak mendapat tambahan +20 dan
-   wilayah yang benar-benar terkena rob tetap ditandai "rawan rob".
-4. **Nama tampilan** memakai ejaan yang lazim dipakai warga. Dataset Kemendagri menulis
-   `Pal Merah`, `Kramatjati`, dan `Pulogadung`; di sini dipakai `Palmerah`, `Kramat Jati`,
-   `Pulo Gadung` beserta slug-nya.
-5. **`kerawanan_dasar` tidak ada di CSV ini.** Nilainya dihitung saat seeding dari
-   `riwayat_banjir.csv` + `kelurahan_rawan.csv` (rumus di `docs/06 Data & Database.md` §2).
+1. **Kelurahan perwakilan.** BMKG menerima kode level kelurahan. Tiap kecamatan memakai
+   kelurahan yang namanya sama; jika tidak ada, kelurahan pertama pada dataset
+   (mis. Jatinegara → `Kampung Melayu`, Cakung → `Jatinegara`).
+2. **Koordinat** = titik kelurahan perwakilan dari BMKG, bukan centroid poligon kecamatan.
+   Selisihnya kecil dan cukup untuk marker peta serta `kecamatanTerdekat` (batas 15 km).
+   Jika nanti dipakai choropleth GeoJSON, koordinat ini tidak berpengaruh.
+3. **`tidal_flood_prone`** dipetakan dari 12 wilayah BPBD ke kecamatan induk = **7 kecamatan**:
+   Penjaringan, Pademangan, Tanjung Priok, Cilincing, Kalideres, Kepulauan Seribu Utara,
+   Kepulauan Seribu Selatan. `Koja` dan `Kelapa Gading` tidak ditandai karena tidak ada di
+   daftar BPBD di atas, walau berbatasan pesisir.
+4. **Nama tampilan** memakai ejaan warga: `Palmerah`, `Kramat Jati`, `Pulo Gadung`
+   (Kemendagri: `Pal Merah`, `Kramatjati`, `Pulogadung`).
+5. **Kode Ceger** adalah `31.75.10.1008`, **bukan** `31.75.10.1004` (itu Munjul). Contoh di
+   `docs/06` perlu dikoreksi sebelum Task 14 (kelurahan/peringatan dini).
 
 ### Verifikasi
 
 - Diambil 13 November 2026.
-- 44/44 kode `adm4_bmkg` dibalas HTTP 200 oleh API BMKG.
-- 44/44 nama `kecamatan` yang dikembalikan BMKG cocok dengan kolom `nama` (setelah
-  normalisasi ejaan di poin 4).
-- 44 slug unik, 6 kota, total 44 baris.
-
-Skrip pengambilan data bersifat sekali pakai dan tidak di-commit (berisi pemanggilan API
-berulang). Untuk memperbarui data, jalankan ulang pengambilan `districts`/`villages` dari
-`wilayah.id`, verifikasi tiap `adm4` ke BMKG, lalu perbarui tabel di atas.
+- 44/44 kode `bmkg_adm4` dibalas HTTP 200 oleh API BMKG.
+- 44/44 nama `kecamatan` dari BMKG cocok dengan kolom `name` (setelah normalisasi poin 4).
+- 44/44 `region_code` dan `bmkg_adm4` ada di `cahyadsn/wilayah`, tanpa duplikat.
+- 44 slug unik, 6 kota, `tidal_flood_prone=true` untuk 7 baris.
 
 ## File data lain (belum ada)
 
-| File | Status | Task |
-|---|---|---|
-| `riwayat_banjir.csv` | menyusul — target ≥ 40 kejadian, ≥ 15 kecamatan, 2020–2026 | T4 |
-| `kelurahan_rawan.csv` | menyusul — daftar RW/kelurahan rawan BPBD | T4 |
-| `posko.csv` | menyusul — titik aman/posko per kecamatan | T4 |
-| `kontak.csv` | menyusul — kontak darurat (112 dan lainnya) | T4 |
-| `pedoman/` + `index.json` | menyusul — ≥ 5 dokumen resmi untuk RAG | T9 |
-| `demo/` | menyusul — foto laporan contoh | T15 |
+Header di bawah sudah disesuaikan dengan migrasi `0001_init.sql`. Untuk file yang merujuk
+kecamatan dipakai **`district_slug`** (bukan `district_id`) supaya CSV tetap terbaca manusia;
+script seed yang memetakan slug → `id`.
+
+| File | Tabel | Header | Target |
+|---|---|---|---|
+| `riwayat_banjir.csv` | `flood_events` | `district_slug,subdistrict,event_date,max_depth_cm,affected_rt_count,description,source_url` | ≥ 40 baris, ≥ 15 kecamatan, 2020–2026; `source_url` wajib |
+| `kelurahan_rawan.csv` | `flood_prone_subdistricts` | `district_slug,subdistrict,rw_count,data_year,source_url` | daftar RW/kelurahan rawan BPBD |
+| `posko.csv` | `shelters` | `district_slug,name,type,address,lat,lng,is_verified,source_url` | ≥ 2 per kecamatan untuk 15 kecamatan paling rawan; `type`: `official_post`/`subdistrict_office`/`school`/`mosque`/`other` |
+| `kontak.csv` | `emergency_contacts` | `name,phone,scope,sort_order` | minimal `112` (Jakarta Siaga) + kontak resmi lain |
+
+**Perlu disepakati dengan penulis `scripts/seed-*.ts`:** apakah CSV merujuk kecamatan lewat
+`district_slug` (usulan di atas) atau `district_id` (angka `id` dari `kecamatan.csv`).
