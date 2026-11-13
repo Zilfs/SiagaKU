@@ -54,7 +54,7 @@ describe("retrieve", () => {
       "RETRIEVAL_QUERY",
     );
     expect(db.rpc).toHaveBeenCalledWith("match_chunks", {
-      query_embedding: expect.any(String),
+      query_embedding: expect.any(Array),
       match_count: 5,
       min_similarity: 0.55,
     });
@@ -79,7 +79,7 @@ describe("retrieve", () => {
     await retrieve("banjir rob", 3);
 
     expect(db.rpc).toHaveBeenCalledWith("match_chunks", {
-      query_embedding: expect.any(String),
+      query_embedding: expect.any(Array),
       match_count: 3,
       min_similarity: 0.55,
     });

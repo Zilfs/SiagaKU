@@ -81,7 +81,7 @@ async function vectorSearch(query: string, k: number): Promise<ChunkRow[]> {
   }
 
   const { data, error } = await supabaseServer().rpc("match_chunks", {
-    query_embedding: JSON.stringify(embedding),
+    query_embedding: embedding,
     match_count: k,
     min_similarity: MIN_SIMILARITY,
   });

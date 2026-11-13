@@ -196,7 +196,7 @@ async function ingest(entry: IndexEntry) {
           page: chunk.page,
           section_title: chunk.sectionTitle,
           content: chunk.content,
-          embedding: vector ? JSON.stringify(vector) : null,
+          embedding: vector ?? null,
         };
       });
 
