@@ -12,12 +12,16 @@ vi.mock("@/lib/db/client", () => ({
   supabaseServer: () => db.client,
 }));
 
-vi.mock("@/lib/rag/embed", () => ({
+vi.mock("@/features/chat/server/rag/embed", () => ({
   embedTexts: vi.fn(),
 }));
 
-import { embedTexts } from "@/lib/rag/embed";
-import { buildContext, retrieve, type Source } from "@/lib/rag/retrieve";
+import { embedTexts } from "@/features/chat/server/rag/embed";
+import {
+  buildContext,
+  retrieve,
+  type Source,
+} from "@/features/chat/server/rag/retrieve";
 
 const mockEmbed = vi.mocked(embedTexts);
 

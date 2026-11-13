@@ -1,6 +1,6 @@
 # Pedoman RAG
 
-Folder ini menampung PDF pedoman resmi untuk RAG Tanya SiagaKU. Isinya diurus oleh Syaki (W4). Kode ingest ada di `scripts/ingest-guidelines.ts`.
+Folder ini menampung PDF pedoman resmi untuk RAG Tanya SiagaKU. Isinya diurus oleh Syaki (W4). Kode ingest ada di `scripts/ingest-documents.ts`.
 
 ## Cara mengisi
 
@@ -24,7 +24,7 @@ Folder ini menampung PDF pedoman resmi untuk RAG Tanya SiagaKU. Isinya diurus ol
 3. Jalankan ingest (butuh `GEMINI_API_KEY`, `GEMINI_EMBED_MODEL`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` di `.env.local`):
 
 ```bash
-npx tsx scripts/ingest-guidelines.ts
+npm run rag:ingest
 ```
 
 Target rencana: minimal 5 dokumen dan 150 chunk. Ingest aman diulang: chunk lama per dokumen diganti.

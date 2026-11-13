@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chunkPages } from "@/lib/rag/chunk";
+import { chunkPages } from "@/features/chat/server/rag/chunk";
 
 const paragraph = (n: number) =>
   `Paragraf ${n}. Warga perlu menyiapkan tas siaga bencana berisi air minum, makanan ringan, obat-obatan, lampu senter, dan dokumen penting. Simpan tas di tempat yang mudah dijangkau saat banjir datang.`;

@@ -1,5 +1,4 @@
-// No `server-only` guard: the offline ingest script imports this module too.
-// It is still server-side only, because GEMINI_API_KEY never reaches the client.
+import "server-only";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { embedMany } from "ai";
 import { env } from "@/lib/env";

@@ -1,7 +1,7 @@
 /**
  * Offline ingest for the RAG guideline corpus.
  *
- *   npx tsx scripts/ingest-guidelines.ts
+ *   npx tsx --conditions=react-server scripts/ingest-documents.ts
  *
  * Reads `data/pedoman/index.json`, extracts every PDF page with unpdf, splits
  * the text into chunks, embeds them with Gemini in batches of 20, and upserts
@@ -13,8 +13,11 @@ import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { extractText } from "unpdf";
 import { env } from "../src/lib/env";
-import { chunkPages } from "../src/lib/rag/chunk";
-import { EMBEDDING_DIMENSIONS, embedTexts } from "../src/lib/rag/embed";
+import { chunkPages } from "../src/features/chat/server/rag/chunk";
+import {
+  EMBEDDING_DIMENSIONS,
+  embedTexts,
+} from "../src/features/chat/server/rag/embed";
 
 try {
   process.loadEnvFile(".env.local");
@@ -261,4 +264,7 @@ async function main() {
   if (failed > 0) process.exitCode = 1;
 }
 
-await main();
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exitCode = 1;
+});

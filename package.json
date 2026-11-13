@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "typecheck": "next typegen && tsc --noEmit",
+    "rag:ingest": "tsx --conditions=react-server scripts/ingest-documents.ts",
     "format": "prettier --write ."
   },
   "dependencies": {
