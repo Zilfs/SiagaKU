@@ -47,8 +47,12 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 ## Status (13 Nov malam)
 SELESAI: brainstorming, design doc, PRD, dokumentasi teknis lengkap (13 file .md).
 SELESAI JUGA: design disetujui; rencana implementasi 17 task (13 Implementation Plan), termasuk Task 14 Peringatan Dini.
+SELESAI JUGA (W3, 13 Nov malam): Task 5 router AI (provider chain gemini -> groq -> alt, fallback,
+cooldown, log ai_log) di branch feature/ai-provider-fallback (PR #4 ke dev); Task 9 chunking, embedding
+768 dim, retrieval vector dengan fallback FTS, dan skrip ingest di branch feature/rag (menunggu PR #4 merge).
 BELUM: pilih metode eksekusi;
 setup repo/akun; kurasi data; semua kode.
+BELUM (T9): ingest korpus pedoman. Butuh PDF dari Syaki di data/pedoman/ + GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk.
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
