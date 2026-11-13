@@ -9,7 +9,7 @@ SiagaKU is a flood-preparedness web app for DKI Jakarta residents, built for the
 All product and technical docs live in `docs/` (written in Indonesian). Read in this order:
 
 1. `docs/00 Handover.md`: current status, decisions, open risks, next steps. **Always read this first.**
-2. `docs/superpowers/plans/2026-11-13-siagaku.md`: the implementation plan (17 tasks, global constraints, interfaces, tests). `docs/13 Implementation Plan.md` is the same plan.
+2. `docs/13 Implementation Plan.md`: the implementation plan (17 tasks, global constraints, interfaces, tests). It is plain Markdown and needs no special tooling. Each task lists its files, interfaces, tests and steps.
 3. The spec docs the task points to:
 
 | Doc | Use it for |
@@ -96,7 +96,7 @@ Commits written with an AI coding assistant end with a trailer, e.g. `Co-Authore
 ```
 main  ← production (Vercel). Only receives PRs from dev.
 dev   ← integration. Only receives PRs from feature/fix branches.
-feature/<kebab-name>, fix/<kebab-name>  ← always branched from dev
+feature/<feature-name>, fix/<bug-name>  ← always branched from dev (kebab-case English, e.g. feature/chat-bot)
 ```
 
 1. **Start a feature** from the latest `dev`:
@@ -116,7 +116,7 @@ feature/<kebab-name>, fix/<kebab-name>  ← always branched from dev
 5. **Release**: Rhein opens a PR `dev` → `main` after integration checks pass on a Vercel preview.
 
 Rules:
-- One feature per branch. Name it after the feature, not the person.
+- One feature per branch. The branch name is the **feature name, never a person's name**: `feature/chat-bot`, `feature/risk-map`, `fix/null-rainfall` (not `feature/bagus`).
 - Never commit directly to `main` or `dev`.
 - **Never `git push --force` and never rebase or rewrite pushed history.** The competition rules forbid manipulating commit history. Sync with `git pull origin dev` (merge), not rebase.
 - Delete the feature branch after it is merged.
