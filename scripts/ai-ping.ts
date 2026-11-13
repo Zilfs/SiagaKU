@@ -17,7 +17,7 @@ async function main() {
   }
 
   const { provider, modelId, fallback, result } = await withFallback(
-    "penjelasan",
+    "explanation",
     (entry) =>
       generateText({
         model: entry.model,

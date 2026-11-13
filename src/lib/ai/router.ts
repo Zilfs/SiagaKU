@@ -5,7 +5,7 @@ import { getProviderChain } from "./providers";
 export { getProviderChain } from "./providers";
 
 export type ProviderName = "gemini" | "groq" | "alt";
-export type AiTask = "penjelasan" | "rencana" | "chat" | "vision" | "iklim";
+export type AiTask = "explanation" | "plan" | "chat" | "vision" | "climate";
 
 export type ProviderEntry = {
   name: ProviderName;
@@ -36,7 +36,7 @@ export type WithFallbackResult<T> = {
 export type WithFallbackOptions = {
   /** Override the provider chain (tests and special callers). */
   chain?: ProviderEntry[];
-  /** Override the ai_log writer. */
+  /** Override the ai_logs writer. */
   log?: (entry: AiLogEntry) => Promise<void>;
   /** Backoff before retrying a 5xx on the same provider. */
   retryDelayMs?: number;
