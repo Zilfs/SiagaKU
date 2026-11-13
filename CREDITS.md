@@ -11,6 +11,8 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - cn (paket npm `cn`) - pembantu penggabung nama kelas dari shadcn
 - Font Geist (via next/font, Vercel, lisensi SIL OFL) - tipografi bawaan scaffold
 - [zod](https://zod.dev) - validasi data dan env
+- [Supabase](https://supabase.com) (@supabase/supabase-js) - klien basis data Postgres dan penyimpanan
+- server-only (Vercel) - menjaga modul sisi server tidak masuk ke bundel browser
 - [Vitest](https://vitest.dev) dan @vitejs/plugin-react - pengujian
 - [Prettier](https://prettier.io) - pemformat kode
 - [tsx](https://tsx.is) - menjalankan skrip TypeScript

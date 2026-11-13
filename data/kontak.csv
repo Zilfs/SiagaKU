@@ -1,0 +1,11 @@
+name,phone,scope,sort_order
+"Jakarta Siaga 112",112,provincial,1
+"Call Center BPBD DKI Jakarta","021-3459444",provincial,2
+"Pusdalops BPBD DKI Jakarta (WhatsApp)","0812-1237-575",provincial,3
+"Posko Banjir Pemprov DKI","021-3459444",provincial,4
+"Dinas Pemadam Kebakaran (Damkar)",113,national,5
+"Ambulans Gawat Darurat (AGD) Dinas Kesehatan","119",provincial,6
+"PLN (Gangguan Listrik)",123,national,7
+"PAM Jaya (Gangguan Air Bersih)","1500-223",provincial,8
+"BASARNAS (Pencarian & Pertolongan)",115,national,9
+"Kepolisian RI (Polri)",110,national,10
