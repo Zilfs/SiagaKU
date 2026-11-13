@@ -23,6 +23,7 @@ All product and technical docs live in `docs/` (written in Indonesian). Read in 
 | `08 UI-UX` | Visual identity, wireframes, PWA |
 | `09 Timeline & Pembagian Tugas` | Daily plan, owners (PIC) |
 | `10 Deliverables Lomba`, `11 Risiko & Mitigasi`, `12 Referensi & Sumber Data` | Competition deliverables, risks, data sources |
+| `14 Struktur Kode` | Feature-based code structure, dependency rules, plan path → new path mapping (see §8) |
 
 `docs/` is synced from the project owner's (Rhein) Obsidian vault. To change a doc, open a PR and tell Rhein so the vault stays in sync.
 
@@ -71,6 +72,7 @@ The plan and spec use Indonesian identifiers (e.g. `hitungSkorRisiko`, table `ke
 | pedoman, sumber | guideline, source |
 | anggota (keluarga), disabilitas, hewan | (household) member, disability, pet |
 | jarak, terdekat, hitung | distance, nearest, calculate |
+| iklim | climate |
 | Rendah / Sedang / Tinggi / Sangat Tinggi | `low` / `moderate` / `high` / `very_high` |
 | Normal / Waspada / Siaga / Awas | `normal` / `advisory` / `watch` / `warning` |
 
@@ -145,3 +147,30 @@ npm run format     # prettier --write .
 ```
 
 Run `lint`, `typecheck` and `test` before pushing. CI runs the same checks.
+
+## 8. Architecture: feature-based
+
+Full details, examples and the plan path mapping: `docs/14 Struktur Kode.md`.
+
+```
+src/
+├── app/          # routes only: thin pages and route handlers
+├── components/   # shared UI (ui/ = shadcn, layout/, map/, risk-badge.tsx)
+├── lib/          # shared core: env, db, data (cache, bmkg, open-meteo), risk scoring, ai router, http, rate-limit, geo
+└── features/     # one module per feature: risk, plan, chat, early-warning, report
+    └── <feature>/
+        ├── components/   # feature UI
+        ├── server/       # server-only services (DB, AI, external APIs); first line `import 'server-only';`
+        ├── schemas.ts    # zod
+        ├── types.ts
+        └── *.ts          # pure logic, usable on client and server
+```
+
+Rules:
+1. Dependencies flow one way: `app → features → components/lib`. A feature never imports another feature. `lib/` and `components/` never import `features/`. When two features need the same code, move it to `lib/` or `components/` in the same PR.
+2. `app/` stays thin. Pages call `features/<f>/server/*` and render components. Route handlers validate input (zod), apply the rate limit, call a service and return a `Response`. There are no DB queries or AI prompts in `app/`.
+3. Components never touch the DB or AI directly. Client components call route handlers with `fetch` (or `useChat` for chat).
+4. No barrel `index.ts` files. Import file paths directly, so server code does not leak into client bundles.
+5. Create only the folders a feature needs.
+6. Files are kebab-case (`risk-badge.tsx`); React components are exported in PascalCase (`RiskBadge`). Tests mirror `src/` (`tests/lib/…`, `tests/features/<f>/…`).
+7. **The plan's file map is superseded.** Translate each plan path with the table in `docs/14 Struktur Kode.md` §6.
