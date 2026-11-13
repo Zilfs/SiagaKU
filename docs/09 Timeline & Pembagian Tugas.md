@@ -35,7 +35,7 @@ PIC ditetapkan 13 Nov 2026 (task per orang: [[13 Implementation Plan]]). Satu or
 - [ ] W2: `create-next-app` (TS, Tailwind, App Router, ESLint) → push → deploy pertama ke Vercel (halaman "Hello SiagaKU")
 - [ ] W2: tambah shadcn/ui, Prettier, Vitest, CI GitHub Actions, `.env.example`, `env.ts`
 - [ ] W4: daftar Gelombang 2 (Rp75.000), follow IG, twibbon, scan KTM; unduh template proposal & surat pernyataan
-- [ ] Semua: ikuti konvensi branch di `AGENTS.md` (branch `feature/…` dari `dev`, `git pull origin dev` sebelum kerja, PR ke `dev`; `dev` → `main` oleh Rhein; jangan pernah force-push)
+- [ ] Semua: ikuti konvensi branch di `AGENTS.md` (branch `feature/<nama-fitur>` dari `dev`, dinamai sesuai fitur bukan nama orang, mis. `feature/chat-bot`; `git pull origin dev` sebelum kerja, PR ke `dev`; `dev` → `main` oleh Rhein; jangan pernah force-push)
 
 ### Sab 14 Nov — Hari 1: Fondasi & Data
 - [ ] W2: migrasi SQL ([[06 Data & Database#3. Skema Database (Supabase Postgres)]]), bucket storage, `db/client.ts`, `cache.ts`, `rate-limit.ts`

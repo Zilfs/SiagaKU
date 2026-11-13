@@ -9,8 +9,8 @@ tags: [siagaku, plan, implementation]
 
 # SiagaKU Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-> Setelah repo dibuat, salin file ini ke `docs/superpowers/plans/2026-11-13-siagaku.md`.
+> **For agentic workers (opsional):** bisa dieksekusi dengan superpowers:subagent-driven-development atau superpowers:executing-plans; tanpa skill, kerjakan task per task secara manual. Steps use checkbox (`- [ ]`) syntax for tracking.
+> Satu-satunya salinan plan di repo adalah `docs/13 Implementation Plan.md`; aturan kerja tim ada di `AGENTS.md`.
 
 **Goal:** Membangun SiagaKU, web app kesiapsiagaan banjir DKI Jakarta (cek risiko, rencana siaga AI, chatbot RAG, peringatan dini push per kelurahan, lapor banjir), live di Vercel sebelum 20 Nov 2026.
 
