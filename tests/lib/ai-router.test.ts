@@ -77,7 +77,7 @@ describe("withFallback", () => {
   it("succeeds on the first provider with fallback=false", async () => {
     const { entries, log } = logSpy();
     const result = await withFallback(
-      "penjelasan",
+      "explanation",
       async (p) => `ok:${p.name}`,
       { chain: [entry("gemini"), entry("groq")], log },
     );
@@ -120,7 +120,7 @@ describe("withFallback", () => {
       return "groq-answer";
     });
 
-    const result = await withFallback("rencana", run, {
+    const result = await withFallback("plan", run, {
       chain: [entry("gemini"), entry("groq")],
       log,
       retryDelayMs: 0,
@@ -154,7 +154,7 @@ describe("withFallback", () => {
       return "groq-answer";
     });
 
-    const result = await withFallback("rencana", run, {
+    const result = await withFallback("plan", run, {
       chain: [entry("gemini"), entry("groq")],
       log,
     });
@@ -272,7 +272,7 @@ describe("getProviderChain", () => {
 
   it("omits providers in cooldown", () => {
     markCooldown("gemini", 60_000);
-    const chain = getProviderChain("penjelasan", {
+    const chain = getProviderChain("explanation", {
       ...baseEnv,
       GEMINI_API_KEY: "g",
       GEMINI_MODEL: "gemini-flash",

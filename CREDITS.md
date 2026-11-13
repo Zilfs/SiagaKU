@@ -22,3 +22,4 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - [ESLint](https://eslint.org) dan [TypeScript](https://www.typescriptlang.org) - lint dan pengecekan tipe
 
 AI coding assistant: Claude Code (Anthropic) — digunakan untuk scaffolding dan implementasi.
+AI coding assistant: opencode — digunakan untuk implementasi router AI dan RAG (Task 5, Task 9).
