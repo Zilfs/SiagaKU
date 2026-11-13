@@ -34,6 +34,12 @@ describe("classifyRainfall", () => {
   });
 });
 
+describe("classifyRainfall invalid input", () => {
+  it.each([[NaN], [-1], [Infinity]])("%f -> none, factor 0", (mm) => {
+    expect(classifyRainfall(mm)).toEqual({ category: "none", factor: 0 });
+  });
+});
+
 describe("calculateRiskScore", () => {
   it("score = round(0.55*80 + 0.45*70) = 76", () => {
     const r = calculateRiskScore({ baseVulnerability: 80, maxRainfallMm: 62 });
@@ -66,6 +72,16 @@ describe("calculateBaseVulnerability", () => {
         tidalFloodProne: true,
       }),
     ).toBe(60);
+  });
+  it("floor: 1 prone of 10 subdistricts -> +10, not +3", () => {
+    expect(
+      calculateBaseVulnerability({
+        floodEvents5y: 0,
+        floodProneSubdistricts: 1,
+        totalSubdistricts: 10,
+        tidalFloodProne: false,
+      }),
+    ).toBe(10);
   });
   it("capped at 100 and events capped at 50", () => {
     expect(

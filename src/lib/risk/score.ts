@@ -16,7 +16,7 @@ export function classifyRainfall(mm: number): {
   category: RainfallCategory;
   factor: number;
 } {
-  if (mm < 5) return { category: "none", factor: 0 };
+  if (!Number.isFinite(mm) || mm < 5) return { category: "none", factor: 0 };
   if (mm < 20) return { category: "light", factor: 20 };
   if (mm < 50) return { category: "moderate", factor: 45 };
   if (mm < 100) return { category: "heavy", factor: 70 };

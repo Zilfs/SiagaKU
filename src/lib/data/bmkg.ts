@@ -55,7 +55,10 @@ export async function getBmkgForecast(
           { signal: AbortSignal.timeout(5000) },
         );
         if (!res.ok) throw new Error(`BMKG ${res.status}`);
-        return parseBmkgForecast(await res.json());
+        const parsed = parseBmkgForecast(await res.json());
+        // an empty parse must not overwrite a good cached value
+        if (parsed.slots.length === 0) throw new Error("BMKG empty forecast");
+        return parsed;
       },
       deps.store,
       deps.now,

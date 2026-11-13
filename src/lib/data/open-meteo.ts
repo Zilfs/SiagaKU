@@ -30,7 +30,9 @@ export async function getMaxRainfall3Days(
           { signal: AbortSignal.timeout(5000) },
         );
         if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
-        return parseMaxRainfall(await res.json());
+        const max = parseMaxRainfall(await res.json());
+        if (max === null) throw new Error("Open-Meteo empty forecast");
+        return max;
       },
       deps.store,
       deps.now,

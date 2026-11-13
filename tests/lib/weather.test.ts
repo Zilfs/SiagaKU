@@ -104,4 +104,47 @@ describe("fetchers", () => {
     });
     expect(r).toEqual({ maxMm: 12, stale: true });
   });
+  it("open-meteo: non-2xx -> null", async () => {
+    const r = await getMaxRainfall3Days(5, -6.1, 106.8, {
+      fetch: json({}, 503),
+      store: memoryCacheStore(),
+    });
+    expect(r).toEqual({ maxMm: null, stale: false });
+  });
+  it("bmkg: 200 unexpected body + expired cache -> stale old value", async () => {
+    const store = memoryCacheStore();
+    const old = { updatedAt: "x", slots: [] };
+    await store.set("bmkg:1", old, t0);
+    const r = await getBmkgForecast("1", {
+      fetch: json({}),
+      store,
+      now: () => later,
+    });
+    expect(r).toEqual({ data: old, stale: true });
+  });
+  it("bmkg: 200 unexpected body + no cache -> null, nothing stored", async () => {
+    const store = memoryCacheStore();
+    const r = await getBmkgForecast("1", { fetch: json({}), store });
+    expect(r).toEqual({ data: null, stale: false });
+    expect(await store.get("bmkg:1")).toBeNull();
+  });
+  it("open-meteo: 200 unexpected body + expired cache -> stale old value", async () => {
+    const store = memoryCacheStore();
+    await store.set("om:fc:5", 12, t0);
+    const r = await getMaxRainfall3Days(5, -6.1, 106.8, {
+      fetch: json({}),
+      store,
+      now: () => later,
+    });
+    expect(r).toEqual({ maxMm: 12, stale: true });
+  });
+  it("open-meteo: 200 unexpected body + no cache -> null, nothing stored", async () => {
+    const store = memoryCacheStore();
+    const r = await getMaxRainfall3Days(5, -6.1, 106.8, {
+      fetch: json({}),
+      store,
+    });
+    expect(r).toEqual({ maxMm: null, stale: false });
+    expect(await store.get("om:fc:5")).toBeNull();
+  });
 });
