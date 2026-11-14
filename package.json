@@ -9,11 +9,17 @@
     "lint": "eslint",
     "test": "vitest run",
     "typecheck": "next typegen && tsc --noEmit",
-    "format": "prettier --write ."
+    "rag:ingest": "tsx --conditions=react-server scripts/ingest-documents.ts",
+    "format": "prettier --write .",
+    "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.120",
+    "@ai-sdk/groq": "^4.0.83",
+    "@ai-sdk/openai-compatible": "^3.0.92",
     "@base-ui/react": "^1.9.0",
     "@supabase/supabase-js": "^2.119.0",
+    "ai": "^7.0.172",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",
     "lucide-react": "^1.72.0",
@@ -37,6 +43,7 @@
     "tailwindcss": "4.3.3",
     "tsx": "^4.23.15",
     "typescript": "^5",
+    "unpdf": "^2.1.0",
     "vitest": "^5.1.0"
   }
 }

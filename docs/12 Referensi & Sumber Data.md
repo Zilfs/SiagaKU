@@ -51,7 +51,7 @@ Terkait: [[06 Data & Database]] · [[05 Desain AI]]
 | Panduan keselamatan listrik saat banjir | PLN | 🔎 |
 | Informasi banjir rob & perubahan iklim | BMKG | 🔎 |
 
-Kriteria: resmi (pemerintah/lembaga), berbahasa Indonesia, boleh diakses publik. Simpan URL asli di `data/pedoman/index.json` agar sitasi bisa diklik.
+Kriteria: resmi (pemerintah/lembaga), berbahasa Indonesia, boleh diakses publik. Simpan URL asli di `data/guidelines/index.json` agar sitasi bisa diklik.
 
 ## 5. Teknologi
 | Topik | Catatan | Status |

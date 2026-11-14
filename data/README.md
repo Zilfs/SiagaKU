@@ -10,10 +10,14 @@ supaya juri bisa memeriksa asal datanya.
 > `kelurahan_rawan`→`flood_prone_subdistricts`, `posko_evakuasi`→`shelters`,
 > `kontak_darurat`→`emergency_contacts`, `kerawanan_dasar`→`base_vulnerability`,
 > `pesisir_rob`→`tidal_flood_prone`, `sumber_url`→`source_url`.
+>
+> **Nama file CSV juga memakai nama tabel (Inggris)**, sesuai AGENTS.md §3:
+> `districts.csv`, `flood_events.csv`, `flood_prone_subdistricts.csv`,
+> `shelters.csv`, `emergency_contacts.csv`.
 
-## `kecamatan.csv` → tabel `districts`
+## `districts.csv` → tabel `districts`
 
-44 kecamatan DKI Jakarta, satu baris per kecamatan. Dipakai oleh `scripts/seed-kecamatan.ts`
+44 kecamatan DKI Jakarta, satu baris per kecamatan. Dipakai oleh `scripts/seed.ts` (`npm run db:seed`)
 (Task 4 di `docs/13 Implementation Plan.md`).
 
 | Kolom CSV | Kolom tabel | Keterangan |
@@ -28,12 +32,12 @@ supaya juri bisa memeriksa asal datanya.
 | `tidal_flood_prone` | `tidal_flood_prone` | `true` jika termasuk 7 kecamatan pesisir rawan rob (BPBD DKI, 2 Mei 2026). |
 | `notes` | `notes` | Jejak verifikasi per baris (status ADM4, `lokasi` BMKG). |
 
-`base_vulnerability` **tidak ada di CSV**; nilainya dihitung `scripts/seed-banjir.ts` dari
-`riwayat_banjir.csv` + `kelurahan_rawan.csv` (rumus `docs/06` §2).
+`base_vulnerability` **tidak ada di CSV**; nilainya dihitung `scripts/seed.ts` dari
+`flood_events.csv` + `flood_prone_subdistricts.csv` (rumus `docs/06` §2).
 
 ---
 
-## `riwayat_banjir.csv` → tabel `flood_events`
+## `flood_events.csv` → tabel `flood_events`
 
 240 kejadian banjir tingkat kelurahan sepanjang 2025–2026 (sampai Januari 2026).
 
@@ -79,20 +83,20 @@ Data diambil dari tag **"Update Info Terkini Genangan"** pada situs resmi BPBD D
     CSV ini dibatasi pada rilis yang bisa dibuka publik. Target "≥ 40 baris dari ≥ 15 kecamatan"
     (`docs/06` §6) sudah terlampaui. Jika tim punya arsip BPBD/berita 2020–2024, baris bisa
     ditambahkan dengan format yang sama.
-7. **`base_vulnerability` tidak ada di CSV ini.** Dihitung `seed-banjir.ts` dari jumlah
+7. **`base_vulnerability` tidak ada di CSV ini.** Dihitung `scripts/seed.ts` dari jumlah
     kejadian per kecamatan (rumus `docs/06` §2).
 
 ---
 
-## `kelurahan_rawan.csv` → tabel `flood_prone_subdistricts`
+## `flood_prone_subdistricts.csv` → tabel `flood_prone_subdistricts`
 
 116 kelurahan di 38 kecamatan yang masih tergenang pada 2023, dengan jumlah RW tergenang per
-kelurahan. Dipakai `scripts/seed-banjir.ts` untuk komponen "+30 ada kelurahan rawan" di
+kelurahan. Dipakai `scripts/seed.ts` untuk komponen "+30 ada kelurahan rawan" di
 `base_vulnerability` (`docs/06` §2).
 
 | Kolom CSV | Kolom tabel | Keterangan |
 |---|---|---|
-| `district_slug` | `district_id` | Slug kecamatan dari `kecamatan.csv`; seed memetakan ke `id`. |
+| `district_slug` | `district_id` | Slug kecamatan dari `districts.csv`; seed memetakan ke `id`. |
 | `subdistrict` | `subdistrict` | Nama resmi kelurahan (Kemendagri), bukan ejaan mentah dataset. |
 | `rw_count` | `rw_count` | Jumlah RW di kelurahan itu yang tergenang pada 2023. |
 | `data_year` | `data_year` | `2023`. |
@@ -115,7 +119,7 @@ Jakarta (organisasi `org50`), di Satu Data Jakarta:
 
 ---
 
-## `posko.csv` → tabel `shelters`
+## `shelters.csv` → tabel `shelters`
 
 283 titik lokasi pengungsian (shelters) di 44 kecamatan DKI Jakarta (semua kecamatan terwakili,
 minimal 2 titik per kecamatan).
@@ -154,7 +158,7 @@ minimal 2 titik per kecamatan).
 
 ---
 
-## `kontak.csv` → tabel `emergency_contacts`
+## `emergency_contacts.csv` → tabel `emergency_contacts`
 
 Daftar nomor telepon darurat penting di DKI Jakarta.
 

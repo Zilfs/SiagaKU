@@ -40,23 +40,35 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 - Setiap fitur AI punya fallback non-AI (template).
 - Data cuaca: BMKG (tampil, resmi) + Open-Meteo (angka mm untuk skor & historis).
 - Tailwind + shadcn/ui, Leaflet, Recharts, zod, Vitest, GitHub Actions CI.
-- Tim siap aktifkan billing Gemini atau pakai provider alternatif saat penjurian.
+- Urutan provider (14 Nov): Gemini gratis → Groq gratis → Gemini berbayar lewat slot `ALT_AI_*` (endpoint OpenAI-compatible Gemini, project Google terpisah dengan billing + budget alert). Tanpa ubah kode. Embedding RAG tetap pakai key Gemini gratis (kalau habis, retrieval turun ke FTS).
+- Kode error baru `UNAUTHORIZED` (401) untuk route ber-token (health deep, cron T14); helper `isBearer` di `src/lib/http.ts`.
+- Batas `hunian.lantai` 0–60 (14 Nov), angka lain di input rencana tetap 0–10.
 - Pembagian peran (13 Nov): W1 Frontend = Ukon, W2 Backend/Data = Rhein, W3 AI = Bagus,
   W4 Data/Konten/Dokumentasi = Syaki.
 
 ## Status (14 Nov 2026)
 SELESAI:
 - Brainstorming, design doc, PRD, dan dokumentasi teknis lengkap (13 file .md).
-- W4 Task 4 (Kurasi Data): 5 file CSV lengkap & terverifikasi, plus `data/README.md`:
-  1. `kecamatan.csv` (44 kecamatan, koordinat BMKG API, status pesisir rob)
-  2. `riwayat_banjir.csv` (240 kejadian banjir 2025–2026 dari rilis BPBD)
-  3. `kelurahan_rawan.csv` (116 kelurahan rawan 2023 dari Satu Data Jakarta)
-  4. `posko.csv` (283 titik pengungsian dari JSC & kantor kelurahan Jakarta Satu, 44/44 kecamatan)
-  5. `kontak.csv` (9 kontak darurat terverifikasi; 0812-1237-575 = Pusdalops BNPB, bukan BPBD)
-- W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) di `data/guidelines/`.
-- W4 Task 13 (Evaluasi RAG): 40 soal + 6 profil uji di `tests/eval/` (lihat `tests/eval/README.md`).
+- W4 Task 4 (Kurasi Data): 5 file CSV lengkap & terverifikasi (rename ke Inggris: `districts.csv`, `flood_events.csv`, `flood_prone_subdistricts.csv`, `shelters.csv`, `emergency_contacts.csv`).
+- W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi di `data/guidelines/` + `index.json`.
+- W4 Task 13 (Evaluasi RAG): 40 soal + 6 profil uji di `tests/eval/` (key JSON: `group`, `question`, `must_include`, `name`, `district_slug`).
+- W3 Task 5: router AI gemini → groq → alt (`src/lib/ai/`), merge PR #4.
+- W3 Task 9 (RAG): chunking, embedding 768 dim, retrieval vector dengan fallback FTS, dan skrip ingest di branch feature/rag. Korpus membaca `data/guidelines/` + `data/guidelines/index.json` (5 entri); folder `data/pedoman/` dihapus.
+- W2 Task 1–3: boilerplate + CI, migrasi `0001_init.sql` (12 tabel, RLS, RPC RAG, bucket `reports`),
+  cache `getOrSet`, skor risiko, klien BMKG & Open-Meteo. Struktur kode feature-based (`docs/14 Struktur Kode.md`).
+- W2 Task 6: `src/lib/rate-limit.ts` (fixed window, bucket chat/plan/report/explanation, fail open saat DB error),
+  `src/lib/http.ts` (`jsonError`, `HttpError`, `parseJson`), migrasi `0002_rate_limit.sql` (`hit_rate_limit`).
+- W2 Task 7: `GET /api/districts`, `GET /api/risk/[id]` (id atau slug), `GET /api/risk/[id]/explanation`
+  (AI + cache 3 jam, fallback template). Kode di `src/features/risk/`. Key JSON respons bahasa Inggris
+  camelCase (mis. `score`, `level: "high"`, `components.rainfallFactor`), bukan key Indonesia di docs/07;
+  bentuk lengkap ada di `src/features/risk/types.ts` (`DistrictSummary`, `RiskDetail`). Bagian `iklim` tidak ada (F5 dipotong).
+- W2 Task 12: `GET /api/health` (cek DB; `?deep=1` + `Authorization: Bearer CRON_SECRET` ping tiap provider, `skip` bila env kosong; 503 bila gagal), cron harian `vercel.json` (keep-alive Supabase), header keamanan di `next.config.ts`, `src/app/error.tsx`, halaman `/tentang` (rumus skor & tabel hujan dibaca dari `src/lib/risk/`, sumber, AI, privasi, kredit, disclaimer, tim; gaya polos, menunggu sistem visual PR #22).
+- W2 Task 4 (seed): `npm run db:seed` (`scripts/seed.ts` + `scripts/lib/{csv,seed-data}.ts`) memvalidasi 5 CSV, memetakan slug ke id, menghitung `base_vulnerability` (kejadian per tanggal unik 5 tahun; kelurahan rawan +30 flat sampai T14), lalu mengisi 5 tabel. Diuji ke Postgres lokal dengan migrasi 0001 (44/240/116/283/9 baris; Jatinegara 80, Cengkareng 80, Kalideres 100). `src/lib/geo.ts`: `distanceKm`, `findNearestDistrict`.
+- Proteksi branch `dev` & `main` aktif (wajib PR, 1 approval orang lain, CI hijau, tanpa force-push).
+- URL resmi dokumen pedoman `04` sudah diverifikasi Syaki (Perpustakaan BNPB).
+- `CREDITS.md` diperbarui dengan daftar PDF pedoman.
 
-BELUM: Task 17 (README utama, proposal, video).
+BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
@@ -65,16 +77,16 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 ## Masalah terbuka / risiko
 - Kuota AI saat penjurian (mitigasi: fallback, cache, rate limit, billing/alternatif).
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
-- `tests/eval/profil.json` P03 memakai `lantai: 12` (sesuai 05 Desain AI §7), sedangkan 07 API Spec membatasi `lantai` 0–10. Perlu keputusan Rhein: naikkan batas `lantai` (usul 0–60) atau turunkan profil uji.
 - `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
+- Supabase project `lqyrtrmorzndqdpdqcaz` (14 Nov): migrasi 0001–0003 dijalankan lewat MCP Supabase, seed 44/240/116/283/9 baris, `/api/health` dan endpoint T7 sudah dites dengan data asli. **Jangan pakai `supabase db push`**: riwayat migrasi remote memakai versi tanggal (`20261114…_init`), bukan `0001`, jadi CLI akan mencoba membuat ulang tabel. Migrasi baru: tambah file `supabase/migrations/000N_*.sql` di PR lalu jalankan lewat MCP (`apply_migration`). Advisor tersisa: `vector` di schema public (dibiarkan, memindahkannya berisiko) dan RLS tanpa policy (disengaja, akses hanya lewat server).
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
-- PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
+- PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi: belum diputuskan.
 
 ## Langkah berikutnya (urut)
-1. Review 13 Implementation Plan, pilih metode eksekusi (subagent-driven / native).
-2. Eksekusi mulai Task 1.
-3. Hari 0: akun GitHub/Vercel/Supabase/AI Studio/Groq, create-next-app, deploy pertama, CI.
-4. Hari 1: migrasi SQL, data/kecamatan.csv (44 baris), router AI, ingest RAG, layout.
+1. Rhein: isi key AI (Gemini dan/atau Groq) di `.env.local`, cek `meta.provider` di `/api/risk/jatinegara/explanation`, lalu setup Vercel (env sama dengan `.env.local`).
+2. Rhein: `npm run db:seed` setelah Supabase siap, lalu tes endpoint T7 dan `/api/health`; Ukon: Task 8 pakai tipe di `src/features/risk/types.ts`.
+3. Bagus: jalankan `npm run rag:ingest` setelah key ada (PR #7 sudah di-merge), lalu lanjut chat API.
+4. Syaki: Task 17 (README utama, proposal, video).
 5. Ikuti 09 Timeline & Pembagian Tugas.
 ```

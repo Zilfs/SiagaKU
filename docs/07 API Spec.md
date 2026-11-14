@@ -19,6 +19,7 @@ Terkait: [[03 Arsitektur Sistem]] · [[05 Desain AI]] · [[06 Data & Database]]
 | HTTP | code |
 |---|---|
 | 400 | `INVALID_INPUT` |
+| 401 | `UNAUTHORIZED` (token cron salah atau tidak ada) |
 | 404 | `NOT_FOUND` |
 | 429 | `RATE_LIMITED` |
 | 502 | `UPSTREAM_FAILED` (data eksternal/AI gagal total) |
@@ -80,7 +81,7 @@ Enum:
 - `kondisi.kendaraan`: `tidak_ada | motor | mobil | keduanya`
 - `kondisi.jarak_sungai`: `dekat | sedang | jauh | tidak_tahu`
 
-Batas: setiap angka 0–10, total anggota 1–15.
+Batas: setiap angka 0–10, kecuali `hunian.lantai` 0–60 (apartemen Jakarta bisa di atas lantai 10); total anggota 1–15.
 
 Response `201`:
 ```json

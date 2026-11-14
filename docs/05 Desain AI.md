@@ -137,7 +137,7 @@ Aturan:
 ## 3. F3 — Tanya SiagaKU (RAG)
 
 ### 3.1 Pipeline ingest (offline, `scripts/ingest-dokumen.ts`)
-1. Sumber: PDF/MD di `data/pedoman/` + `index.json` (judul, penerbit, tahun, url).
+1. Sumber: PDF/MD di `data/guidelines/` + `index.json` (judul, penerbit, tahun, url).
 2. Ekstraksi teks per halaman (`pdf-parse` / `unpdf`); bersihkan header/footer berulang.
 3. **Chunking:** per paragraf/bagian, target ±500–800 token, overlap ±80 token; simpan `halaman` dan `judul_bagian` (heading terdekat).
 4. Embedding: `gemini-embedding-001`, `taskType: RETRIEVAL_DOCUMENT`, `outputDimensionality: 768`, batch dengan jeda (hormati rate limit).
@@ -238,7 +238,7 @@ Input: deret `hari_hujan_lebat` dan `total_hujan_mm` 2016–2025 per kota. Outpu
 
 ## 7. Evaluasi (wajib sebelum feature freeze)
 
-File `tests/eval/pertanyaan.json`: 40 pertanyaan.
+File `tests/eval/questions.json`: 40 pertanyaan.
 | Kelompok | Jumlah | Kriteria lulus |
 |---|---|---|
 | Dalam cakupan, ada di dokumen | 25 | Jawaban benar + ≥ 1 sitasi relevan |

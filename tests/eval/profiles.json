@@ -1,8 +1,8 @@
 [
   {
     "id": "P01",
-    "nama": "Keluarga bayi + lansia kursi roda di rumah 1 lantai dekat sungai",
-    "kecamatan_slug": "jatinegara",
+    "name": "Keluarga bayi + lansia kursi roda di rumah 1 lantai dekat sungai",
+    "district_slug": "jatinegara",
     "request": {
       "kecamatan_id": 37,
       "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
@@ -18,12 +18,12 @@
       },
       "kondisi": { "kendaraan": "motor", "jarak_sungai": "dekat", "pernah_banjir": true }
     },
-    "harus": ["bayi", "lansia", "kursi roda"]
+    "must_include": ["bayi", "lansia", "kursi roda"]
   },
   {
     "id": "P02",
-    "nama": "Mahasiswa kos",
-    "kecamatan_slug": "mampang-prapatan",
+    "name": "Mahasiswa kos",
+    "district_slug": "mampang-prapatan",
     "request": {
       "kecamatan_id": 27,
       "hunian": { "jenis": "kos", "lantai": 1 },
@@ -39,12 +39,12 @@
       },
       "kondisi": { "kendaraan": "tidak_ada", "jarak_sungai": "sedang", "pernah_banjir": false }
     },
-    "harus": []
+    "must_include": []
   },
   {
     "id": "P03",
-    "nama": "Apartemen lantai 12",
-    "kecamatan_slug": "kelapa-gading",
+    "name": "Apartemen lantai 12",
+    "district_slug": "kelapa-gading",
     "request": {
       "kecamatan_id": 16,
       "hunian": { "jenis": "apartemen", "lantai": 12 },
@@ -60,12 +60,12 @@
       },
       "kondisi": { "kendaraan": "mobil", "jarak_sungai": "jauh", "pernah_banjir": false }
     },
-    "harus": ["lift"]
+    "must_include": ["lift"]
   },
   {
     "id": "P04",
-    "nama": "Keluarga dengan ibu hamil + kucing di pesisir rob",
-    "kecamatan_slug": "penjaringan",
+    "name": "Keluarga dengan ibu hamil + kucing di pesisir rob",
+    "district_slug": "penjaringan",
     "request": {
       "kecamatan_id": 11,
       "hunian": { "jenis": "rumah_bertingkat", "lantai": 1 },
@@ -81,12 +81,12 @@
       },
       "kondisi": { "kendaraan": "motor", "jarak_sungai": "dekat", "pernah_banjir": true }
     },
-    "harus": ["hamil", "kucing"]
+    "must_include": ["hamil", "kucing"]
   },
   {
     "id": "P05",
-    "nama": "Lansia tinggal sendiri",
-    "kecamatan_slug": "tebet",
+    "name": "Lansia tinggal sendiri",
+    "district_slug": "tebet",
     "request": {
       "kecamatan_id": 25,
       "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
@@ -102,12 +102,12 @@
       },
       "kondisi": { "kendaraan": "tidak_ada", "jarak_sungai": "sedang", "pernah_banjir": true }
     },
-    "harus": ["lansia"]
+    "must_include": ["lansia"]
   },
   {
     "id": "P06",
-    "nama": "Keluarga besar 7 orang",
-    "kecamatan_slug": "cengkareng",
+    "name": "Keluarga besar 7 orang",
+    "district_slug": "cengkareng",
     "request": {
       "kecamatan_id": 17,
       "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
@@ -123,6 +123,6 @@
       },
       "kondisi": { "kendaraan": "tidak_ada", "jarak_sungai": "dekat", "pernah_banjir": true }
     },
-    "harus": ["anak", "bayi"]
+    "must_include": ["anak", "bayi"]
   }
 ]

@@ -43,3 +43,10 @@ next-env.d.ts
 
 # superpowers
 .superpowers/
+
+# supabase cli (link state, local stack)
+supabase/.temp/
+supabase/.branches/
+
+# per-developer MCP config
+.mcp.json

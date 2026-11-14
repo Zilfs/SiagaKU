@@ -121,7 +121,8 @@ Rules:
 - One feature per branch. The branch name is the **feature name, never a person's name**: `feature/chat-bot`, `feature/risk-map`, `fix/null-rainfall` (not `feature/bagus`).
 - Never commit directly to `main` or `dev`.
 - **Never `git push --force` and never rebase or rewrite pushed history.** The competition rules forbid manipulating commit history. Sync with `git pull origin dev` (merge), not rebase.
-- Delete the feature branch after it is merged.
+- Deleting a branch after merge is allowed, but **AI agents must ask a human (the PR author or Rhein) and get confirmation first**, every time. This covers `gh pr merge --delete-branch`, `git push --delete` and `git branch -D` on shared branches.
+- Before changing code, AI agents check that the current branch matches the work. If the work does not belong on the current branch (e.g. a different feature, or the branch is `dev`/`main` or already merged) and a new branch seems needed, **ask a human to confirm the branch name and its base before creating it**. This keeps features off the wrong branch.
 
 ## 6. Engineering constraints (from the plan)
 
@@ -130,7 +131,7 @@ Rules:
 - AI model ids **always come from env**. The provider order is gemini → groq → alt. Switch providers on 429/5xx/timeout/invalid output; never switch on a safety block. Every AI feature has a non-AI fallback.
 - Safe points and emergency contacts come **only from the DB**. The only phone number AI output may contain is `112`.
 - No login. No name, address or phone fields in any form.
-- API error format: `{ "error": { "code": "...", "message": "..." } }` with code `INVALID_INPUT|NOT_FOUND|RATE_LIMITED|UPSTREAM_FAILED|INTERNAL`.
+- API error format: `{ "error": { "code": "...", "message": "..." } }` with code `INVALID_INPUT|UNAUTHORIZED|NOT_FOUND|RATE_LIMITED|UPSTREAM_FAILED|INTERNAL`.
 - Never commit secrets. Only `.env.example` is tracked.
 - Every new library, asset or AI coding assistant gets an entry in `CREDITS.md` in the same PR.
 - Write tests first for logic (Vitest, in `tests/`, mirroring `src/`).

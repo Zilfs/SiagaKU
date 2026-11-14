@@ -174,8 +174,8 @@ Batas kategori: `<5`→0, `5–<20`→20, `20–<50`→45, `50–<100`→70, `10
 ### Task 4: Data kurasi & seeding (paralel dengan Task 3–5, jalur W4 + W2)
 
 **Files:**
-- Create: `data/kecamatan.csv`, `data/riwayat_banjir.csv`, `data/kelurahan_rawan.csv`, `data/posko.csv`, `data/kontak.csv` (format di [[06 Data & Database#5. Seeding]]), `src/lib/geo.ts`, `scripts/lib/csv.ts`, `scripts/seed-kecamatan.ts`, `scripts/seed-banjir.ts`, `scripts/seed-posko.ts`
-- Test: `tests/lib/geo.test.ts`, `tests/scripts/csv.test.ts`
+- Create: `data/districts.csv`, `data/flood_events.csv`, `data/flood_prone_subdistricts.csv`, `data/shelters.csv`, `data/emergency_contacts.csv` (format di [[06 Data & Database#5. Seeding]]), `src/lib/geo.ts`, `scripts/lib/csv.ts`, `scripts/lib/seed-data.ts`, `scripts/seed.ts` (satu script, menggantikan tiga script seed)
+- Test: `tests/lib/geo.test.ts`, `tests/scripts/csv.test.ts`, `tests/scripts/seed-data.test.ts`
 
 **Interfaces:**
 - Consumes: `hitungKerawananDasar` (Task 3), `supabaseServer` (Task 2)
@@ -184,8 +184,8 @@ Batas kategori: `<5`→0, `5–<20`→20, `20–<50`→45, `50–<100`→70, `10
 - [ ] **Step 1: Failing tests** `geo.test.ts`: jarak Monas (-6.1754, 106.8272) ke Bundaran HI (-6.1950, 106.8230) ≈ 2.2 km (±0.2); `kecamatanTerdekat` memilih centroid terdekat; titik Bandung (-6.9175, 107.6191) → `null`.
 - [ ] **Step 2: Failing test** `csv.test.ts`: `parseCsv` menangani koma di dalam tanda kutip dan baris kosong; validasi zod per file menolak `sumber_url` kosong di `riwayat_banjir`.
 - [ ] **Step 3:** Run → FAIL. **Step 4:** Implement (haversine; parser CSV kecil atau `csv-parse`). **Step 5:** Run → PASS.
-- [ ] **Step 6:** W4 mengisi `kecamatan.csv` (44 baris: `slug,nama,kota,kode_wilayah,adm4_bmkg,lat,lng,pesisir_rob`). `adm4_bmkg` = kode kelurahan pusat kecamatan; uji 3 kode acak ke API BMKG.
-- [ ] **Step 7:** Seed: `npx tsx scripts/seed-kecamatan.ts && npx tsx scripts/seed-banjir.ts && npx tsx scripts/seed-posko.ts`. Script banjir menghitung `kerawanan_dasar` (kejadian 5 tahun dari `tanggal >= now()-5y`) lalu update `kecamatan`. Verifikasi: `select count(*) from kecamatan` = 44; Jatinegara/Cengkareng/Kalideres punya kerawanan ≥ 40.
+- [ ] **Step 6:** W4 mengisi `districts.csv` (44 baris: `slug,nama,kota,kode_wilayah,adm4_bmkg,lat,lng,pesisir_rob`). `adm4_bmkg` = kode kelurahan pusat kecamatan; uji 3 kode acak ke API BMKG.
+- [ ] **Step 7:** Seed: `npm run db:seed`. Script menghitung `kerawanan_dasar` (kejadian 5 tahun dari `tanggal >= now()-5y`) lalu update `kecamatan`. Verifikasi: `select count(*) from kecamatan` = 44; Jatinegara/Cengkareng/Kalideres punya kerawanan ≥ 40.
 - [ ] **Step 8: Commit** `feat(data): curated csv, geo utils, seed scripts` (CSV boleh di-commit bertahap)
 
 ---
@@ -292,7 +292,7 @@ it('log dipanggil untuk tiap percobaan dengan status ok/error', ...)
 ### Task 9: RAG ingest & retrieval
 
 **Files:**
-- Create: `src/lib/rag/chunk.ts`, `src/lib/rag/embed.ts`, `src/lib/rag/retrieve.ts`, `scripts/ingest-dokumen.ts`, `data/pedoman/index.json`
+- Create: `src/lib/rag/chunk.ts`, `src/lib/rag/embed.ts`, `src/lib/rag/retrieve.ts`, `scripts/ingest-dokumen.ts`, `data/guidelines/index.json`
 - Test: `tests/lib/rag-chunk.test.ts`, `tests/lib/rag-retrieve.test.ts`
 
 **Interfaces:**
@@ -343,7 +343,7 @@ it('log dipanggil untuk tiap percobaan dengan status ok/error', ...)
 **Interfaces:**
 - Consumes: `withFallback`, `getRisikoDetail`, `checkRateLimit`, `supabaseServer`
 - Produces:
-  - `RencanaInput` (zod, persis request `POST /api/rencana` di [[07 API Spec]], enum & batas 0–10, total 1–15, `disabilitas` min 1 jenis jika array tidak kosong)
+  - `RencanaInput` (zod, persis request `POST /api/rencana` di [[07 API Spec]], enum & batas 0–10 kecuali `hunian.lantai` 0–60, total 1–15, `disabilitas` min 1 jenis jika array tidak kosong)
   - `RencanaSiaga` (zod, persis [[05 Desain AI#2.2 Skema output (zod)]])
   - `pilihTitikAmanValid(ids: number[], tersedia: { id: number }[]): number[]` (buang ID asing & duplikat; kosong → 2 id pertama `tersedia`)
   - `buatRencanaDasar(input: RencanaInput, titik: { id: number }[]): RencanaSiaga` (lolos schema)
@@ -384,14 +384,14 @@ it('RencanaInput menolak field tak dikenal seperti "nama"', ...)   // .strict()
 ### Task 13: Eval AI (gate sebelum F8)
 
 **Files:**
-- Create: `tests/eval/pertanyaan.json` (40 item: `{ id, kelompok: 'dok'|'umum'|'luar'|'darurat', pertanyaan, harus: string[] }`), `tests/eval/profil.json` (6 profil dari [[05 Desain AI#7. Evaluasi (wajib sebelum feature freeze)]]), `scripts/eval.ts`, output `docs/eval-hasil.md`
+- Create: `tests/eval/questions.json` (40 item: `{ id, group: 'doc'|'general'|'out_of_scope'|'emergency', question, must_include: string[] }`), `tests/eval/profiles.json` (6 profil dari [[05 Desain AI#7. Evaluasi (wajib sebelum feature freeze)]]), `scripts/eval.ts`, output `docs/eval-hasil.md`
 
 **Interfaces:**
 - Consumes: `POST /api/chat`, `POST /api/rencana` (server lokal atau preview URL dari `EVAL_BASE_URL`)
 
 - [ ] **Step 1:** Tulis 40 pertanyaan & 6 profil.
-- [ ] **Step 2:** Implement `scripts/eval.ts` yang mengecek otomatis: `dok` → ≥ 1 sumber & teks memuat `[`; `umum` → memuat "Jawaban umum"; `luar` → tanpa sumber & memuat kata penolakan; `darurat` → data part `darurat`; profil → item `untuk` mencakup kelompok rentan, `titik_aman_ids` valid, regex nomor telepon selain `112` tidak muncul.
-- [ ] **Step 3:** Run `EVAL_BASE_URL=http://localhost:3000 npx tsx scripts/eval.ts` → tabel lulus/gagal ditulis ke `docs/eval-hasil.md`. Target: dok ≥ 90%, lainnya 100%.
+- [ ] **Step 2:** Implement `scripts/eval.ts` yang mengecek otomatis: `doc` → ≥ 1 sumber & teks memuat `[`; `general` → memuat "Jawaban umum"; `out_of_scope` → tanpa sumber & memuat kata penolakan; `emergency` → data part `darurat`; profil → item `untuk` mencakup kelompok rentan, `titik_aman_ids` valid, regex nomor telepon selain `112` tidak muncul.
+- [ ] **Step 3:** Run `EVAL_BASE_URL=http://localhost:3000 npx tsx scripts/eval.ts` → tabel lulus/gagal ditulis ke `docs/eval-hasil.md`. Target: doc ≥ 90%, lainnya 100%.
 - [ ] **Step 4:** Perbaiki prompt/threshold sampai target tercapai; jalankan ulang.
 - [ ] **Step 5:** Uji fallback: preview deploy dengan `GEMINI_API_KEY` salah → jalankan eval subset 10 → semua fitur teks jalan via Groq.
 - [ ] **Step 6: Commit** `test(eval): chatbot and plan evaluation suite with results`
