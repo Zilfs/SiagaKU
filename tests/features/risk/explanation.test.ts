@@ -13,6 +13,8 @@ const detail = {
     slug: "jatinegara",
     name: "Jatinegara",
     city: "Jakarta Timur",
+    lat: -6.23,
+    lng: 106.87,
     tidalFloodProne: false,
   },
   score: 68,
