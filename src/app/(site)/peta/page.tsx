@@ -33,7 +33,8 @@ export default async function MapPage() {
   let districts: DistrictSummary[] = [];
   try {
     districts = await listDistrictsWithScore();
-  } catch {
+  } catch (error) {
+    console.error("GET districts for the map failed", error);
     districts = [];
   }
   return (

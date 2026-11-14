@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { distanceKm, findNearestDistrict, formatDistance } from "@/lib/geo";
 
 const monas = { lat: -6.1754, lng: 106.8272 };

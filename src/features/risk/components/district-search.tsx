@@ -4,10 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, Sparkles, TriangleExclamationPoint } from "lucide-react";
 import { RiskBadge } from "@/components/risk-badge";
-import type { DistrictSummary, RiskDetail } from "@/features/risk/types";
+import type {
+  AiMeta,
+  DistrictSummary,
+  RiskDetail,
+} from "@/features/risk/types";
 import type { Explanation } from "@/features/risk/schemas";
 import { riskAction } from "@/features/risk/risk-copy";
 import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
+
+type ExplanationResponse = Explanation & { meta: AiMeta };
 
 const LEVEL_COLOR: Record<RiskLevel, string> = {
   low: "var(--risk-low)",
@@ -28,7 +34,7 @@ const SHORT_SCREEN_QUERY = "(min-width: 640px) and (max-height: 820px)";
 type DetailState = {
   slug: string | null;
   detail: RiskDetail | null;
-  explanation: Explanation | null;
+  explanation: ExplanationResponse | null;
   loading: boolean;
 };
 
@@ -70,7 +76,7 @@ export function DistrictSearch({ districts }: { districts: DistrictSummary[] }) 
     let cancelled = false;
     const load = async () => {
       let nextDetail: RiskDetail | null = null;
-      let nextExplanation: Explanation | null = null;
+      let nextExplanation: ExplanationResponse | null = null;
       try {
         const [detailRes, explanationRes] = await Promise.all([
           fetch(`/api/risk/${selected.slug}`).catch(() => null),
@@ -215,8 +221,14 @@ export function DistrictSearch({ districts }: { districts: DistrictSummary[] }) 
 
         <div className="sk-ai">
           <span className="sk-ai__badge">
-            <Sparkles size={13} aria-hidden="true" />
-            {explanation ? "Penjelasan AI" : "Penjelasan AI · template"}
+            {explanation && explanation.meta.provider !== "template" ? (
+              <>
+                <Sparkles size={13} aria-hidden="true" />
+                Penjelasan AI
+              </>
+            ) : (
+              "Penjelasan"
+            )}
           </span>
           <p>
             {explanation?.explanation ??

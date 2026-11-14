@@ -7,7 +7,7 @@ import type { DistrictSummary } from "@/features/risk/types";
 import { findNearestDistrict } from "@/lib/geo";
 
 /**
- * "Use my location": finds the nearest sample district and opens its page. The 15 km limit in
+ * "Use my location": finds the nearest district and opens its page. The 15 km limit in
  * `findNearestDistrict` covers the "outside Jakarta" case; a denied permission falls back to the list.
  */
 export function UseLocation({ districts }: { districts: DistrictSummary[] }) {

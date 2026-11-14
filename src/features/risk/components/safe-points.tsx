@@ -11,7 +11,7 @@ export function SafePoints({
   origin,
 }: {
   points: SafePoint[];
-  origin: { lat: number; lng: number } | null;
+  origin: { lat: number; lng: number };
 }) {
   return (
     <section className="sk-card sk-safepoints" aria-labelledby="aman-h">
@@ -27,7 +27,7 @@ export function SafePoints({
         <ul className="sk-safepoints__list">
           {points.map((point) => {
             const distance =
-              origin && point.lat != null && point.lng != null
+              point.lat != null && point.lng != null
                 ? formatDistance(
                     distanceKm(origin, { lat: point.lat, lng: point.lng }),
                   )

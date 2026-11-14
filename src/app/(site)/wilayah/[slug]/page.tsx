@@ -42,7 +42,8 @@ export async function generateMetadata({
       title: `${district.name}, ${district.city} · Risiko banjir · SiagaKU`,
       description: `Risiko banjir ${district.name} hari ini: skor 0–100, komponen skor, prakiraan hujan, riwayat genangan, dan titik aman.`,
     };
-  } catch {
+  } catch (error) {
+    console.error("GET district metadata failed", slug, error);
     return { title: "Risiko banjir · SiagaKU" };
   }
 }
@@ -56,18 +57,11 @@ export default async function DistrictPage({
   let detail;
   try {
     detail = await getRiskDetail(slug);
-  } catch {
+  } catch (error) {
+    console.error("GET risk detail failed", slug, error);
     detail = null;
   }
   if (!detail) notFound();
-
-  let origin: { lat: number; lng: number } | null = null;
-  try {
-    const district = await findDistrict(slug);
-    if (district) origin = { lat: district.lat, lng: district.lng };
-  } catch {
-    origin = null;
-  }
 
   const { district, score, level, components, weather, floodHistory, safePoints } =
     detail;
@@ -126,7 +120,10 @@ export default async function DistrictPage({
           />
           <WeatherStrip slots={weather.slots} stale={weather.stale} />
           <FloodHistory events={floodHistory} />
-          <SafePoints points={safePoints} origin={origin} />
+          <SafePoints
+            points={safePoints}
+            origin={{ lat: district.lat, lng: district.lng }}
+          />
           <ClimateCard />
         </div>
 

@@ -21,7 +21,7 @@ const escape = (value: string) =>
     .replace(/"/g, "&quot;");
 
 /**
- * Leaflet map of the sample districts. Plain Leaflet in one effect (not react-leaflet): the effect
+ * Leaflet map of the districts. Plain Leaflet in one effect (not react-leaflet): the effect
  * removes the map on unmount and on React's dev double-mount, so the container is always clean.
  */
 export default function RiskMapInner({ items }: { items: DistrictSummary[] }) {

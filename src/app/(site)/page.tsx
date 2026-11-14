@@ -84,7 +84,8 @@ export default async function HomePage() {
   let districts: DistrictSummary[] = [];
   try {
     districts = await listDistrictsWithScore();
-  } catch {
+  } catch (error) {
+    console.error("GET districts for the landing failed", error);
     districts = [];
   }
   return (
