@@ -7,6 +7,9 @@
  * the text into chunks, embeds them with Gemini in batches of 20, and upserts
  * the result into `documents` + `document_chunks`. Re-running is safe: the
  * chunks of a document are replaced.
+ *
+ * `npm run rag:backfill` embeds only the chunks that were stored without an
+ * embedding (for example after a free-tier quota error).
  */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -37,7 +40,10 @@ const DATA_DIR = path.join(process.cwd(), "data", "guidelines");
 const INDEX_PATH = path.join(DATA_DIR, "index.json");
 const EMBED_BATCH = 20;
 const INSERT_BATCH = 50;
-const BATCH_DELAY_MS = 1000;
+// Gemini free tier allows 100 embedded texts per minute: 20 texts every 13 s stays under it.
+const BATCH_DELAY_MS = 13_000;
+// a quota error resets with the next minute window
+const RETRY_DELAY_MS = 60_000;
 
 const supabase = createClient(
   env.NEXT_PUBLIC_SUPABASE_URL,
@@ -102,7 +108,7 @@ async function embedAll(texts: string[]): Promise<(number[] | null)[]> {
           `  embedding batch ${start / EMBED_BATCH + 1} failed (attempt ${attempt + 1}):`,
           error instanceof Error ? error.message : error,
         );
-        if (attempt === 0) await sleep(BATCH_DELAY_MS * 2);
+        if (attempt === 0) await sleep(RETRY_DELAY_MS);
       }
     }
 
@@ -215,7 +221,41 @@ async function ingest(entry: IndexEntry) {
   };
 }
 
+/**
+ * Embeds only the chunks stored without an embedding (e.g. after a quota error), so a partial
+ * ingest is finished without re-embedding the whole corpus.
+ */
+async function backfill() {
+  const { data, error } = await supabase
+    .from("document_chunks")
+    .select("id, content")
+    .is("embedding", null)
+    .order("id");
+  if (error) throw new Error(error.message);
+
+  const rows = (data ?? []) as { id: number; content: string }[];
+  console.log(`Backfilling ${rows.length} chunks without an embedding...`);
+  const vectors = await embedAll(rows.map((row) => row.content));
+
+  let filled = 0;
+  for (const [i, row] of rows.entries()) {
+    const vector = vectors[i];
+    if (!vector) continue;
+    const { error: updateError } = await supabase
+      .from("document_chunks")
+      .update({ embedding: vector })
+      .eq("id", row.id);
+    if (updateError) throw new Error(updateError.message);
+    filled += 1;
+  }
+
+  console.log(`  embedded: ${filled}/${rows.length}`);
+  if (filled < rows.length) process.exitCode = 1;
+}
+
 async function main() {
+  if (process.argv.includes("--backfill")) return backfill();
+
   const raw = await readFile(INDEX_PATH, "utf8");
   const index = JSON.parse(raw) as IndexEntry[];
 
