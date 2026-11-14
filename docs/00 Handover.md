@@ -72,7 +72,10 @@ SELESAI:
 - W1: landing + halaman wilayah + peta sudah di-merge ke `dev` (PR #22, 14 Nov).
 - Font diputuskan: Epilogue + JetBrains Mono (SIL OFL), sesuai implementasi PR #22. `docs/08` diselaraskan dari vault.
 
-BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 17 (README utama, proposal, video).
+- AI live (14 Nov): `GEMINI_MODEL=gemini-3.5-flash-lite` di `.env.local` dan Vercel Production (key sensitive). Dipilih karena menjawab ~2 dtk; `gemini-3.5-flash` ~14 dtk (mepet `AI_TIMEOUT_MS` 20 dtk), `gemini-3.8-flash`/`gemini-flash-latest` timeout, `gemini-2.5-flash` tidak tersedia untuk key baru. Hindari alias `-latest`. Penjelasan risiko di production sudah `provider: "gemini"`.
+- Korpus RAG (14 Nov): `npm run rag:ingest` memasukkan 5 dokumen, 447 chunk, semua ber-embedding. Kuota gratis embedding Gemini 100 teks/menit, jadi ingest dijeda 13 dtk per 20 teks; kalau ada chunk tanpa embedding, jalankan `npm run rag:backfill`.
+
+BELUM: Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
@@ -89,9 +92,9 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - W1 landing/wilayah/peta masih memakai data contoh (`src/lib/demo/`); API Task 7 sudah ada di `dev`, wiring berikutnya.
 
 ## Langkah berikutnya (urut)
-1. Rhein: isi key AI (Gemini dan/atau Groq) di `.env.local` dan env Production Vercel, lalu cek `meta.provider` di `/api/risk/jatinegara/explanation` (Vercel dan seed Supabase sudah jalan).
+1. Rhein: tambah Groq (`GROQ_API_KEY` + `GROQ_MODEL`) sebagai cadangan kalau kuota Gemini gratis habis saat penjurian.
 2. Ukon: wiring landing/wilayah/peta ke `/api/districts` dan `/api/risk/[id]` (tipe di `src/features/risk/types.ts`), hapus `src/lib/demo/`, tambah tes `formatDistance`.
-3. Bagus: jalankan `npm run rag:ingest` setelah key ada (PR #7 sudah di-merge), lalu lanjut chat API.
+3. Bagus: korpus sudah di-ingest (447 chunk), lanjut chat API (T10 backend).
 4. Syaki: Task 17 (README utama, proposal, video).
 5. Ukon: T10-UI (`/tanya`), T11-UI (`/rencana`), T14-UI/PWA (`/peringatan`).
 6. Ikuti 09 Timeline & Pembagian Tugas.
