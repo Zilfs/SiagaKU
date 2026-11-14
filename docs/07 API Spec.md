@@ -46,7 +46,7 @@ Skor dihitung server-side (dengan cache). Revalidate 15 menit.
 Detail risiko satu kecamatan.
 ```json
 {
-  "kecamatan": { "id": 12, "slug": "jatinegara", "nama": "Jatinegara", "kota": "Jakarta Timur", "pesisir_rob": false },
+  "kecamatan": { "id": 12, "slug": "jatinegara", "nama": "Jatinegara", "kota": "Jakarta Timur", "lat": -6.23, "lng": 106.87, "pesisir_rob": false },
   "skor": 68, "level": "Tinggi",
   "komponen": { "kerawanan_dasar": 80, "faktor_hujan": 70, "hujan_max_mm": 62.4, "kategori_hujan": "Lebat" },
   "cuaca_bmkg": { "sumber": "BMKG", "diperbarui": "...", "stale": false,

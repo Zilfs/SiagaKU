@@ -127,6 +127,8 @@ async function embedAll(texts: string[]): Promise<(number[] | null)[]> {
 }
 
 async function upsertDocument(entry: IndexEntry): Promise<number> {
+  // shortcut: documents.url has no unique constraint, so two rows with the same
+  // url make maybeSingle() return an error instead of picking one.
   const { data: existing, error: lookupError } = await supabase
     .from("documents")
     .select("id")
