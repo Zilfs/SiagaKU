@@ -129,7 +129,13 @@ export async function retrieve(
   }
 
   if (rows.length === 0) return { sources: [], mode: "none" };
-  return { sources: await toSources(rows), mode: "fts" };
+
+  try {
+    return { sources: await toSources(rows), mode: "fts" };
+  } catch (error) {
+    console.warn("fts document lookup failed:", error);
+    return { sources: [], mode: "none" };
+  }
 }
 
 /**
