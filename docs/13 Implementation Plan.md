@@ -292,7 +292,7 @@ it('log dipanggil untuk tiap percobaan dengan status ok/error', ...)
 ### Task 9: RAG ingest & retrieval
 
 **Files:**
-- Create: `src/lib/rag/chunk.ts`, `src/lib/rag/embed.ts`, `src/lib/rag/retrieve.ts`, `scripts/ingest-dokumen.ts`, `data/pedoman/index.json`
+- Create: `src/lib/rag/chunk.ts`, `src/lib/rag/embed.ts`, `src/lib/rag/retrieve.ts`, `scripts/ingest-dokumen.ts`, `data/guidelines/index.json`
 - Test: `tests/lib/rag-chunk.test.ts`, `tests/lib/rag-retrieve.test.ts`
 
 **Interfaces:**

@@ -56,14 +56,16 @@ SELESAI:
   5. `kontak.csv` (9 kontak darurat terverifikasi; 0812-1237-575 = Pusdalops BNPB, bukan BPBD)
 - W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) di `data/guidelines/`.
 - W4 Task 13 (Evaluasi RAG): 40 soal + 6 profil uji di `tests/eval/` (lihat `tests/eval/README.md`).
+- W3 Task 5: router AI gemini → groq → alt (`src/lib/ai/`), merge PR #4.
+- W3 Task 9 (RAG): chunking, embedding 768 dim, retrieval vector dengan fallback FTS, dan skrip ingest di branch feature/rag. Korpus membaca `data/guidelines/` + `data/guidelines/index.json` (5 entri); folder `data/pedoman/` dihapus.
 - W2 Task 1–3: boilerplate + CI, migrasi `0001_init.sql` (12 tabel, RLS, RPC RAG, bucket `reports`),
   cache `getOrSet`, skor risiko, klien BMKG & Open-Meteo. Struktur kode feature-based (`docs/14 Struktur Kode.md`).
-- W3 Task 5: router AI gemini → groq → alt (`src/lib/ai/`), merge PR #4.
 - W2 Task 6: `src/lib/rate-limit.ts` (fixed window, bucket chat/plan/report/explanation, fail open saat DB error),
   `src/lib/http.ts` (`jsonError`, `HttpError`, `parseJson`), migrasi `0002_rate_limit.sql` (`hit_rate_limit`).
 - Proteksi branch `dev` & `main` aktif (wajib PR, 1 approval orang lain, CI hijau, tanpa force-push).
+- URL resmi dokumen pedoman `04` sudah diverifikasi Syaki di #18 (Perpustakaan BNPB); `data/guidelines/index.json` memakai URL tersebut.
 
-BELUM: Task 17 (README utama, proposal, video).
+BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
@@ -74,7 +76,7 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
 - `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
 - Supabase belum dibuat: `0001_init.sql` dan `0002_rate_limit.sql` belum dijalankan; `.env.local` & key AI belum ada.
-- PR #7 (RAG, Bagus) menunggu perbaikan: konflik handover + pakai folder `data/guidelines/` (bukan `data/pedoman/`).
+- PR #7 (RAG, Bagus): perbaikan review selesai (folder `data/guidelines/`, konflik handover, URL 04), menunggu approval akhir.
 - Issue #15 (Syaki): nama file data → bahasa Inggris, cek sumber PDF 04, cantumkan PDF di CREDITS.
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
