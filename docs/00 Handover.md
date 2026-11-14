@@ -55,6 +55,12 @@ SELESAI:
   5. `kontak.csv` (9 kontak darurat terverifikasi; 0812-1237-575 = Pusdalops BNPB, bukan BPBD)
 - W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) di `data/guidelines/`.
 - W4 Task 13 (Evaluasi RAG): 40 soal + 6 profil uji di `tests/eval/` (lihat `tests/eval/README.md`).
+- W2 Task 1–3: boilerplate + CI, migrasi `0001_init.sql` (12 tabel, RLS, RPC RAG, bucket `reports`),
+  cache `getOrSet`, skor risiko, klien BMKG & Open-Meteo. Struktur kode feature-based (`docs/14 Struktur Kode.md`).
+- W3 Task 5: router AI gemini → groq → alt (`src/lib/ai/`), merge PR #4.
+- W2 Task 6: `src/lib/rate-limit.ts` (fixed window, bucket chat/plan/report/explanation, fail open saat DB error),
+  `src/lib/http.ts` (`jsonError`, `HttpError`, `parseJson`), migrasi `0002_rate_limit.sql` (`hit_rate_limit`).
+- Proteksi branch `dev` & `main` aktif (wajib PR, 1 approval orang lain, CI hijau, tanpa force-push).
 
 BELUM: Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
@@ -67,14 +73,17 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
 - `tests/eval/profil.json` P03 memakai `lantai: 12` (sesuai 05 Desain AI §7), sedangkan 07 API Spec membatasi `lantai` 0–10. Perlu keputusan Rhein: naikkan batas `lantai` (usul 0–60) atau turunkan profil uji.
 - `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
+- Supabase belum dibuat: `0001_init.sql` dan `0002_rate_limit.sql` belum dijalankan; `.env.local` & key AI belum ada.
+- PR #7 (RAG, Bagus) menunggu perbaikan: konflik handover + pakai folder `data/guidelines/` (bukan `data/pedoman/`).
+- Issue #15 (Syaki): nama file data → bahasa Inggris, cek sumber PDF 04, cantumkan PDF di CREDITS.
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
 
 ## Langkah berikutnya (urut)
-1. Review 13 Implementation Plan, pilih metode eksekusi (subagent-driven / native).
-2. Eksekusi mulai Task 1.
-3. Hari 0: akun GitHub/Vercel/Supabase/AI Studio/Groq, create-next-app, deploy pertama, CI.
-4. Hari 1: migrasi SQL, data/kecamatan.csv (44 baris), router AI, ingest RAG, layout.
+1. Rhein: buat project Supabase, jalankan migrasi 0001–0002, isi `.env.local`, setup Vercel.
+2. Rhein: putuskan batas `lantai` (lihat risiko di atas), lalu Task 7 (API risiko + penjelasan AI).
+3. Bagus: perbaiki PR #7, lalu jalankan `npm run rag:ingest` setelah key ada.
+4. Syaki: issue #15. Ukon: Task 8 (UI dasar) setelah Task 7 siap.
 5. Ikuti 09 Timeline & Pembagian Tugas.
 ```
