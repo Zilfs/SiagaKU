@@ -298,10 +298,8 @@ Script di `scripts/` (dijalankan lokal dengan `tsx`, memakai service role key):
 
 | Script | Input | Output |
 |---|---|---|
-| `seed-kecamatan.ts` | `data/districts.csv` (44 baris: nama, kota, kode, adm4, lat, lng, pesisir_rob) | tabel `kecamatan` |
-| `seed-banjir.ts` | `data/flood_events.csv`, `data/flood_prone_subdistricts.csv` | tabel terkait + hitung `kerawanan_dasar` |
+| `seed.ts` (`npm run db:seed`) | kelima CSV di `data/` (divalidasi zod dulu; tidak ada yang ditulis jika satu baris salah) | `districts` (upsert, + hitung `base_vulnerability`), lalu `flood_events`, `flood_prone_subdistricts`, `shelters`, `emergency_contacts` (diganti ulang). Aman dijalankan berkali-kali. Kejadian dihitung per tanggal unik; komponen kelurahan rawan memakai +30 flat sampai tabel kelurahan (T14) ada. |
 | `seed-kelurahan.ts` | Dataset kode wilayah (prefix `31.`) + panggil BMKG per adm4 (≤ 50/menit) untuk lat/lng | `kelurahan` (±267 baris) + flag `rawan` dari `kelurahan_rawan` |
-| `seed-posko.ts` | `data/shelters.csv`, `data/emergency_contacts.csv` | `posko_evakuasi`, `kontak_darurat` |
 | `seed-iklim.ts` | Open-Meteo archive per kota, 2016–2025 | `iklim_tahunan` |
 | `ingest-dokumen.ts` | `data/guidelines/*.pdf` atau `.md` + `data/guidelines/index.json` (metadata) | `dokumen`, `dokumen_chunk` + embedding |
 | `seed-demo.ts` | `data/demo/laporan/*.jpg` + JSON | 6–10 laporan `is_demo=true` |
