@@ -121,7 +121,7 @@ Rules:
 - One feature per branch. The branch name is the **feature name, never a person's name**: `feature/chat-bot`, `feature/risk-map`, `fix/null-rainfall` (not `feature/bagus`).
 - Never commit directly to `main` or `dev`.
 - **Never `git push --force` and never rebase or rewrite pushed history.** The competition rules forbid manipulating commit history. Sync with `git pull origin dev` (merge), not rebase.
-- Delete the feature branch after it is merged.
+- Do not delete feature or fix branches after they are merged. They stay as a record of the work.
 
 ## 6. Engineering constraints (from the plan)
 
