@@ -44,11 +44,13 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 - Pembagian peran (13 Nov): W1 Frontend = Ukon, W2 Backend/Data = Rhein, W3 AI = Bagus,
   W4 Data/Konten/Dokumentasi = Syaki.
 
-## Status (13 Nov malam)
-SELESAI: brainstorming, design doc, PRD, dokumentasi teknis lengkap (13 file .md).
-SELESAI JUGA: design disetujui; rencana implementasi 17 task (13 Implementation Plan), termasuk Task 14 Peringatan Dini.
-BELUM: pilih metode eksekusi;
-setup repo/akun; kurasi data; semua kode.
+## Status (14 Nov 2026)
+SELESAI:
+- Brainstorming, design doc, PRD, dan dokumentasi teknis lengkap (13 file .md).
+- W4 Task 4 (Kurasi Data): 5 file CSV (`kecamatan.csv`, `riwayat_banjir.csv`, `kelurahan_rawan.csv`, `posko.csv`, `kontak.csv`) lengkap & terverifikasi.
+- W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) diunduh dan ditempatkan di `data/guidelines/`.
+
+BELUM: Task 13 (soal evaluasi RAG), Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
