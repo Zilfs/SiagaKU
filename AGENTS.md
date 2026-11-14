@@ -121,7 +121,7 @@ Rules:
 - One feature per branch. The branch name is the **feature name, never a person's name**: `feature/chat-bot`, `feature/risk-map`, `fix/null-rainfall` (not `feature/bagus`).
 - Never commit directly to `main` or `dev`.
 - **Never `git push --force` and never rebase or rewrite pushed history.** The competition rules forbid manipulating commit history. Sync with `git pull origin dev` (merge), not rebase.
-- Do not delete feature or fix branches after they are merged. They stay as a record of the work.
+- Branch deletion after merge is a human decision. The PR author or Rhein decides whether to delete it. **AI agents never delete branches** (no `--delete-branch`, no `git push --delete`, no `git branch -D` on shared branches).
 
 ## 6. Engineering constraints (from the plan)
 
