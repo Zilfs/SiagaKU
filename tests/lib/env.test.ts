@@ -24,10 +24,14 @@ describe("parseEnv", () => {
     expect(e.GEMINI_EMBED_MODEL).toBe("gemini-embedding-001");
   });
 
-  it("mewajibkan minimal satu provider LLM", () => {
-    expect(() =>
-      parseEnv({ ...minimalValidEnv, GEMINI_API_KEY: undefined }),
-    ).toThrow(/provider/i);
+  it("tetap valid tanpa provider LLM (fitur AI memakai template)", () => {
+    const e = parseEnv({
+      ...minimalValidEnv,
+      GEMINI_API_KEY: undefined,
+      GEMINI_MODEL: undefined,
+    });
+    expect(e.GEMINI_API_KEY).toBeUndefined();
+    expect(e.GROQ_API_KEY).toBeUndefined();
   });
 
   it("menerima provider Groq saja & menganggap string kosong sebagai undefined", () => {
