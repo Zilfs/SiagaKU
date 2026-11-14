@@ -84,7 +84,7 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi: belum diputuskan.
 
 ## Langkah berikutnya (urut)
-1. Rhein: buat project Supabase, jalankan migrasi 0001–0002, isi `.env.local`, setup Vercel.
+1. Rhein: buat project Supabase, jalankan migrasi lewat CLI (`npx supabase login`, `npx supabase link --project-ref <ref>`, `npx supabase db push`), isi `.env.local`, `npm run db:seed`, setup Vercel.
 2. Rhein: `npm run db:seed` setelah Supabase siap, lalu tes endpoint T7 dan `/api/health`; Ukon: Task 8 pakai tipe di `src/features/risk/types.ts`.
 3. Bagus: jalankan `npm run rag:ingest` setelah key ada (PR #7 sudah di-merge), lalu lanjut chat API.
 4. Syaki: Task 17 (README utama, proposal, video).
