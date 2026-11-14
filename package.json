@@ -12,8 +12,12 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.120",
+    "@ai-sdk/groq": "^4.0.83",
+    "@ai-sdk/openai-compatible": "^3.0.92",
     "@base-ui/react": "^1.9.0",
     "@supabase/supabase-js": "^2.119.0",
+    "ai": "^7.0.172",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",
     "lucide-react": "^1.72.0",
