@@ -49,7 +49,7 @@ export function buildSeed(dataDir: string, now = new Date()) {
     ...s,
   }));
   if (unknown.size > 0) {
-    throw new Error(`Slug kecamatan tidak dikenal: ${[...unknown].join(", ")}`);
+    throw new Error(`Unknown district slug: ${[...unknown].join(", ")}`);
   }
 
   const since = new Date(now);

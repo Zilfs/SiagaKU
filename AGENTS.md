@@ -47,9 +47,10 @@ Update `docs/00 Handover.md` at the end of any work session that changes project
 - file and folder names (except page routes, see below)
 - API route paths, DB tables/columns, JSON keys, zod schema fields, env vars
 - code comments, test names, branch names, commit messages, PR titles and descriptions
+- log messages (`console.*`, `ai_logs`), thrown and internal error messages (e.g. env validation), and script or CLI output
 
 **Indonesian** only for user-facing content:
-- UI copy, labels, error messages shown to users, AI prompt instructions and AI output
+- UI copy, labels, error messages shown to users (the `message` in API error responses), AI prompt instructions and AI output
 - page route segments under `src/app/(site)/` (they are URLs judges and users see): `/wilayah/[slug]`, `/peta`, `/rencana`, `/tanya`, `/peringatan`, `/lapor`, `/laporan`, `/tentang`
 - the docs in `docs/`
 
@@ -175,3 +176,14 @@ Rules:
 5. Create only the folders a feature needs.
 6. Files are kebab-case (`risk-badge.tsx`); React components are exported in PascalCase (`RiskBadge`). Tests mirror `src/` (`tests/lib/…`, `tests/features/<f>/…`).
 7. **The plan's file map is superseded.** Translate each plan path with the table in `docs/14 Struktur Kode.md` §6.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
+

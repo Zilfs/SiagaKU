@@ -1,15 +1,92 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "../styles/taste/system.css";
+@import "../styles/taste/ui/cards.css";
+@import "../styles/taste/layout/layout.css";
 
 @custom-variant dark (&:is(.dark *));
+
+/* ------------------------------------------------------------------ SiagaKU palette
+   Brand colours from docs/08 UI-UX.md. The interface stays neutral; sea blue is the one
+   accent (primary action, focus, links) and the four risk colours are status, never decoration. */
+:root {
+  --p-bg: #f7fafc;
+  --p-surface: #e9f0f4;
+  --p-ink: #0b1b26;
+  --p-muted: #445259;
+  --p-accent: #0e5e8c;
+  --p-accent-ink: #ffffff;
+  --p-action: #0e5e8c;
+  --p-action-ink: #ffffff;
+  --p-inv-bg: #0a2233;
+  --p-inv-surface: #123348;
+  --p-inv-ink: #f2f7fa;
+  --p-inv-muted: #a7bac7;
+  --p-inv-accent: #f2f7fa;
+  --p-inv-accent-ink: #0a2233;
+  --p-inv-action: #f2f7fa;
+  --p-inv-action-ink: #0a2233;
+
+  --font-display: var(--font-epilogue), "Epilogue", system-ui, sans-serif;
+  --font-text: var(--font-epilogue), "Epilogue", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+  --display-weight: 500;
+  --display-tracking: -0.035em;
+  --display-tracking-xl: -0.045em;
+  --ly-scale: 1;
+
+  /* risk levels: colour + label + icon, always together */
+  --risk-low: #2e9e5b;
+  --risk-moderate: #e2b007;
+  --risk-moderate-ink: #3b2f00;
+  --risk-high: #e8771e;
+  --risk-very-high: #c62828;
+  --risk-track: #dfe8ee;
+
+  /* shadcn tokens, so later app screens inherit the same system */
+  --background: #f7fafc;
+  --foreground: #0b1b26;
+  --card: #ffffff;
+  --card-foreground: #0b1b26;
+  --popover: #ffffff;
+  --popover-foreground: #0b1b26;
+  --primary: #0e5e8c;
+  --primary-foreground: #ffffff;
+  --secondary: #e9f0f4;
+  --secondary-foreground: #0b1b26;
+  /* --muted is the kit's muted text colour; the pale fill is --surface / --color-muted below */
+  --muted: #445259;
+  --muted-foreground: #445259;
+  --accent: #dcebf3;
+  --accent-foreground: #0b1b26;
+  --destructive: #c62828;
+  --border: #d6e2e9;
+  --input: #d6e2e9;
+  --ring: #0e5e8c;
+  --chart-1: #2e9e5b;
+  --chart-2: #e2b007;
+  --chart-3: #e8771e;
+  --chart-4: #c62828;
+  --chart-5: #0e5e8c;
+  --radius: 0.75rem;
+}
+
+/* the sky ground is the page's one lit ground (footer--statement and UI panels) */
+html[data-ground="sky"] {
+  --ground-bg: #d7e4ee;
+  --ground-surface: #e4edf4;
+  --ground-ink: #0b1b26;
+  --ground-muted: #4a5c68;
+  --ground-accent: #0e5e8c;
+}
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-epilogue);
+  --font-mono: var(--font-jetbrains);
+  --font-heading: var(--font-epilogue);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -30,7 +107,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
+  --color-muted: #e9f0f4;
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
@@ -48,75 +125,6 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -126,5 +134,2258 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* ------------------------------------------------------------------ data voice
+   Every number that drives a decision is set in the mono face with tabular figures. */
+.sk-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.sk-label {
+  font-size: var(--t-label);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--muted);
+}
+
+.sk-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+
+/* risk badge: colour is never the only signal (label + dot) */
+.sk-risk {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: var(--t-label);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--p-ink);
+  background: var(--risk-track);
+}
+.sk-risk--low {
+  background: #dff2e6;
+  color: #1c6b3e;
+}
+.sk-risk--moderate {
+  background: #fbf0c9;
+  color: var(--risk-moderate-ink);
+}
+.sk-risk--high {
+  background: #fbe4d3;
+  color: #8a3d06;
+}
+.sk-risk--very-high {
+  background: #f8dede;
+  color: #8d1a1a;
+}
+
+/* ------------------------------------------------------------------ the logo mark */
+.sk-mark {
+  width: 26px;
+  height: 30px;
+  flex: 0 0 auto;
+  color: var(--p-action);
+}
+.sk-mark path,
+.sk-mark circle {
+  vector-effect: non-scaling-stroke;
+}
+
+/* ------------------------------------------------------------------ hero collage pieces
+   The triptych's three columns; the collage holds the product's own screens, sized in
+   container units so the phone shows the same picture smaller. */
+.sk-hero .ly-collage {
+  container-type: inline-size;
+}
+.sk-hero .ly-piece {
+  display: grid;
+  gap: 1.4cqw;
+  padding: 2.6cqw;
+  font: 400 max(12px, 1.55cqw) / 1.35 var(--font-text);
+  border: 1px solid rgb(11 27 38 / 0.06);
+  /* the kit clips a piece with overflow; clip-path does the same without a fake scroll window
+     (the row check reads any overflow clip with wider content as a cut carousel) */
+  overflow: visible;
+  clip-path: inset(0 round var(--r-md));
+  /* rows keep their own height: the card's few lines sit under each other, not spread over it */
+  align-content: start;
+}
+.sk-hero .ly-piece h4,
+.sk-hero .ly-piece p {
+  margin: 0;
+}
+.sk-hero .ly-piece strong {
+  font-weight: 500;
+}
+
+/* the risk card, the hero's main piece */
+.sk-card-risk {
+  background: var(--p-bg);
+  color: var(--p-ink);
+}
+.sk-card-risk .sk-piece-head {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+  min-width: 0;
+}
+.sk-card-risk .sk-piece-head .sk-mono {
+  font-size: max(11px, 1.3cqw);
+  color: var(--p-muted);
+}
+.sk-card-risk .sk-piece-title {
+  font-size: max(13px, 2.1cqw);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.sk-card-risk .sk-piece-score {
+  display: flex;
+  align-items: flex-end;
+  gap: 2cqw;
+  margin: 1cqw 0 0.4cqw;
+}
+.sk-card-risk .sk-piece-score b {
+  font: 500 9cqw/0.9 var(--font-mono);
+  letter-spacing: -0.04em;
+}
+.sk-card-risk .sk-piece-score span {
+  padding-bottom: 0.9cqw;
+}
+.sk-card-risk .sk-piece-copy {
+  color: var(--p-muted);
+  line-height: 1.45;
+}
+.sk-card-risk .sk-piece-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  margin-top: 0.6cqw;
+  padding-top: 1.8cqw;
+  border-top: 1px solid var(--line);
+  font-weight: 500;
+  color: var(--p-action);
+}
+
+/* the day's count, top right */
+.sk-card-counts {
+  background: var(--p-ink);
+  color: var(--p-inv-ink);
+  border-color: transparent;
+}
+.sk-card-counts .sk-piece-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1cqw;
+}
+.sk-card-counts .sk-piece-head span:last-child {
+  color: var(--p-inv-muted);
+  font-size: max(10px, 1.2cqw);
+}
+.sk-card-counts ul {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2cqw 2cqw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-card-counts li {
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+  font-size: max(11px, 1.35cqw);
+  color: var(--p-inv-muted);
+}
+.sk-card-counts li b {
+  margin-left: auto;
+  font: 500 max(13px, 1.9cqw)/1 var(--font-mono);
+  color: var(--p-inv-ink);
+}
+.sk-card-counts .sk-dot {
+  width: 1.4cqw;
+  height: 1.4cqw;
+  min-width: 7px;
+  min-height: 7px;
+}
+
+/* the plan checklist, set two's main piece */
+.sk-card-plan {
+  background: var(--p-bg);
+  color: var(--p-ink);
+}
+.sk-card-plan .sk-piece-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2cqw;
+}
+.sk-card-plan .sk-piece-title {
+  font-size: max(13px, 2.1cqw);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.sk-card-plan .sk-track {
+  height: 0.9cqw;
+  min-height: 5px;
+  border-radius: 999px;
+  background: var(--risk-track);
+  overflow: hidden;
+}
+.sk-card-plan .sk-track > i {
+  display: block;
+  height: 100%;
+  width: 36%;
+  border-radius: inherit;
+  background: var(--p-action);
+}
+.sk-card-plan ul {
+  display: grid;
+  gap: 1.2cqw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-card-plan li {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+  padding-top: 1.2cqw;
+  border-top: 1px solid var(--line);
+  line-height: 1.3;
+}
+.sk-card-plan li .sk-check {
+  width: 2.2cqw;
+  height: 2.2cqw;
+  min-width: 13px;
+  min-height: 13px;
+  border-radius: 3px;
+  border: 1px solid var(--line-strong);
+  flex: 0 0 auto;
+}
+.sk-card-plan li.is-done .sk-check {
+  background: var(--p-action);
+  border-color: var(--p-action);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* chat answer, set two's second piece */
+.sk-card-chat {
+  background: #0f2f42;
+  color: #eaf2f7;
+  border-color: transparent;
+}
+.sk-card-chat .sk-piece-q {
+  display: flex;
+  gap: 1.2cqw;
+  align-items: flex-start;
+  color: #b9cbd7;
+}
+.sk-card-chat .sk-piece-q b {
+  color: #f2f7fa;
+  font-weight: 500;
+}
+.sk-card-chat .sk-piece-a {
+  padding-top: 1.4cqw;
+  border-top: 1px solid rgb(255 255 255 / 0.16);
+  line-height: 1.4;
+}
+.sk-card-chat .sk-piece-src {
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  color: #9fb5c2;
+  font-size: max(10px, 1.15cqw);
+}
+
+/* alert + weather strip, the pieces that end at 96% x 96% so the pause disc sits on them */
+.sk-card-alert {
+  background: #fdf3e8;
+  color: #43260c;
+  border-color: #f0d7b8;
+}
+.sk-card-alert .sk-piece-head {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+  font-weight: 500;
+}
+.sk-card-alert p {
+  color: #6b4a2a;
+  line-height: 1.4;
+}
+.sk-card-weather {
+  background: var(--p-bg);
+  color: var(--p-ink);
+}
+.sk-card-weather .sk-piece-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1cqw;
+}
+.sk-card-weather .sk-piece-head span:first-child {
+  font-weight: 500;
+}
+.sk-card-weather ol {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1cqw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-card-weather li {
+  display: grid;
+  justify-items: start;
+  gap: 0.4cqw;
+  font-size: max(10px, 1.15cqw);
+  color: var(--p-muted);
+}
+.sk-card-weather li b {
+  font: 500 max(12px, 1.6cqw)/1 var(--font-mono);
+  color: var(--p-ink);
+}
+.sk-card-weather .sk-rain {
+  width: 1.8cqw;
+  height: 1.8cqw;
+  min-width: 11px;
+  min-height: 11px;
+  color: var(--p-action);
+}
+
+@media (max-width: 639px) {
+  .sk-hero .ly-piece {
+    padding: 14px;
+    font-size: 12px;
+  }
+  .sk-hero .sk-piece--aside {
+    display: none;
+  }
+  .sk-hero .sk-piece--main {
+    left: 0 !important;
+    top: 0 !important;
+    width: 96% !important;
+    height: 100% !important;
+  }
+  .sk-hero .ly-collage > button.loop-pause.loop-pause {
+    right: 8px;
+    bottom: 8px;
+  }
+}
+
+/* ------------------------------------------------------------------ the app frame
+   #cek: search + district list + the selected district's score. The section shows the
+   product itself, not a picture of it. */
+.sk-app {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+  align-items: stretch;
+  min-height: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--p-bg);
+}
+.sk-app__side {
+  grid-column: 1 / span 5;
+}
+.sk-app__main {
+  grid-column: 6 / span 7;
+  border-left: 1px solid var(--line);
+}
+.sk-app__side,
+.sk-app__main {
+  min-width: 0;
+  min-height: 0;
+}
+.sk-app__side {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sk-app__search {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
+.sk-app__search label {
+  font-size: var(--t-label);
+  font-weight: 500;
+  color: var(--muted);
+}
+.sk-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-btn);
+  background: var(--p-bg);
+  color: var(--ink);
+}
+.sk-search:focus-within {
+  border-color: var(--p-action);
+  box-shadow: 0 0 0 3px rgb(14 94 140 / 0.16);
+}
+.sk-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: 400 var(--t-body) / 1.4 var(--font-text);
+}
+.sk-search input::placeholder {
+  color: var(--muted);
+}
+/* the focused field itself answers, not only the box around it (a keyboard user sees the caret's ring) */
+.sk-search input:focus-visible {
+  outline: 2px solid var(--p-action);
+  outline-offset: 1px;
+  border-radius: 4px;
+}.sk-search svg {
+  flex: 0 0 auto;
+  color: var(--muted);
+}
+.sk-list {
+  display: grid;
+  align-content: start;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  overflow: visible;
+  flex: 0 0 auto;
+  min-height: 0;
+}
+.sk-list__foot {
+  margin: 0;
+  padding: 2px 10px 0;
+  font: 400 var(--t-label) / 1.3 var(--font-mono);
+  color: var(--muted);
+}
+.sk-list button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+.sk-list button:hover {
+  background: var(--p-surface);
+}
+.sk-list button[aria-current="true"] {
+  background: #dcebf3;
+}
+.sk-list .sk-list__name {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.sk-list .sk-list__name b {
+  font-weight: 500;
+  font-size: var(--t-body);
+  line-height: 1.3;
+}
+.sk-list .sk-list__name span {
+  font-size: var(--t-small);
+  color: var(--muted);
+}
+.sk-list .sk-list__score {
+  font: 500 var(--t-small)/1 var(--font-mono);
+  color: var(--muted);
+}
+.sk-list__empty {
+  padding: 24px 16px;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-app__main {
+  display: grid;
+  align-content: start;
+  gap: var(--s-5);
+  padding: clamp(16px, 2.2vw, 28px);
+  overflow: auto;
+}
+.sk-app__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+.sk-app__place {
+  display: grid;
+  gap: 2px;
+}
+.sk-app__place b {
+  font: var(--display-weight) clamp(22px, 2vw, 30px) / 1.1 var(--font-display);
+  letter-spacing: var(--display-tracking);
+}
+.sk-app__place span {
+  font-size: var(--t-small);
+  color: var(--muted);
+}
+.sk-app__updated {
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+.sk-score {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  padding: var(--s-2) 0;
+}
+.sk-score__num {
+  font: 500 clamp(32px, 2.8vw, 44px) / 0.95 var(--font-mono);
+  letter-spacing: -0.05em;
+}
+.sk-score__meta {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+.sk-score__meta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-ai {
+  display: grid;
+  gap: 8px;
+}
+.sk-ai p {
+  margin: 0;
+  max-width: 62ch;
+}
+.sk-ai__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--t-label);
+  font-weight: 500;
+  color: #0d6b64;
+}
+.sk-ai__action {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  background: #e3f2f0;
+  color: #104a46;
+  font-size: var(--t-small);
+  line-height: 1.45;
+}
+.sk-ai__action b {
+  font-weight: 500;
+}
+.sk-app__foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+}
+.sk-app__foot .sk-mono {
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+
+/* the score's components */
+.sk-bars {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  align-items: center;
+  font-size: var(--t-small);
+}
+.sk-bar__track {
+  grid-column: 1 / -1;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--risk-track);
+  overflow: hidden;
+}
+.sk-bar__track > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--p-action);
+}
+
+/* 640-1023 keeps the two panes: the section still fits one screen */
+@media (max-width: 1023px) {
+  .sk-app {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .sk-list {
+    max-height: none;
+  }
+}
+/* a phone stacks them: two screens hold the search, the list and the detail, with air, not overlap */
+@media (max-width: 639px) {
+  section#cek {
+    --hm: 2;
+  }
+  .sk-app {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .sk-app__side,
+  .sk-app__main {
+    grid-column: 1 / -1;
+  }
+  .sk-app__side {
+    max-height: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .sk-app__main {
+    border-left: 0;
+  }
+  .sk-app__main {
+    gap: 16px;
+    overflow: auto;
+  }
+  .sk-score {
+    gap: 16px;
+  }
+}
+
+/* ------------------------------------------------------------------ feature cards
+   The three panels inside the 2x2 cards, each one a finished screen of the product. */
+.sk-feature {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  background: var(--p-bg);
+  color: var(--p-ink);
+  align-content: start;
+  height: 100%;
+}
+.sk-feature__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sk-feature__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: var(--t-small);
+}
+.sk-feature__title svg {
+  color: var(--p-action);
+  flex: 0 0 auto;
+}
+.sk-feature__meta {
+  font: 400 var(--t-label) / 1 var(--font-mono);
+  color: var(--muted);
+}
+.sk-feature ul {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-feature li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+  line-height: 1.35;
+}
+.sk-feature li:first-child {
+  border-top: 0;
+}
+.sk-feature li .sk-check {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--line-strong);
+  flex: 0 0 auto;
+}
+.sk-feature li.is-done .sk-check {
+  background: var(--p-action);
+  border-color: var(--p-action);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 78%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.sk-feature li .sk-price {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: var(--t-label);
+  white-space: nowrap;
+}
+.sk-feature__q {
+  display: flex;
+  justify-content: flex-end;
+}
+.sk-feature__bubble {
+  max-width: 92%;
+  padding: 9px 12px;
+  border-radius: 12px 12px 4px 12px;
+  background: var(--p-surface);
+  font-size: var(--t-small);
+  line-height: 1.4;
+}
+.sk-feature__answer {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #0f2f42;
+  color: #eaf2f7;
+  font-size: var(--t-small);
+  line-height: 1.45;
+}
+.sk-feature__answer .sk-feature__src {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgb(255 255 255 / 0.16);
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-feature__upload {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 118px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--p-surface);
+  color: var(--muted);
+  text-align: center;
+  font-size: var(--t-label);
+}
+.sk-feature__upload svg {
+  color: var(--p-action);
+}
+.sk-feature__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  background: #e3f2e8;
+  color: #1c6b3e;
+  font-size: var(--t-small);
+}
+.sk-feature__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+.sk-feature__row:first-child {
+  border-top: 0;
+}
+.sk-feature__row b {
+  font-weight: 500;
+}
+.sk-feature__row span {
+  color: var(--muted);
+  font-size: var(--t-label);
+  text-align: right;
+}
+.sk-feature__alert {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: var(--r-sm);
+  background: #fdf3e8;
+  border: 1px solid #f0d7b8;
+  color: #43260c;
+  font-size: var(--t-small);
+  line-height: 1.4;
+}
+.sk-feature__alert b {
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------------ steps + plan result */
+.sk-steps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.sk-steps li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-steps li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.sk-steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font: 500 var(--t-small) / 1 var(--font-mono);
+  color: var(--p-action);
+}
+.sk-steps b {
+  display: block;
+  font-weight: 500;
+  font-size: var(--t-lead);
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+.sk-steps p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+.sk-plan {
+  display: grid;
+  gap: 14px;
+  padding: clamp(16px, 2vw, 24px);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--p-bg);
+  height: 100%;
+  align-content: start;
+}
+.sk-plan__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sk-plan__head b {
+  font: var(--display-weight) var(--t-card) / 1.2 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.sk-plan__head span {
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+.sk-plan__progress {
+  display: grid;
+  gap: 6px;
+}
+.sk-plan__progress .sk-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--risk-track);
+  overflow: hidden;
+}
+.sk-plan__progress .sk-track > i {
+  display: block;
+  height: 100%;
+  width: 36%;
+  border-radius: inherit;
+  background: var(--p-action);
+}
+.sk-plan__progress p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+.sk-plan ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-plan li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+  line-height: 1.35;
+}
+.sk-plan li:first-child {
+  border-top: 0;
+}
+.sk-plan li .sk-check {
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  border: 1px solid var(--line-strong);
+  flex: 0 0 auto;
+}
+.sk-plan li.is-done .sk-check {
+  background: var(--p-action);
+  border-color: var(--p-action);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 78%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.sk-plan li em {
+  margin-left: auto;
+  font-style: normal;
+  font-size: var(--t-label);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.sk-plan__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ data section */
+.sk-source-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-source-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-source-list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.sk-source-list b {
+  grid-column: 1;
+  grid-row: 1;
+  font-weight: 500;
+}
+.sk-source-list p {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-source-list span {
+  grid-row: 1;
+  grid-column: 2;
+  align-self: center;
+  font: 400 var(--t-label) / 1.3 var(--font-mono);
+  color: var(--muted);
+  text-align: right;
+}
+
+.sk-formula {
+  display: grid;
+  gap: 16px;
+  padding: clamp(16px, 2vw, 24px);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--p-bg);
+  align-content: start;
+}
+.sk-formula__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sk-formula__head b {
+  font: var(--display-weight) var(--t-card) / 1.2 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.sk-formula__head span {
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+.sk-formula .sk-bar__track > i {
+  background: var(--p-action);
+}
+
+/* the fitur cards: the product's screen floats on the lit panel, one step in from its edge */
+.card > .panel > .sk-feature {
+  position: absolute;
+  inset: clamp(12px, 1.5vw, 22px);
+  border-radius: var(--r-sm);
+  border: 1px solid rgb(11 27 38 / 0.06);
+  box-shadow: 0 1px 2px rgb(11 27 38 / 0.06);
+}
+
+/* #cek's frame takes what the heading leaves of the screen */
+.sk-fill {
+  flex: 1 1 0;
+  min-height: 0;
+}
+.sk-fill > .sk-app {
+  height: 100%;
+}
+
+/* the hero's action column: the one button and the line of facts under it */
+.sk-hero__cta {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+  width: min(100%, 320px);
+  margin-left: auto;
+}
+
+/* ------------------------------------------------------------------ hero extras
+   The collage is the product itself: three sets of screens, each set a finished state. The pieces
+   carry the same shadow as a screenshot lifted off the page, and the main piece takes the phone. */
+.sk-hero .ly-piece {
+  box-shadow:
+    0 1px 2px rgb(11 27 38 / 0.08),
+    0 18px 40px -20px rgb(11 27 38 / 0.4);
+}
+.sk-hero .ly-collage > button.loop-pause.loop-pause {
+  background: rgb(247 250 252 / 0.9);
+  border-color: rgb(11 27 38 / 0.14);
+  color: var(--p-ink);
+  backdrop-filter: blur(6px);
+}
+.sk-hero__note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+
+/* the popover heads in the mocks */
+.sk-piece-head__dot {
+  width: 1.5cqw;
+  height: 1.5cqw;
+  min-width: 8px;
+  min-height: 8px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+/* the report rows of set three */
+.sk-card-report {
+  background: var(--p-bg);
+  color: var(--p-ink);
+}
+.sk-card-report .sk-piece-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1cqw;
+  font-weight: 500;
+}
+.sk-card-report .sk-piece-head span:last-child {
+  color: var(--p-muted);
+  font-size: max(10px, 1.2cqw);
+  font-weight: 400;
+}
+.sk-card-report ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-card-report li {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+  padding: 1.2cqw 0;
+  border-top: 1px solid var(--line);
+  font-size: max(11px, 1.4cqw);
+  line-height: 1.3;
+}
+.sk-card-report li:first-child {
+  border-top: 0;
+}
+.sk-card-report li > span:first-of-type {
+  min-width: 0;
+}
+.sk-card-report li b {
+  margin-left: auto;
+  font: 500 max(11px, 1.35cqw) / 1 var(--font-mono);
+  color: var(--p-muted);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ section furniture */
+.sk-section-lead {
+  max-width: 58ch;
+  color: var(--muted);
+}
+.sk-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: var(--t-label);
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.sk-tag--ai {
+  border-color: transparent;
+  background: #e3f2f0;
+  color: #0d6b64;
+}
+.sk-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+.sk-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sk-legend .sk-dot {
+  width: 8px;
+  height: 8px;
+}
+
+/* the two-column section: words left, a finished screen right, both on the page's split lines */
+.sk-split {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+  align-items: start;
+}
+.sk-split > :first-child {
+  grid-column: 1 / span 7;
+}
+.sk-split > :last-child {
+  grid-column: 8 / span 5;
+}
+.sk-split__copy {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+}
+.sk-split__copy > p {
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+/* FAQ beside the emergency card, on the same pair of lines */
+.sk-ask {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+  align-items: start;
+}
+.sk-ask > :first-child {
+  grid-column: 1 / span 7;
+}
+.sk-ask > :last-child {
+  grid-column: 8 / span 5;
+}
+.sk-call {
+  position: relative;
+  display: grid;
+  gap: var(--s-4);
+  padding: clamp(18px, 2vw, 26px);
+  border-radius: var(--r-lg);
+  background: var(--p-ink);
+  color: var(--p-inv-ink);
+  align-content: start;
+}
+/* the mark that makes the dark card its own picture, not a column of words */
+.sk-call__glyph {
+  position: absolute;
+  top: clamp(18px, 2vw, 26px);
+  right: clamp(18px, 2vw, 26px);
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+  color: var(--p-inv-ink);
+}
+.sk-call b {
+  font: var(--display-weight) var(--t-card) / 1.2 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.sk-call p {
+  margin: 0;
+  color: var(--p-inv-muted);
+  font-size: var(--t-small);
+  line-height: 1.5;
+}
+.sk-call .btn {
+  --action: var(--p-inv-action);
+  --action-ink: var(--p-inv-action-ink);
+  width: 100%;
+}
+.sk-call .sk-mono {
+  color: var(--p-inv-muted);
+  font-size: var(--t-label);
+}
+.sk-call .sk-tag {
+  justify-self: start;
+  border-color: rgb(255 255 255 / 0.24);
+  color: var(--p-inv-ink);
+}
+.sk-call__num {
+  font: 500 clamp(44px, 4vw, 58px) / 1 var(--font-mono);
+  letter-spacing: -0.04em;
+  color: var(--p-inv-ink);
+}
+
+/* the emergency dialog */
+.sk-dialog {
+  width: min(100% - 2 * var(--gut), 520px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-lg);
+  background: var(--p-bg);
+  color: var(--p-ink);
+  box-shadow: 0 32px 80px -28px rgb(11 27 38 / 0.55);
+}
+.sk-dialog::backdrop {
+  background: rgb(10 34 51 / 0.62);
+  backdrop-filter: blur(3px);
+}
+.sk-dialog__in {
+  display: grid;
+  gap: var(--s-4);
+  padding: clamp(20px, 3vw, 32px);
+}
+.sk-dialog__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+.sk-dialog__head h2 {
+  font-size: var(--t-h3);
+  line-height: 1.2;
+  max-width: 20ch;
+}
+.sk-dialog__head p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-dialog__close {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.sk-dialog__close:hover {
+  border-color: var(--line-strong);
+}
+.sk-dialog__call {
+  display: grid;
+  gap: 2px;
+  padding: 18px 20px;
+  border-radius: var(--r-md);
+  background: #f8dede;
+  color: #8d1a1a;
+}
+.sk-dialog__call span {
+  font-size: var(--t-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.sk-dialog__call b {
+  font: 500 40px/1 var(--font-mono);
+  letter-spacing: -0.04em;
+}
+.sk-dialog__call small {
+  font-size: var(--t-small);
+}
+.sk-dialog__note {
+  font-size: var(--t-small);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* the phone bar (main action once the hero's has scrolled away) */
+.sk-actionbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: none;
+  padding: 10px var(--gut) calc(10px + env(safe-area-inset-bottom));
+  background: color-mix(in oklab, var(--p-bg) 92%, transparent);
+  border-top: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+.sk-actionbar .btn {
+  width: 100%;
+  height: 48px;
+  font-size: var(--t-body);
+}
+@media (max-width: 639px) {
+  .sk-actionbar.is-on {
+    display: block;
+  }
+}
+
+/* ------------------------------------------------------------------ one button, one size
+   The header's, the hero's, the close's, the phone bar's and the emergency card's primary
+   buttons are one control: 48px tall, a 16px label. Only the label changes, never the shape. */
+:root {
+  --btn-h: 48px;
+}
+.nav__actions .btn,
+.nav:not(.is-open) .nav__actions .btn,
+.hero--triptych .hero__cta .btn,
+.sk-call .btn {
+  height: var(--btn-h);
+  padding-inline: var(--s-5);
+  font: 500 var(--t-body) / 1 var(--font-text);
+  letter-spacing: 0;
+}
+/* the close's one large action keeps the kit's size: a 640 box, taller than the 48px row buttons */
+.btn--xl {
+  width: min(100%, 640px);
+  height: clamp(56px, calc(3.2vw + 32px), 64px);
+  font: 500 var(--t-lead) / 1 var(--font-text);
+  letter-spacing: 0;
+}
+@media (max-width: 639px) {
+  .btn--xl {
+    width: 100%;
+    height: 48px;
+    font: 500 var(--t-body) / 1 var(--font-text);
+  }
+}
+
+/* the section head's split stands on the page's one pair of split lines (7 + 5) */
+.section-head--split {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--s-4) var(--gutter);
+  align-items: start;
+}
+.section-head--split > div {
+  grid-column: 1 / span 7;
+  max-width: none;
+}
+.section-head--split > :not(div) {
+  grid-column: 8 / span 5;
+}
+
+/* ------------------------------------------------------------------ small screens */
+/* a tablet keeps the page's two-column splits: they read at 768 and hold one screen */
+@media (max-width: 767px) {
+  .sk-split,
+  .sk-ask,
+  .section-head--split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+  /* both columns take the one line (the same weight as the 7/5 rules above) */
+  .sk-split > :first-child,
+  .sk-split > :last-child,
+  .sk-ask > :first-child,
+  .sk-ask > :last-child,
+  .section-head--split > div,
+  .section-head--split > :not(div) {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+}
+@media (max-width: 639px) {
+  :root {
+    --display-tracking: -0.03em;
+  }
+  /* the hero ends on the fold: its last line sits 24 above the screen's foot */
+  main > .hero {
+    padding-bottom: calc(var(--hpadb) + var(--bar));
+  }
+  /* stacking needs the second screen: nothing overlaps, the air goes under the last row */
+  section#cara,
+  section#data,
+  section#tanya {
+    --hm: 2;
+  }
+  /* the step's number sits above its title, so the words start on the container's left line */
+  .sk-steps li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 14px 0;
+  }
+  .sk-steps li::before {
+    width: 28px;
+    height: 28px;
+  }
+  .sk-hero__cta {
+    justify-items: stretch;
+    width: 100%;
+  }
+  .sk-app__foot {
+    justify-content: flex-start;
+  }
+  .sk-steps b {
+    font-size: var(--t-body);
+  }
+  .card > .panel {
+    --p-h: 150px;
+  }
+  .card {
+    --c-pad: 18px;
+  }
+  .section-head {
+    margin-bottom: 24px;
+  }
+  .sk-list__foot {
+    padding-bottom: 2px;
+  }
+  .card > .panel > .sk-feature {
+    inset: 10px;
+    padding: 12px;
+  }
+  .sk-feature__upload {
+    min-height: 72px;
+  }
+  /* the footer's two link lists share a row on a phone: the close and the links still end on the fold */
+  .closing__links > .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-4) var(--gutter);
+  }
+  .closing__links > .grid > :first-child {
+    grid-column: 1 / -1;
+  }
+  .closing__links .footer__col {
+    grid-column: auto / span 1;
+  }
+  /* its links run as a vertical list again: the two columns are side by side */
+  .closing__links .footer__col ul {
+    display: grid;
+    gap: 0;
+  }
+  .closing__cta {
+    gap: var(--s-4);
+  }
+  /* the close and the links keep their air, but the screen ends on the fold */
+  footer.closing > .wrap {
+    row-gap: 28px;
+  }
+  .closing__links {
+    gap: var(--s-3);
+    row-gap: var(--s-3);
+  }
+  .footer__legal {
+    padding-top: var(--s-2);
+    row-gap: var(--s-3);
+  }
+  .sk-split,
+  .sk-ask {
+    gap: var(--s-5);
+  }
+}
+
+/* ------------------------------------------------------------------ fit and rhythm
+   The FAQ's four open rows are the tallest block on the page; 16px a side and a 6px gap keep the
+   answer column inside one screen at 1440. */
+.faq > :is(.faq__item, details) {
+  padding: var(--s-4) 0;
+  gap: 6px;
+}
+.faq > :is(.faq__item, details):first-child {
+  padding-top: 0;
+}
+
+/* a short landscape screen (1024x768): the close needs two screens, and the four cards' panels give
+   back the 38px that put #fitur past its two */
+@media (min-width: 640px) and (max-height: 820px) {
+  main > section#tanya,
+  footer.closing {
+    --h: 2;
+  }
+  /* the plan card's 594px leaves 18 over a 768 screen: the section keeps its screen, the air goes */
+  main > section#cara {
+    --padb: 54px;
+  }
+  #fitur .card > .panel {
+    --p-h: 200px;
+  }
+}
+
+/* the step's number hangs in the page gutter, so every step's words start on the container's
+   left line (SR-6); on a phone the number sits above the title instead (the block below) */
+@media (min-width: 640px) {
+  .sk-steps li {
+    grid-template-columns: minmax(0, 1fr);
+    position: relative;
+  }
+  .sk-steps li::before {
+    position: absolute;
+    left: calc(-1 * min(48px, var(--gut) - 8px));
+    top: 18px;
+  }
+  .sk-steps li:first-child::before {
+    top: 0;
+  }
+}
+
+/* the hero's action follows the words on a stacked hero (640-1023): same left line, full width */
+@media (max-width: 1023px) {
+  .sk-hero__cta {
+    width: 100%;
+    margin-left: 0;
+    justify-items: stretch;
+  }
+}
+
+/* phone: the head sits 24 above its first row (the kit reads one --head-gap, 32 by default) */
+@media (max-width: 639px) {
+  main {
+    --head-gap: 24px;
+  }
+}
+
+
+
+/* a phone: the hero's words start 35 under the header (not 40), so its last line ends 24 above the fold */
+@media (max-width: 639px) {
+  main > .hero {
+    --hgap: 35px;
+  }
+}
+
+/* a short landscape screen: the product panel gets a tighter head, so its list still ends on the floor */
+@media (min-width: 640px) and (max-height: 820px) {
+  main > section#cek .section-head {
+    margin-bottom: 24px;
+  }
+}
+
+/* ------------------------------------------------------------------ district + map pages
+   Subpages use article/div (not main > section), so the landing's one-screen rhythm never
+   stretches them. */
+.sk-page {
+  padding-top: calc(var(--nav) + var(--s-7));
+  padding-bottom: var(--s-9);
+}
+.sk-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t-small);
+  color: var(--muted);
+}
+.sk-crumbs a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.sk-crumbs a:hover {
+  color: var(--p-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.sk-eyebrow {
+  margin: 0;
+  font: 500 var(--t-label) / 1.3 var(--font-mono);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sk-page-head {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 760px;
+  margin-bottom: var(--s-7);
+}
+.sk-page-head h1 {
+  margin: 0;
+  font-size: var(--t-h1, clamp(34px, 4vw, 52px));
+  letter-spacing: var(--display-tracking);
+  line-height: 1.04;
+}
+.sk-page-head p {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--muted);
+}
+.sk-detail-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+  align-items: start;
+  margin-bottom: var(--s-8);
+}
+.sk-detail-head__copy {
+  grid-column: 1 / span 7;
+  display: grid;
+  gap: var(--s-4);
+}
+.sk-detail-head__copy h1 {
+  margin: 0;
+  font-size: clamp(38px, 5vw, 72px);
+  line-height: 1;
+  letter-spacing: var(--display-tracking-xl);
+}
+.sk-detail-lede {
+  margin: 0;
+  max-width: 58ch;
+  color: var(--muted);
+  font-size: var(--t-lead);
+  line-height: 1.5;
+}
+.sk-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-5);
+  margin-top: var(--s-3);
+}
+.sk-detail-score {
+  grid-column: 8 / span 5;
+  display: grid;
+  justify-items: start;
+  gap: var(--s-4);
+  padding: clamp(18px, 2vw, 26px);
+  border-radius: var(--r-lg);
+  background: var(--p-surface);
+}
+.sk-detail-score p {
+  margin: 0;
+  color: var(--p-ink);
+}
+.sk-gauge {
+  position: relative;
+  width: 148px;
+  height: 148px;
+  display: grid;
+  place-items: center;
+}
+.sk-gauge svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.sk-gauge__track,
+.sk-gauge__value {
+  fill: none;
+  stroke-width: 10;
+}
+.sk-gauge__track {
+  stroke: color-mix(in oklab, var(--p-ink) 12%, transparent);
+}
+.sk-gauge__value {
+  stroke: var(--gauge-color);
+  stroke-linecap: round;
+}
+.sk-gauge__num {
+  position: relative;
+  font: 500 40px / 1 var(--font-mono);
+  letter-spacing: -0.04em;
+}
+.sk-gauge__scale {
+  position: absolute;
+  bottom: 30px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.sk-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+  align-items: start;
+}
+.sk-detail-grid > .sk-explain,
+.sk-detail-grid > .sk-climate {
+  grid-column: 1 / -1;
+}
+.sk-detail-grid > .sk-breakdown {
+  grid-column: 1 / span 7;
+}
+.sk-detail-grid > .sk-weather {
+  grid-column: 8 / span 5;
+}
+.sk-detail-grid > .sk-history {
+  grid-column: 1 / span 6;
+}
+.sk-detail-grid > .sk-safepoints {
+  grid-column: 7 / span 6;
+}
+.sk-card {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+  padding: clamp(18px, 2vw, 26px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--p-bg);
+}
+.sk-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sk-card__head h2 {
+  margin: 0;
+  font: var(--display-weight) var(--t-card) / 1.25 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.sk-card__head > .sk-mono {
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+.sk-bar__note {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: var(--t-label);
+  line-height: 1.4;
+}
+.sk-weather__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-weather__rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-weather__rows li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.sk-weather__day {
+  font-weight: 500;
+}
+.sk-weather__cond {
+  grid-column: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-weather__mm {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+}
+.sk-weather__time {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-history__list,
+.sk-safepoints__list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-history__list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-history__list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.sk-history__when {
+  font: 500 var(--t-small) / 1.3 var(--font-mono);
+  color: var(--muted);
+}
+.sk-history__area {
+  grid-column: 1;
+  font-weight: 500;
+}
+.sk-history__depth {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--p-ink);
+  font-size: var(--t-small);
+}
+.sk-history__duration {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-safepoints__list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-safepoints__list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.sk-safepoints__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--p-surface);
+  color: var(--p-action);
+}
+.sk-safepoints__name {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.sk-safepoints__name span {
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-safepoints__dist {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-explain p {
+  margin: 0;
+  max-width: 70ch;
+}
+.sk-climate p {
+  margin: 0;
+  max-width: 70ch;
+}
+.sk-climate .sk-mono {
+  color: var(--muted);
+}
+.sk-detail-note {
+  margin: var(--s-7) 0 0;
+  max-width: 72ch;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-map-shell {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  isolation: isolate;
+}
+.sk-map {
+  width: 100%;
+  height: clamp(380px, 54vh, 560px);
+  background: var(--p-surface);
+}
+.sk-map--loading {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-map__popup {
+  display: grid;
+  gap: 4px;
+  font-family: var(--font-text);
+}
+.sk-map__popup a {
+  color: var(--p-action);
+}
+.leaflet-container {
+  font: 400 var(--t-small) / 1.4 var(--font-text);
+}
+.sk-peta__list {
+  margin-top: var(--s-8);
+  display: grid;
+  gap: var(--s-4);
+}
+.sk-district-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-district-list a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+}
+.sk-district-list a:hover {
+  color: var(--p-action);
+}
+.sk-district-list__name {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.sk-district-list__name span {
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-district-list__score {
+  color: var(--muted);
+}
+.sk-missing {
+  min-height: 60vh;
+}
+.sk-missing h1 {
+  margin: var(--s-4) 0 0;
+  font-size: clamp(34px, 4vw, 52px);
+  letter-spacing: var(--display-tracking);
+  line-height: 1.05;
+}
+@media (max-width: 1023px) {
+  .sk-detail-head__copy,
+  .sk-detail-score,
+  .sk-detail-grid > .sk-breakdown,
+  .sk-detail-grid > .sk-weather,
+  .sk-detail-grid > .sk-history,
+  .sk-detail-grid > .sk-safepoints {
+    grid-column: 1 / -1;
+  }
+  .sk-detail-score {
+    justify-items: start;
+  }
+}
+@media (max-width: 767px) {
+  .sk-page {
+    padding-top: calc(var(--nav) + var(--s-6));
+    padding-bottom: var(--s-8);
+  }
+  .sk-district-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sk-map {
+    height: 60vh;
+  }
+  .sk-detail-grid,
+  .sk-detail-head {
+    gap: var(--s-5);
+  }
+}
+
+/* a 1024x768 screen: the product panel keeps one screen by taking the air out of its own rows
+   (the list shows three districts, the AI answer and the bars lose their redundant spacing) */
+@media (min-width: 640px) and (max-height: 820px) {
+  .sk-app__main {
+    gap: 8px;
+    padding: 14px;
+  }
+  .sk-app__main .sk-ai {
+    gap: 6px;
+  }
+  .sk-app__main .sk-ai__action {
+    display: none;
+  }
+  .sk-app__main .sk-score {
+    gap: 12px;
+    padding: 0;
+  }
+  .sk-app__main .sk-score__num {
+    font-size: 46px;
+  }
+  .sk-app__main .sk-app__foot {
+    display: none;
+  }
+}
+
+/* a tablet keeps the hero's button a button, not a full-width band */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .sk-hero__cta {
+    max-width: 360px;
+    justify-items: start;
+  }
+}
+
+/* the location button under the map's legend */
+.sk-geo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+}
+.sk-geo p {
+  margin: 0;
+}
+
+/* phone cards: the product window fades at its foot instead of ending on a hard cut */
+@media (max-width: 639px) {
+  .card > .panel > .sk-feature::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 40px;
+    background: linear-gradient(to top, var(--p-bg) 32%, transparent);
+    pointer-events: none;
+  }
+}
+
+/* the map's location button reads as a quiet secondary control, not plain text */
+.sk-geo .btn {
+  height: var(--btn-h, 48px);
+  padding-inline: var(--s-5);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  background: var(--p-bg);
+}
+
+/* phone: the district rows keep their 48px target but give back 24px so the foot stays inside the panel */
+@media (max-width: 639px) {
+  .sk-list button {
+    padding: 6px 10px;
+  }
+}
+
+/* the hero pieces: the kit gives every .ly-piece a surface ground, which beat the piece's own
+   dark/light ground and left light text on a light card. These keep the piece's own ground. */
+.sk-hero .ly-piece.sk-card-risk,
+.sk-hero .ly-piece.sk-card-plan,
+.sk-hero .ly-piece.sk-card-weather,
+.sk-hero .ly-piece.sk-card-report {
+  background: var(--p-bg);
+}
+.sk-hero .ly-piece.sk-card-counts {
+  background: var(--p-ink);
+}
+.sk-hero .ly-piece.sk-card-chat {
+  background: #0f2f42;
+}
+.sk-hero .ly-piece.sk-card-alert {
+  background: #fdf3e8;
+}
+
+/* the source line inside the dark answer bubble reads as light, not as body grey */
+.sk-feature__answer .sk-feature__src {
+  color: #b9cbd7;
+}
+
+/* the hero's list pieces fill their card instead of leaving a white void under the last row */
+.sk-hero .ly-piece.sk-card-plan {
+  grid-template-rows: auto auto 1fr;
+}
+.sk-hero .ly-piece.sk-card-plan > ul,
+.sk-hero .ly-piece.sk-card-counts > ul,
+.sk-hero .ly-piece.sk-card-report > ul,
+.sk-hero .ly-piece.sk-card-weather > ol {
+  align-content: stretch;
+}
+.sk-hero .ly-piece.sk-card-counts,
+.sk-hero .ly-piece.sk-card-report {
+  grid-template-rows: auto 1fr;
+}
+.sk-hero .ly-piece.sk-card-weather {
+  grid-template-rows: auto 1fr;
+}
+.sk-hero .ly-piece.sk-card-report {
+  grid-template-rows: auto 1fr auto;
+}
+
+/* a tablet: the hero button stays under half the container, so it never reads as a band */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .sk-hero__cta {
+    max-width: 320px;
+  }
+}
+
+/* ------------------------------------------------------------------ landing refresh
+   UI UX Pro Max "Trust & Authority + Accessible & Ethical", mapped to the docs/08 sea-blue
+   identity (the generator's alert red was rejected: the brief asks for calm, not panic). */
+.sk-hero__eyebrow {
+  display: none;
+}
+@media (min-width: 640px) {
+  .sk-hero__eyebrow {
+    display: block;
+    margin: 0 0 var(--s-4);
+  }
+}
+/* three proof facts under the hero's one button, in the note's old place */
+.sk-hero__proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+.sk-hero__proof li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.sk-hero__proof b {
+  font: 500 var(--t-small) / 1 var(--font-mono);
+  letter-spacing: -0.02em;
+  color: var(--p-ink);
+}
+/* the feature cards count themselves: 01 to 04 in the heading, no extra row */
+.sk-card-index {
+  margin-right: 8px;
+  font: 400 var(--t-label) / 1 var(--font-mono);
+  color: var(--muted);
+}
+/* the skill asks for a 3px focus ring and quiet 150-300ms state changes */
+:focus-visible {
+  outline-width: 3px;
+}
+.btn,
+.link,
+.sk-list button {
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+/* UI UX Pro Max follow-ups: focus never hides behind the fixed bar or header, and compact
+   labels (level, AI, verification) stay on one line instead of wrapping inside a card. */
+:where(a, button, input, summary, [tabindex]):focus-visible {
+  scroll-margin-block: calc(var(--nav) + 16px) calc(var(--bar) + 16px);
+}
+.sk-risk,
+.sk-tag {
+  white-space: nowrap;
+}
+
+/* the footer's close word: capped so it never runs into the links under it */
+.close__word {
+  font-size: clamp(56px, 19vw, 132px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  padding-bottom: 0.05em;
+}
+/* the emergency control inside the footer list reads as one more footer link */
+.footer__button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.footer__button:hover {
+  color: var(--action);
+}
+
+/* the close button keeps its height in the flex column (the wordmark must not shrink it) */
+.closing__cta > .btn--xl {
+  flex: 0 0 auto;
+}
+
+/* the close: a calmer wordmark and a tighter stack, so the name never runs into the links */
+@media (min-width: 640px) {
+  .closing__cta {
+    gap: var(--s-5);
+  }
+}
+.close__word {
+  font-size: clamp(52px, 6.4vw, 92px);
+}
+/* a phone footer keeps the two link lists and the legal line; the brand block is already in the header */
+@media (max-width: 639px) {
+  .closing__links > .grid > :first-child {
+    display: none;
+  }
+}
+
+/* phone close: the name sits between the button and the links with even air around the block */
+@media (max-width: 639px) {
+  .closing__cta {
+    justify-content: space-between;
+  }
+  .close__word {
+    margin-top: 0;
+    font-size: clamp(56px, 16vw, 72px);
   }
 }

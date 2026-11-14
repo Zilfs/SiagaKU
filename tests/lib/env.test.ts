@@ -11,20 +11,20 @@ const minimalValidEnv = {
 };
 
 describe("parseEnv", () => {
-  it("menolak env tanpa SUPABASE_SERVICE_ROLE_KEY", () => {
+  it("rejects an env without SUPABASE_SERVICE_ROLE_KEY", () => {
     expect(() =>
       parseEnv({ NEXT_PUBLIC_SUPABASE_URL: "https://x.supabase.co" }),
     ).toThrow(/SUPABASE_SERVICE_ROLE_KEY/);
   });
 
-  it("provider opsional boleh kosong & timeout default 20000", () => {
+  it("allows optional providers to be empty and defaults the timeout to 20000", () => {
     const e = parseEnv(minimalValidEnv);
     expect(e.GROQ_API_KEY).toBeUndefined();
     expect(e.AI_TIMEOUT_MS).toBe(20000);
     expect(e.GEMINI_EMBED_MODEL).toBe("gemini-embedding-001");
   });
 
-  it("tetap valid tanpa provider LLM (fitur AI memakai template)", () => {
+  it("stays valid without an LLM provider (AI features use templates)", () => {
     const e = parseEnv({
       ...minimalValidEnv,
       GEMINI_API_KEY: undefined,
@@ -34,7 +34,7 @@ describe("parseEnv", () => {
     expect(e.GROQ_API_KEY).toBeUndefined();
   });
 
-  it("menerima provider Groq saja & menganggap string kosong sebagai undefined", () => {
+  it("accepts Groq only and treats empty strings as undefined", () => {
     const e = parseEnv({
       ...minimalValidEnv,
       GEMINI_API_KEY: "",
