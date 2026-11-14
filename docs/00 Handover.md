@@ -41,6 +41,8 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 - Data cuaca: BMKG (tampil, resmi) + Open-Meteo (angka mm untuk skor & historis).
 - Tailwind + shadcn/ui, Leaflet, Recharts, zod, Vitest, GitHub Actions CI.
 - Urutan provider (14 Nov): Gemini gratis → Groq gratis → Gemini berbayar lewat slot `ALT_AI_*` (endpoint OpenAI-compatible Gemini, project Google terpisah dengan billing + budget alert). Tanpa ubah kode. Embedding RAG tetap pakai key Gemini gratis (kalau habis, retrieval turun ke FTS).
+- Kode error baru `UNAUTHORIZED` (401) untuk route ber-token (health deep, cron T14); helper `isBearer` di `src/lib/http.ts`.
+- Key AI opsional (14 Nov): `parseEnv` tidak lagi menolak env tanpa Gemini/Groq, hanya memberi peringatan. Tanpa key, penjelasan, chat, dan rencana memakai template, jadi site tetap jalan (sebelumnya seluruh route 500).
 - Batas `hunian.lantai` 0–60 (14 Nov), angka lain di input rencana tetap 0–10.
 - Pembagian peran (13 Nov): W1 Frontend = Ukon, W2 Backend/Data = Rhein, W3 AI = Bagus,
   W4 Data/Konten/Dokumentasi = Syaki.
@@ -61,6 +63,8 @@ SELESAI:
   (AI + cache 3 jam, fallback template). Kode di `src/features/risk/`. Key JSON respons bahasa Inggris
   camelCase (mis. `score`, `level: "high"`, `components.rainfallFactor`), bukan key Indonesia di docs/07;
   bentuk lengkap ada di `src/features/risk/types.ts` (`DistrictSummary`, `RiskDetail`). Bagian `iklim` tidak ada (F5 dipotong).
+- W2 Task 12: `GET /api/health` (cek DB; `?deep=1` + `Authorization: Bearer CRON_SECRET` ping tiap provider, `skip` bila env kosong; 503 bila gagal), cron harian `vercel.json` (keep-alive Supabase), header keamanan di `next.config.ts`, `src/app/error.tsx`, halaman `/tentang` (rumus skor & tabel hujan dibaca dari `src/lib/risk/`, sumber, AI, privasi, kredit, disclaimer, tim; gaya polos, menunggu sistem visual PR #22).
+- W2 Task 4 (seed): `npm run db:seed` (`scripts/seed.ts` + `scripts/lib/{csv,seed-data}.ts`) memvalidasi 5 CSV, memetakan slug ke id, menghitung `base_vulnerability` (kejadian per tanggal unik 5 tahun; kelurahan rawan +30 flat sampai T14), lalu mengisi 5 tabel. Diuji ke Postgres lokal dengan migrasi 0001 (44/240/116/283/9 baris; Jatinegara 80, Cengkareng 80, Kalideres 100). `src/lib/geo.ts`: `distanceKm`, `findNearestDistrict`.
 - Proteksi branch `dev` & `main` aktif (wajib PR, 1 approval orang lain, CI hijau, tanpa force-push).
 - URL resmi dokumen pedoman `04` sudah diverifikasi Syaki (Perpustakaan BNPB).
 - `CREDITS.md` diperbarui dengan daftar PDF pedoman.
@@ -77,7 +81,7 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Kuota AI saat penjurian (mitigasi: fallback, cache, rate limit, billing/alternatif).
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
 - `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
-- Supabase belum dibuat: `0001_init.sql` dan `0002_rate_limit.sql` belum dijalankan; `.env.local` & key AI belum ada.
+- Supabase project `lqyrtrmorzndqdpdqcaz` (14 Nov): migrasi 0001–0003 dijalankan lewat MCP Supabase, seed 44/240/116/283/9 baris, `/api/health` dan endpoint T7 sudah dites dengan data asli. **Jangan pakai `supabase db push`**: riwayat migrasi remote memakai versi tanggal (`20261114…_init`), bukan `0001`, jadi CLI akan mencoba membuat ulang tabel. Migrasi baru: tambah file `supabase/migrations/000N_*.sql` di PR lalu jalankan lewat MCP (`apply_migration`). Advisor tersisa: `vector` di schema public (dibiarkan, memindahkannya berisiko) dan RLS tanpa policy (disengaja, akses hanya lewat server).
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
@@ -85,8 +89,8 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Font: `docs/08` menyebut Plus Jakarta Sans, implementasi memakai Epilogue + JetBrains Mono (SIL OFL). Rhein perlu memutuskan dan menyelaraskan docs.
 
 ## Langkah berikutnya (urut)
-1. Rhein: buat project Supabase, jalankan migrasi 0001–0002, isi `.env.local`, setup Vercel.
-2. Rhein: seed data (Task 4 script) supaya API T7 punya data; Ukon: wiring tipe di `src/features/risk/types.ts`.
+1. Rhein: isi key AI (Gemini dan/atau Groq) di `.env.local`, cek `meta.provider` di `/api/risk/jatinegara/explanation`, lalu setup Vercel (env sama dengan `.env.local`).
+2. Rhein: `npm run db:seed` setelah Supabase siap, lalu tes endpoint T7 dan `/api/health`; Ukon: Task 8 pakai tipe di `src/features/risk/types.ts`.
 3. Bagus: jalankan `npm run rag:ingest` setelah key ada (PR #7 sudah di-merge), lalu lanjut chat API.
 4. Syaki: Task 17 (README utama, proposal, video).
 5. Ukon: review/merge PR `feature/landing-redesign`, lalu T10-UI (`/tanya`), T11-UI (`/rencana`), T14-UI/PWA (`/peringatan`).

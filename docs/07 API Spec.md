@@ -19,6 +19,7 @@ Terkait: [[03 Arsitektur Sistem]] · [[05 Desain AI]] · [[06 Data & Database]]
 | HTTP | code |
 |---|---|
 | 400 | `INVALID_INPUT` |
+| 401 | `UNAUTHORIZED` (token cron salah atau tidak ada) |
 | 404 | `NOT_FOUND` |
 | 429 | `RATE_LIMITED` |
 | 502 | `UPSTREAM_FAILED` (data eksternal/AI gagal total) |

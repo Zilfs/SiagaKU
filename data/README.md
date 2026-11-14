@@ -17,7 +17,7 @@ supaya juri bisa memeriksa asal datanya.
 
 ## `districts.csv` → tabel `districts`
 
-44 kecamatan DKI Jakarta, satu baris per kecamatan. Dipakai oleh `scripts/seed-kecamatan.ts`
+44 kecamatan DKI Jakarta, satu baris per kecamatan. Dipakai oleh `scripts/seed.ts` (`npm run db:seed`)
 (Task 4 di `docs/13 Implementation Plan.md`).
 
 | Kolom CSV | Kolom tabel | Keterangan |
@@ -32,7 +32,7 @@ supaya juri bisa memeriksa asal datanya.
 | `tidal_flood_prone` | `tidal_flood_prone` | `true` jika termasuk 7 kecamatan pesisir rawan rob (BPBD DKI, 2 Mei 2026). |
 | `notes` | `notes` | Jejak verifikasi per baris (status ADM4, `lokasi` BMKG). |
 
-`base_vulnerability` **tidak ada di CSV**; nilainya dihitung `scripts/seed-banjir.ts` dari
+`base_vulnerability` **tidak ada di CSV**; nilainya dihitung `scripts/seed.ts` dari
 `flood_events.csv` + `flood_prone_subdistricts.csv` (rumus `docs/06` §2).
 
 ---
@@ -83,7 +83,7 @@ Data diambil dari tag **"Update Info Terkini Genangan"** pada situs resmi BPBD D
     CSV ini dibatasi pada rilis yang bisa dibuka publik. Target "≥ 40 baris dari ≥ 15 kecamatan"
     (`docs/06` §6) sudah terlampaui. Jika tim punya arsip BPBD/berita 2020–2024, baris bisa
     ditambahkan dengan format yang sama.
-7. **`base_vulnerability` tidak ada di CSV ini.** Dihitung `seed-banjir.ts` dari jumlah
+7. **`base_vulnerability` tidak ada di CSV ini.** Dihitung `scripts/seed.ts` dari jumlah
     kejadian per kecamatan (rumus `docs/06` §2).
 
 ---
@@ -91,7 +91,7 @@ Data diambil dari tag **"Update Info Terkini Genangan"** pada situs resmi BPBD D
 ## `flood_prone_subdistricts.csv` → tabel `flood_prone_subdistricts`
 
 116 kelurahan di 38 kecamatan yang masih tergenang pada 2023, dengan jumlah RW tergenang per
-kelurahan. Dipakai `scripts/seed-banjir.ts` untuk komponen "+30 ada kelurahan rawan" di
+kelurahan. Dipakai `scripts/seed.ts` untuk komponen "+30 ada kelurahan rawan" di
 `base_vulnerability` (`docs/06` §2).
 
 | Kolom CSV | Kolom tabel | Keterangan |

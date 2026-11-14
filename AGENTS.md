@@ -47,9 +47,10 @@ Update `docs/00 Handover.md` at the end of any work session that changes project
 - file and folder names (except page routes, see below)
 - API route paths, DB tables/columns, JSON keys, zod schema fields, env vars
 - code comments, test names, branch names, commit messages, PR titles and descriptions
+- log messages (`console.*`, `ai_logs`), thrown and internal error messages (e.g. env validation), and script or CLI output
 
 **Indonesian** only for user-facing content:
-- UI copy, labels, error messages shown to users, AI prompt instructions and AI output
+- UI copy, labels, error messages shown to users (the `message` in API error responses), AI prompt instructions and AI output
 - page route segments under `src/app/(site)/` (they are URLs judges and users see): `/wilayah/[slug]`, `/peta`, `/rencana`, `/tanya`, `/peringatan`, `/lapor`, `/laporan`, `/tentang`
 - the docs in `docs/`
 
@@ -131,7 +132,7 @@ Rules:
 - AI model ids **always come from env**. The provider order is gemini → groq → alt. Switch providers on 429/5xx/timeout/invalid output; never switch on a safety block. Every AI feature has a non-AI fallback.
 - Safe points and emergency contacts come **only from the DB**. The only phone number AI output may contain is `112`.
 - No login. No name, address or phone fields in any form.
-- API error format: `{ "error": { "code": "...", "message": "..." } }` with code `INVALID_INPUT|NOT_FOUND|RATE_LIMITED|UPSTREAM_FAILED|INTERNAL`.
+- API error format: `{ "error": { "code": "...", "message": "..." } }` with code `INVALID_INPUT|UNAUTHORIZED|NOT_FOUND|RATE_LIMITED|UPSTREAM_FAILED|INTERNAL`.
 - Never commit secrets. Only `.env.example` is tracked.
 - Every new library, asset or AI coding assistant gets an entry in `CREDITS.md` in the same PR.
 - Write tests first for logic (Vitest, in `tests/`, mirroring `src/`).

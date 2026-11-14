@@ -174,8 +174,8 @@ Batas kategori: `<5`→0, `5–<20`→20, `20–<50`→45, `50–<100`→70, `10
 ### Task 4: Data kurasi & seeding (paralel dengan Task 3–5, jalur W4 + W2)
 
 **Files:**
-- Create: `data/districts.csv`, `data/flood_events.csv`, `data/flood_prone_subdistricts.csv`, `data/shelters.csv`, `data/emergency_contacts.csv` (format di [[06 Data & Database#5. Seeding]]), `src/lib/geo.ts`, `scripts/lib/csv.ts`, `scripts/seed-kecamatan.ts`, `scripts/seed-banjir.ts`, `scripts/seed-posko.ts`
-- Test: `tests/lib/geo.test.ts`, `tests/scripts/csv.test.ts`
+- Create: `data/districts.csv`, `data/flood_events.csv`, `data/flood_prone_subdistricts.csv`, `data/shelters.csv`, `data/emergency_contacts.csv` (format di [[06 Data & Database#5. Seeding]]), `src/lib/geo.ts`, `scripts/lib/csv.ts`, `scripts/lib/seed-data.ts`, `scripts/seed.ts` (satu script, menggantikan tiga script seed)
+- Test: `tests/lib/geo.test.ts`, `tests/scripts/csv.test.ts`, `tests/scripts/seed-data.test.ts`
 
 **Interfaces:**
 - Consumes: `hitungKerawananDasar` (Task 3), `supabaseServer` (Task 2)
@@ -185,7 +185,7 @@ Batas kategori: `<5`→0, `5–<20`→20, `20–<50`→45, `50–<100`→70, `10
 - [ ] **Step 2: Failing test** `csv.test.ts`: `parseCsv` menangani koma di dalam tanda kutip dan baris kosong; validasi zod per file menolak `sumber_url` kosong di `riwayat_banjir`.
 - [ ] **Step 3:** Run → FAIL. **Step 4:** Implement (haversine; parser CSV kecil atau `csv-parse`). **Step 5:** Run → PASS.
 - [ ] **Step 6:** W4 mengisi `districts.csv` (44 baris: `slug,nama,kota,kode_wilayah,adm4_bmkg,lat,lng,pesisir_rob`). `adm4_bmkg` = kode kelurahan pusat kecamatan; uji 3 kode acak ke API BMKG.
-- [ ] **Step 7:** Seed: `npx tsx scripts/seed-kecamatan.ts && npx tsx scripts/seed-banjir.ts && npx tsx scripts/seed-posko.ts`. Script banjir menghitung `kerawanan_dasar` (kejadian 5 tahun dari `tanggal >= now()-5y`) lalu update `kecamatan`. Verifikasi: `select count(*) from kecamatan` = 44; Jatinegara/Cengkareng/Kalideres punya kerawanan ≥ 40.
+- [ ] **Step 7:** Seed: `npm run db:seed`. Script menghitung `kerawanan_dasar` (kejadian 5 tahun dari `tanggal >= now()-5y`) lalu update `kecamatan`. Verifikasi: `select count(*) from kecamatan` = 44; Jatinegara/Cengkareng/Kalideres punya kerawanan ≥ 40.
 - [ ] **Step 8: Commit** `feat(data): curated csv, geo utils, seed scripts` (CSV boleh di-commit bertahap)
 
 ---
