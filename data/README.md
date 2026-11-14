@@ -117,7 +117,8 @@ Jakarta (organisasi `org50`), di Satu Data Jakarta:
 
 ## `posko.csv` → tabel `shelters`
 
-277 titik lokasi pengungsian (shelters) di 42 kecamatan DKI Jakarta.
+283 titik lokasi pengungsian (shelters) di 44 kecamatan DKI Jakarta (semua kecamatan terwakili,
+minimal 2 titik per kecamatan).
 
 | Kolom CSV | Kolom tabel | Keterangan |
 |---|---|---|
@@ -127,12 +128,29 @@ Jakarta (organisasi `org50`), di Satu Data Jakarta:
 | `address` | `address` | Alamat lokasi (kelurahan/jalan). |
 | `lat` | `lat` | Latitude (WGS84). |
 | `lng` | `lng` | Longitude (WGS84). |
-| `is_verified` | `is_verified` | `true` (JSC 2020), `false` (kantor pemerintahan). |
-| `source_url` | `source_url` | URL metadata/portal Jakarta Satu. |
+| `is_verified` | `is_verified` | `true` = titik pengungsian yang dipublikasikan JSC saat banjir 2020; `false` = kantor kelurahan (cadangan, bukan posko resmi). |
+| `source_url` | `source_url` | URL item portal Jakarta Satu asal baris tersebut. |
 
 ### Sumber
-- [Titik Lokasi Pengungsian Banjir (JSC 2020)](https://jakartasatu.jakarta.go.id/portal/home/item.html?id=2142f20e60c94c8787fb880cd20773ec)
-- [Data Kantor Pemerintahan (Jakarta Satu)](https://jakartasatu.jakarta.go.id/portal/home/item.html?id=f02cf07064f54e6a9ae4ac3dc236ad90)
+- [Titik Lokasi Pengungsian Banjir (JSC, 4 Januari 2020)](https://jakartasatu.jakarta.go.id/portal/home/item.html?id=18292662b7044438bcc039427f9ae5bf)
+  → 35 baris, `is_verified = true` (23 `other`, 7 `mosque`, 3 `school`, 2 `subdistrict_office`).
+- [Kantor Pemerintahan (Jakarta Satu)](https://jakartasatu.jakarta.go.id/portal/home/item.html?id=7123ac8ab81644c4b499a3258129a5b1)
+  → 242 kantor kelurahan, `is_verified = false`.
+- [Lokasi Kantor Lurah Kepulauan Seribu (Jakarta Satu)](https://jakartasatu.jakarta.go.id/portal/home/item.html?id=899d73ba788c4022a1bfd8b6337dfcd0)
+  → 6 kantor kelurahan Kepulauan Seribu (3 Utara + 3 Selatan), `is_verified = false`. Layer ini
+  dipakai terpisah karena layer `Kantor_Pemerintahan` tidak memuat Kepulauan Seribu.
+
+### Catatan metode
+1. **Hanya kantor kelurahan, bukan posko bencana.** Titik `is_verified = false` adalah kantor
+   kelurahan yang dipakai sebagai titik cadangan/pengumpulan; jangan klaim sebagai posko resmi.
+2. **Alamat sebagian berupa deskriptor lokasi.** Baris JSC memakai format "RW 010, Kebon Pala"
+   dari dataset aslinya, bukan alamat jalan lengkap.
+3. **Kecamatan kepulauan.** Koordinat Kepulauan Seribu berada di luar bbox daratan Jakarta
+   (lat hingga -5,98), jadi validasi koordinat harus memakai bbox `lat -6.5..-5.5`,
+   `lng 106.4..107.0`.
+4. **Lima kantor kelurahan tanpa alamat.** `Bambu Apus`, `Pondok Pinang`, `Cipinang Melayu`,
+   `Palmerah`, dan `Sungai Bambu` memang tidak punya nilai `alamat` di layer sumber.
+   Kolom `address` dibiarkan kosong (bukan diisi tebakan).
 
 ---
 
@@ -146,3 +164,22 @@ Daftar nomor telepon darurat penting di DKI Jakarta.
 | `phone` | `phone` | Nomor telepon (string). |
 | `scope` | `scope` | `provincial` atau `national`. |
 | `sort_order` | `sort_order` | Urutan tampil (1=paling penting). |
+
+### Sumber per nomor
+
+| Nomor | Status | Sumber |
+|---|---|---|
+| 112 (Jakarta Siaga) | terverifikasi | [BPBD DKI](https://bpbd.jakarta.go.id/berita/cmF4cWZmQjVFTm9kOGpyVVhINzUyQT09/kunjungan-ke-kantor-bpbd-dki-jakarta), [Pemprov DKI](https://www.instagram.com/reel/CFRQUAsgpxK/) |
+| 021-3459444 (BPBD DKI) | terverifikasi | [Kumparan](https://kumparan.com/kumparantech/catat-ini-nomor-telepon-penting-darurat-banjir-di-jakarta-1sYYYJYcZNQ), [CNN Indonesia](https://www.cnnindonesia.com/nasional/20200101163245-20-461640/daftar-posko-dan-nomor-telepon-darurat-saat-banjir-jakarta) |
+| 0812-1237-575 | terverifikasi sebagai **BNPB**, bukan BPBD | [Tirto](https://tirto.id/bencana-alam-2021-daftar-nomor-telepon-darurat-bnpb-dan-bpbd-f9lo), [Kompas TV](https://www.kompas.tv/nasional/139923/kamu-alami-bencana-alam-ini-daftar-nomor-telepon-kontak-darurat-bnpb-dan-bpbd-yang-bisa-kamu-hubungi) |
+| 113 (Damkar) | terverifikasi | nomor tunggal darurat nasional |
+| 119 (AGD) | terverifikasi | nomor tunggal layanan kesehatan (Kemenkes) |
+| 123 (PLN) | terverifikasi | call center PLN |
+| 1500-223 (PAM Jaya) | terverifikasi | [PAM Jaya](https://pamjaya.co.id/en/berita/informasi-peningkatan-pelayanan-pemeliharaan-sistem-call-center-1500-223) |
+| 115 (BASARNAS) | terverifikasi | [Kumparan](https://kumparan.com/kumparantech/catat-ini-nomor-telepon-penting-darurat-banjir-di-jakarta-1sYYYJYcZNQ) |
+| 110 (Polri) | terverifikasi | nomor tunggal darurat nasional |
+
+Catatan: nomor BPBD `021-3459444` sebelumnya muncul dua kali ("Call Center BPBD" dan
+"Posko Banjir Pemprov DKI"); duplikatnya dihapus agar daftar tidak membingungkan. Nomor
+`0812-1237-575` sebelumnya salah diberi label BPBD DKI — sumber resmi menyebutnya Pusdalops
+**BNPB**, sehingga `scope` diubah menjadi `national`.
