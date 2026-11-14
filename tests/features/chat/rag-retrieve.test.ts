@@ -107,6 +107,19 @@ describe("retrieve", () => {
     expect(result.sources[0].chunkId).toBe(11);
   });
 
+  it("returns mode none when the fts document lookup fails", async () => {
+    mockEmbed.mockRejectedValue(new Error("RESOURCE_EXHAUSTED"));
+    db.rpc.mockResolvedValue({ data: [{ ...chunkRow, rank: 0.4 }], error: null });
+    db.inIds.mockResolvedValue({
+      data: null,
+      error: { message: "connection reset" },
+    });
+
+    const result = await retrieve("isi tas siaga");
+
+    expect(result).toEqual({ sources: [], mode: "none" });
+  });
+
   it("returns mode none when both searches are empty", async () => {
     mockEmbed.mockRejectedValue(new Error("network error"));
     db.rpc.mockResolvedValue({ data: [], error: null });
