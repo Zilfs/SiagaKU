@@ -46,7 +46,10 @@ export type SafePoint = {
 
 /** Body of GET /api/risk/[id]. */
 export type RiskDetail = {
-  district: Pick<District, "id" | "slug" | "name" | "city" | "tidalFloodProne">;
+  district: Pick<
+    District,
+    "id" | "slug" | "name" | "city" | "lat" | "lng" | "tidalFloodProne"
+  >;
   score: number;
   level: RiskLevel;
   components: {

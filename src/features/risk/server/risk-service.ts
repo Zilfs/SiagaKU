@@ -63,6 +63,8 @@ export async function getRiskDetail(
       slug: d.slug,
       name: d.name,
       city: d.city,
+      lat: d.lat,
+      lng: d.lng,
       tidalFloodProne: d.tidalFloodProne,
     },
     score: risk.score,

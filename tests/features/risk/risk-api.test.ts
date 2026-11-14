@@ -50,6 +50,7 @@ describe("GET /api/risk/[id]", () => {
     expect(body.noRainfallData).toBe(true);
     expect(body.score).toBe(44); // round(0.55 * 80)
     expect(body.level).toBe("moderate");
+    expect(body.district).toMatchObject({ lat: -6.23, lng: 106.87 });
     expect(body.weather).toEqual({
       source: "BMKG",
       updatedAt: null,
