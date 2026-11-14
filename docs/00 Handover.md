@@ -44,17 +44,19 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 - Pembagian peran (13 Nov): W1 Frontend = Ukon, W2 Backend/Data = Rhein, W3 AI = Bagus,
   W4 Data/Konten/Dokumentasi = Syaki.
 
-## Status (13 Nov malam)
-SELESAI: brainstorming, design doc, PRD, dokumentasi teknis lengkap (13 file .md).
-SELESAI JUGA: design disetujui; rencana implementasi 17 task (13 Implementation Plan), termasuk Task 14 Peringatan Dini.
-SELESAI JUGA (W4 Data): Kurasi 5 file CSV lengkap di branch `feature/data-curation` (SUDAH DI-PUSH):
+## Status (14 Nov 2026)
+SELESAI:
+- Brainstorming, design doc, PRD, dan dokumentasi teknis lengkap (13 file .md).
+- W4 Task 4 (Kurasi Data): 5 file CSV lengkap & terverifikasi, plus `data/README.md`:
   1. `kecamatan.csv` (44 kecamatan, koordinat BMKG API, status pesisir rob)
   2. `riwayat_banjir.csv` (240 kejadian banjir 2025–2026 dari rilis BPBD)
   3. `kelurahan_rawan.csv` (116 kelurahan rawan 2023 dari Satu Data Jakarta)
   4. `posko.csv` (277 titik pengungsian dari JSC & Jakarta Satu)
   5. `kontak.csv` (10 kontak darurat resmi DKI Jakarta)
-  Semua file diverifikasi, selaras dengan skema database `0001_init.sql`, dan didokumentasikan di `data/README.md`.
-  Branch sudah di-push ke remote; PR ke `dev` siap di-merge.
+- W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) di `data/guidelines/`.
+- W4 Task 13 (Evaluasi RAG): test set di `tests/rag-eval.md`.
+
+BELUM: Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,

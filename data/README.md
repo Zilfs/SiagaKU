@@ -21,11 +21,15 @@ supaya juri bisa memeriksa asal datanya.
 | `id` | `id` | 1–44, urut `region_code`. Stabil karena `flood_events`/`shelters` merujuk `district_id`. |
 | `slug` | `slug` | ID URL, huruf kecil + tanda hubung. Unik. |
 | `name` | `name` | Nama kecamatan sesuai Kemendagri (ejaan umum). |
-| `region_code` | `region_code` | Kode adm4 Kemendagri (mis. `31.73.01`). |
-| `lat` / `lng` | `lat` / `lng` | Koordinat perwakilan kelurahan pertama di kecamatan tersebut (BMKG API). |
-| `base_vulnerability` | `base_vulnerability` | Tingkat kerawanan (0–100); dihitung seed script, bukan di CSV. |
-| `tidal_flood_prone` | `tidal_flood_prone` | `true` jika termasuk dalam 7 kecamatan pesisir rawan rob (BPBD DKI, 2 Mei 2026). |
-| `notes` | — | Jejak verifikasi per baris (ADM4 status, BMKG `lokasi`). |
+| `city` | `city` | Kota administrasi (`Jakarta Barat`, `Jakarta Pusat`, dst.). |
+| `region_code` | `region_code` | Kode kecamatan Kemendagri (mis. `31.73.01`). Unik. |
+| `bmkg_adm4` | `bmkg_adm4` | Kode adm4 kelurahan perwakilan untuk query BMKG (mis. `31.73.01.1001`). |
+| `lat` / `lng` | `lat` / `lng` | Koordinat kelurahan perwakilan (`data[0].lokasi` BMKG), bukan centroid poligon. |
+| `tidal_flood_prone` | `tidal_flood_prone` | `true` jika termasuk 7 kecamatan pesisir rawan rob (BPBD DKI, 2 Mei 2026). |
+| `notes` | `notes` | Jejak verifikasi per baris (status ADM4, `lokasi` BMKG). |
+
+`base_vulnerability` **tidak ada di CSV**; nilainya dihitung `scripts/seed-banjir.ts` dari
+`riwayat_banjir.csv` + `kelurahan_rawan.csv` (rumus `docs/06` §2).
 
 ---
 
