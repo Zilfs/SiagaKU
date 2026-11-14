@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "typecheck": "next typegen && tsc --noEmit",
+    "rag:ingest": "tsx --conditions=react-server scripts/ingest-documents.ts",
     "format": "prettier --write ."
   },
   "dependencies": {
@@ -41,6 +42,7 @@
     "tailwindcss": "4.3.3",
     "tsx": "^4.23.15",
     "typescript": "^5",
+    "unpdf": "^2.1.0",
     "vitest": "^5.1.0"
   }
 }

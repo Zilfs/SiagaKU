@@ -303,7 +303,7 @@ Script di `scripts/` (dijalankan lokal dengan `tsx`, memakai service role key):
 | `seed-kelurahan.ts` | Dataset kode wilayah (prefix `31.`) + panggil BMKG per adm4 (≤ 50/menit) untuk lat/lng | `kelurahan` (±267 baris) + flag `rawan` dari `kelurahan_rawan` |
 | `seed-posko.ts` | `data/shelters.csv`, `data/emergency_contacts.csv` | `posko_evakuasi`, `kontak_darurat` |
 | `seed-iklim.ts` | Open-Meteo archive per kota, 2016–2025 | `iklim_tahunan` |
-| `ingest-dokumen.ts` | `data/pedoman/*.pdf` atau `.md` + `data/pedoman/index.json` (metadata) | `dokumen`, `dokumen_chunk` + embedding |
+| `ingest-dokumen.ts` | `data/guidelines/*.pdf` atau `.md` + `data/guidelines/index.json` (metadata) | `dokumen`, `dokumen_chunk` + embedding |
 | `seed-demo.ts` | `data/demo/laporan/*.jpg` + JSON | 6–10 laporan `is_demo=true` |
 
 Semua CSV ada di repo (`data/`) supaya juri bisa memeriksa asal data. Ini menambah nilai dokumentasi dan kualitas kode.

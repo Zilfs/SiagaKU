@@ -292,7 +292,7 @@ it('log dipanggil untuk tiap percobaan dengan status ok/error', ...)
 ### Task 9: RAG ingest & retrieval
 
 **Files:**
-- Create: `src/lib/rag/chunk.ts`, `src/lib/rag/embed.ts`, `src/lib/rag/retrieve.ts`, `scripts/ingest-dokumen.ts`, `data/pedoman/index.json`
+- Create: `src/lib/rag/chunk.ts`, `src/lib/rag/embed.ts`, `src/lib/rag/retrieve.ts`, `scripts/ingest-dokumen.ts`, `data/guidelines/index.json`
 - Test: `tests/lib/rag-chunk.test.ts`, `tests/lib/rag-retrieve.test.ts`
 
 **Interfaces:**
@@ -343,7 +343,7 @@ it('log dipanggil untuk tiap percobaan dengan status ok/error', ...)
 **Interfaces:**
 - Consumes: `withFallback`, `getRisikoDetail`, `checkRateLimit`, `supabaseServer`
 - Produces:
-  - `RencanaInput` (zod, persis request `POST /api/rencana` di [[07 API Spec]], enum & batas 0–10, total 1–15, `disabilitas` min 1 jenis jika array tidak kosong)
+  - `RencanaInput` (zod, persis request `POST /api/rencana` di [[07 API Spec]], enum & batas 0–10 kecuali `hunian.lantai` 0–60, total 1–15, `disabilitas` min 1 jenis jika array tidak kosong)
   - `RencanaSiaga` (zod, persis [[05 Desain AI#2.2 Skema output (zod)]])
   - `pilihTitikAmanValid(ids: number[], tersedia: { id: number }[]): number[]` (buang ID asing & duplikat; kosong → 2 id pertama `tersedia`)
   - `buatRencanaDasar(input: RencanaInput, titik: { id: number }[]): RencanaSiaga` (lolos schema)

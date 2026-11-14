@@ -30,6 +30,39 @@ Ukuran total kelima file ± 67 MB. Nama file sengaja diberi prefix `01`–`05` a
   perpustakaan BNPB adalah **Edisi Cetak I, Maret 2017, 141 hlm**. Judul, penyusun, dan
   penerbit sama; perbedaan halaman berasal dari revisi April 2017.
 
+## Metadata ingest (`index.json`)
+
+Setiap PDF wajib terdaftar di `index.json` supaya judul, penerbit, tahun dan URL asli
+tersimpan di tabel `documents` dan bisa dipakai sebagai sitasi yang bisa diklik:
+
+```json
+[
+  {
+    "file": "01_bpbd_dki_panduan_kesiapsiagaan_banjir.pdf",
+    "title": "Panduan Kesiapsiagaan Menghadapi Banjir Bagi Masyarakat",
+    "publisher": "BPBD DKI Jakarta",
+    "year": 2021,
+    "url": "https://sumber-asli.example"
+  }
+]
+```
+
+`file` harus sama persis dengan nama file PDF di folder ini. `url` harus URL asli dokumen;
+jangan mengarang URL.
+
+## Cara ingest
+
+Butuh `GEMINI_API_KEY`, `GEMINI_EMBED_MODEL`, `NEXT_PUBLIC_SUPABASE_URL` dan
+`SUPABASE_SERVICE_ROLE_KEY` di `.env.local`, lalu jalankan:
+
+```bash
+npm run rag:ingest
+```
+
+Target rencana: minimal 5 dokumen dan 150 chunk. Ingest aman diulang: chunk lama per
+dokumen diganti. Kode ingest ada di `scripts/ingest-documents.ts` dan membaca
+`data/guidelines/`.
+
 ## Cakupan Materi
 Dokumen-dokumen di atas mencakup:
 - Langkah-langkah sebelum, saat, dan sesudah banjir.
