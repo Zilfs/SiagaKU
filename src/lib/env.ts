@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// String kosong (baris .env kosong) dianggap tidak diisi.
+// An empty string (blank .env line) counts as unset.
 const opt = z.preprocess(
   (v) => (v === "" ? undefined : v),
   z.string().optional(),
@@ -8,7 +8,7 @@ const opt = z.preprocess(
 const req = (name: string) =>
   z.preprocess(
     (v) => (v === "" ? undefined : v),
-    z.string({ error: `${name} wajib diisi` }).min(1, `${name} wajib diisi`),
+    z.string({ error: `${name} is required` }).min(1, `${name} is required`),
   );
 
 const schema = z.object({
@@ -45,8 +45,7 @@ export function parseEnv(raw: Record<string, string | undefined>): Env {
   const r = schema.safeParse(raw);
   if (!r.success) {
     throw new Error(
-      "Konfigurasi env tidak valid: " +
-        r.error.issues.map((i) => i.message).join("; "),
+      "Invalid env: " + r.error.issues.map((i) => i.message).join("; "),
     );
   }
   const e = r.data;
@@ -56,7 +55,7 @@ export function parseEnv(raw: Record<string, string | undefined>): Env {
     !(e.GROQ_API_KEY && e.GROQ_MODEL)
   ) {
     console.warn(
-      "Tidak ada provider LLM (GEMINI_API_KEY + GEMINI_MODEL atau GROQ_API_KEY + GROQ_MODEL); fitur AI memakai template.",
+      "No LLM provider (GEMINI_API_KEY + GEMINI_MODEL or GROQ_API_KEY + GROQ_MODEL); AI features use their templates.",
     );
   }
   return e;
@@ -64,7 +63,7 @@ export function parseEnv(raw: Record<string, string | undefined>): Env {
 
 let cached: Env | undefined;
 
-// Lazy: parse saat pertama diakses agar import tidak gagal saat build.
+// Lazy: parse on first access so importing never fails at build time.
 export const env: Env = new Proxy({} as Env, {
   get(_, key) {
     cached ??= parseEnv(process.env);

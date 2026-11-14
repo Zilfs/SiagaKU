@@ -124,7 +124,7 @@ export function validateRows<T>(
   });
   if (errors.length > 0) {
     throw new Error(
-      `${errors.length} baris tidak valid:\n${errors.slice(0, 10).join("\n")}`,
+      `${errors.length} invalid rows:\n${errors.slice(0, 10).join("\n")}`,
     );
   }
   return out;
