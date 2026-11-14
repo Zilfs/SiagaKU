@@ -1,7 +1,9 @@
+import { createHash, timingSafeEqual } from "node:crypto";
 import type { ZodType } from "zod";
 
 export type ErrorCode =
   | "INVALID_INPUT"
+  | "UNAUTHORIZED"
   | "NOT_FOUND"
   | "RATE_LIMITED"
   | "UPSTREAM_FAILED"
@@ -45,4 +47,13 @@ export async function parseJson<T>(
   const parsed = schema.safeParse(body);
   if (!parsed.success) throw new HttpError("INVALID_INPUT", INVALID, 400);
   return parsed.data;
+}
+
+/** Constant-time check of `Authorization: Bearer <secret>` (cron and admin routes). */
+export function isBearer(req: Request, secret: string): boolean {
+  const got = createHash("sha256")
+    .update(req.headers.get("authorization") ?? "")
+    .digest();
+  const want = createHash("sha256").update(`Bearer ${secret}`).digest();
+  return timingSafeEqual(got, want);
 }
