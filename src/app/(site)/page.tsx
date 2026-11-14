@@ -9,7 +9,10 @@ import {
 import { HeroCollage } from "@/components/site/hero-collage";
 import { DistrictSearch } from "@/features/risk/components/district-search";
 import { RiskBadge } from "@/components/risk-badge";
+import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
+import type { DistrictSummary } from "@/features/risk/types";
 import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
+import { connection } from "next/server";
 
 const LEGEND: { level: RiskLevel; range: string; dot: string }[] = [
   { level: "low", range: "0–24", dot: "var(--risk-low)" },
@@ -75,7 +78,15 @@ const FAQ = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  // live data: the request is rendered per visit (the service caches its own upstream calls)
+  await connection();
+  let districts: DistrictSummary[] = [];
+  try {
+    districts = await listDistrictsWithScore();
+  } catch {
+    districts = [];
+  }
   return (
     <>
       <section
@@ -145,7 +156,7 @@ export default function HomePage() {
             </ul>
           </div>
           <div className="sk-fill">
-            <DistrictSearch />
+            <DistrictSearch districts={districts} />
           </div>
         </div>
       </section>
@@ -494,3 +505,6 @@ export default function HomePage() {
     </>
   );
 }
+
+// live data: the route waits for the request (no instant shell)
+export const instant = false;

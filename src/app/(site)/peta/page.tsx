@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
 import { RiskMap } from "@/components/map/risk-map";
 import { UseLocation } from "@/components/map/use-location";
 import { RiskBadge } from "@/components/risk-badge";
-import { DEMO_DISTRICTS } from "@/lib/demo/districts";
+import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
+import type { DistrictSummary } from "@/features/risk/types";
 import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 
 export const metadata: Metadata = {
@@ -26,7 +28,14 @@ const LEGEND: { level: RiskLevel; range: string }[] = [
   { level: "very_high", range: "75–100" },
 ];
 
-export default function MapPage() {
+export default async function MapPage() {
+  await connection();
+  let districts: DistrictSummary[] = [];
+  try {
+    districts = await listDistrictsWithScore();
+  } catch {
+    districts = [];
+  }
   return (
     <article className="sk-page sk-peta">
       <div className="wrap">
@@ -50,46 +59,56 @@ export default function MapPage() {
               </li>
             ))}
           </ul>
-          <UseLocation />
+          <UseLocation districts={districts} />
         </header>
 
         <div className="sk-map-shell">
-          <RiskMap items={DEMO_DISTRICTS} />
+          <RiskMap items={districts} />
         </div>
 
         <section className="sk-peta__list" aria-labelledby="daftar-h">
           <div className="sk-card__head">
             <h2 id="daftar-h">Semua kecamatan</h2>
-            <span className="sk-mono">{DEMO_DISTRICTS.length} · data contoh</span>
+            <span className="sk-mono">{districts.length} kecamatan</span>
           </div>
           <ul className="sk-district-list">
-            {DEMO_DISTRICTS.map((district) => (
-              <li key={district.slug}>
-                <Link href={`/wilayah/${district.slug}`}>
-                  <span
-                    className="sk-dot"
-                    style={{ background: DOT[district.level] }}
-                    aria-hidden="true"
-                  />
-                  <span className="sk-district-list__name">
-                    <b>{district.name}</b>
-                    <span>{district.city}</span>
-                  </span>
-                  <RiskBadge level={district.level} size="sm" />
-                  <span className="sk-mono sk-district-list__score">
-                    {district.score}
-                  </span>
-                </Link>
+            {districts.length === 0 ? (
+              <li className="sk-list__empty">
+                Data risiko belum tersedia. Coba muat ulang halaman ini beberapa
+                saat lagi.
               </li>
-            ))}
+            ) : (
+              districts.map((district) => (
+                <li key={district.slug}>
+                  <Link href={`/wilayah/${district.slug}`}>
+                    <span
+                      className="sk-dot"
+                      style={{ background: DOT[district.level] }}
+                      aria-hidden="true"
+                    />
+                    <span className="sk-district-list__name">
+                      <b>{district.name}</b>
+                      <span>{district.city}</span>
+                    </span>
+                    <RiskBadge level={district.level} size="sm" />
+                    <span className="sk-mono sk-district-list__score">
+                      {district.score}
+                    </span>
+                  </Link>
+                </li>
+              ))
+            )}
           </ul>
         </section>
 
         <p className="sk-detail-note">
-          Data contoh, bukan peringatan resmi. Posisi lingkaran adalah pusat
-          kecamatan secara perkiraan, bukan batas wilayah resmi.
+          Skor dari BMKG dan Open-Meteo. Posisi lingkaran adalah pusat kecamatan
+          secara perkiraan, bukan batas wilayah resmi.
         </p>
       </div>
     </article>
   );
 }
+
+// live data: the route waits for the request (no instant shell)
+export const instant = false;

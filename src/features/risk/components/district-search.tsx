@@ -4,11 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, Sparkles, TriangleExclamationPoint } from "lucide-react";
 import { RiskBadge } from "@/components/risk-badge";
-import {
-  DEMO_DISTRICTS,
-  riskAction,
-  searchDistricts,
-} from "@/lib/demo/districts";
+import type { DistrictSummary, RiskDetail } from "@/features/risk/types";
+import type { Explanation } from "@/features/risk/schemas";
+import { riskAction } from "@/features/risk/risk-copy";
 import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 
 const LEVEL_COLOR: Record<RiskLevel, string> = {
@@ -23,30 +21,27 @@ const VISIBLE_ROWS = 6;
 /** A short landscape screen (1024x768) has less height for the panel, so the list shows three. */
 const SHORT_SCREEN_QUERY = "(min-width: 640px) and (max-height: 820px)";
 
-function explanation(name: string, rainfallMm: number, level: RiskLevel) {
-  const rain =
-    rainfallMm >= 50
-      ? `Hujan lebat ${rainfallMm} mm`
-      : rainfallMm >= 20
-        ? `Hujan sedang ${rainfallMm} mm`
-        : `Hujan ringan ${rainfallMm} mm`;
-  if (level === "very_high" || level === "high") {
-    return `${rain} diperkirakan turun dalam tiga hari. ${name} punya riwayat genangan, jadi siapkan jalur keluar dan barang penting di tempat tinggi.`;
-  }
-  if (level === "moderate") {
-    return `${rain} diperkirakan turun dalam tiga hari. Bersihkan saluran air di sekitar rumah dan simpan dokumen di tempat aman.`;
-  }
-  return `${rain} diperkirakan turun dalam tiga hari. Tetap simpan nomor darurat dan cek tas siaga keluarga.`;
-}
-
 /**
- * The landing page's product surface: search a district, read its score, its two components and the
- * plain-language action. Demo data until the risk API (Task 7) lands; every number says "data contoh".
+ * The landing page's product surface, reading the real district summaries. The score and level come
+ * with the list; the two components and the AI explanation are fetched when a district is selected.
  */
-export function DistrictSearch() {
+type DetailState = {
+  slug: string | null;
+  detail: RiskDetail | null;
+  explanation: Explanation | null;
+  loading: boolean;
+};
+
+export function DistrictSearch({ districts }: { districts: DistrictSummary[] }) {
   const [query, setQuery] = useState("");
-  const [slug, setSlug] = useState("jatinegara");
+  const [slug, setSlug] = useState(districts[0]?.slug ?? "");
   const [visibleRows, setVisibleRows] = useState(VISIBLE_ROWS);
+  const [detailState, setDetailState] = useState<DetailState>({
+    slug: null,
+    detail: null,
+    explanation: null,
+    loading: true,
+  });
 
   useEffect(() => {
     const shortScreen = window.matchMedia(SHORT_SCREEN_QUERY);
@@ -56,10 +51,91 @@ export function DistrictSearch() {
     return () => shortScreen.removeEventListener("change", sync);
   }, []);
 
-  const rows = useMemo(() => searchDistricts(query), [query]);
-  const visible = rows.slice(0, visibleRows);
+  const rows = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    if (!term) return districts;
+    return districts.filter(
+      (district) =>
+        district.name.toLowerCase().includes(term) ||
+        district.city.toLowerCase().includes(term),
+    );
+  }, [query, districts]);
+
   const selected =
-    DEMO_DISTRICTS.find((district) => district.slug === slug) ?? DEMO_DISTRICTS[0];
+    districts.find((district) => district.slug === slug) ?? districts[0] ?? null;
+  const visible = rows.slice(0, visibleRows);
+
+  useEffect(() => {
+    if (!selected) return;
+    let cancelled = false;
+    const load = async () => {
+      let nextDetail: RiskDetail | null = null;
+      let nextExplanation: Explanation | null = null;
+      try {
+        const [detailRes, explanationRes] = await Promise.all([
+          fetch(`/api/risk/${selected.slug}`).catch(() => null),
+          fetch(`/api/risk/${selected.slug}/explanation`).catch(() => null),
+        ]);
+        nextDetail = detailRes?.ok ? await detailRes.json() : null;
+        nextExplanation = explanationRes?.ok ? await explanationRes.json() : null;
+      } catch {
+        nextDetail = null;
+        nextExplanation = null;
+      }
+      if (!cancelled) {
+        setDetailState({
+          slug: selected.slug,
+          detail: nextDetail,
+          explanation: nextExplanation,
+          loading: false,
+        });
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [selected]);
+
+  if (!selected) {
+    return (
+      <div className="sk-app" id="cek-app" data-ui>
+        <div className="sk-app__side">
+          <div className="sk-app__search">
+            <label htmlFor="cari-kecamatan">Cari kecamatan di Jakarta</label>
+            <div className="sk-search">
+              <Search size={17} aria-hidden="true" />
+              <input
+                id="cari-kecamatan"
+                type="search"
+                disabled
+                placeholder="Data belum tersedia"
+              />
+            </div>
+          </div>
+          <p className="sk-list__empty">
+            Data risiko belum tersedia. Coba muat ulang halaman ini beberapa saat
+            lagi.
+          </p>
+        </div>
+        <div className="sk-app__main">
+          <p className="sk-list__empty">
+            Skor risiko per kecamatan sedang tidak bisa dimuat. Sumber data sedang
+            tidak merespons.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const detail = detailState.slug === selected.slug ? detailState.detail : null;
+  const explanation =
+    detailState.slug === selected.slug ? detailState.explanation : null;
+  const loading = detailState.slug !== selected.slug || detailState.loading;
+
+  const base = detail?.components.baseVulnerability ?? null;
+  const rain = detail?.components.rainfallFactor ?? null;
+  const rainMm = detail?.components.maxRainfallMm ?? null;
 
   return (
     <div className="sk-app" id="cek-app" data-ui>
@@ -111,21 +187,21 @@ export function DistrictSearch() {
         </ul>
         <p className="sk-list__foot">
           {rows.length > visibleRows
-            ? `${visibleRows} dari ${rows.length} kecamatan · data contoh`
-            : `${rows.length} kecamatan · data contoh`}
+            ? `${visibleRows} dari ${rows.length} kecamatan`
+            : `${rows.length} kecamatan`}
         </p>
       </div>
 
-      <div className="sk-app__main" aria-live="polite">
+      <div className="sk-app__main" aria-live="polite" aria-busy={loading}>
         <div className="sk-app__top">
           <div className="sk-app__place">
             <b>{selected.name}</b>
             <span>{selected.city} · DKI Jakarta</span>
           </div>
           <p className="sk-app__updated">
-            Diperbarui {selected.updatedAt}
+            Skor hari ini
             <br />
-            Data contoh
+            BMKG &amp; Open-Meteo
           </p>
         </div>
 
@@ -140,13 +216,19 @@ export function DistrictSearch() {
         <div className="sk-ai">
           <span className="sk-ai__badge">
             <Sparkles size={13} aria-hidden="true" />
-            Penjelasan AI · contoh
+            {explanation ? "Penjelasan AI" : "Penjelasan AI · template"}
           </span>
-          <p>{explanation(selected.name, selected.rainfallMm, selected.level)}</p>
+          <p>
+            {explanation?.explanation ??
+              (loading
+                ? "Memuat penjelasan…"
+                : "Penjelasan sedang tidak tersedia. Baca rincian skor di bawahnya.")}
+          </p>
           <div className="sk-ai__action">
             <TriangleExclamationPoint size={16} aria-hidden="true" />
             <span>
-              <b>Tindakan utama.</b> {riskAction(selected.level)}
+              <b>Tindakan utama.</b>{" "}
+              {explanation?.mainAction ?? riskAction(selected.level)}
             </span>
           </div>
         </div>
@@ -154,16 +236,18 @@ export function DistrictSearch() {
         <ul className="sk-bars">
           <li className="sk-bar">
             <span>Kerawanan dasar</span>
-            <span className="sk-mono">{selected.vulnerability} / 100</span>
+            <span className="sk-mono">{base != null ? `${base} / 100` : "—"}</span>
             <span className="sk-bar__track" aria-hidden="true">
-              <i style={{ width: `${selected.vulnerability}%` }} />
+              <i style={{ width: `${base ?? 0}%` }} />
             </span>
           </li>
           <li className="sk-bar">
-            <span>Faktor hujan · {selected.rainfallMm} mm</span>
-            <span className="sk-mono">{selected.rainFactor} / 100</span>
+            <span>
+              Faktor hujan{rainMm != null ? ` · ${rainMm} mm` : ""}
+            </span>
+            <span className="sk-mono">{rain != null ? `${rain} / 100` : "—"}</span>
             <span className="sk-bar__track" aria-hidden="true">
-              <i style={{ width: `${selected.rainFactor}%` }} />
+              <i style={{ width: `${rain ?? 0}%` }} />
             </span>
           </li>
         </ul>

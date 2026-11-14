@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { distanceKm, findNearestDistrict } from "@/lib/geo";
+﻿import { describe, expect, it } from "vitest";
+import { distanceKm, findNearestDistrict, formatDistance } from "@/lib/geo";
 
 const monas = { lat: -6.1754, lng: 106.8272 };
 const hi = { lat: -6.195, lng: 106.823 };
@@ -27,3 +27,16 @@ describe("findNearestDistrict", () => {
     ).toBeNull();
   });
 });
+
+describe("formatDistance", () => {
+  it("uses metres under 1 km, rounded to 50", () => {
+    expect(formatDistance(0.62)).toBe("600 m");
+    expect(formatDistance(0.03)).toBe("50 m");
+  });
+
+  it("uses one decimal in kilometres above 1 km", () => {
+    expect(formatDistance(1.24)).toBe("1,2 km");
+    expect(formatDistance(12)).toBe("12,0 km");
+  });
+});
+

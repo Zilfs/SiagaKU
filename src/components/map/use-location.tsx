@@ -3,18 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LocateFixed } from "lucide-react";
-import { DEMO_DISTRICTS } from "@/lib/demo/districts";
+import type { DistrictSummary } from "@/features/risk/types";
 import { findNearestDistrict } from "@/lib/geo";
 
 /**
  * "Use my location": finds the nearest sample district and opens its page. The 15 km limit in
  * `findNearestDistrict` covers the "outside Jakarta" case; a denied permission falls back to the list.
  */
-export function UseLocation() {
+export function UseLocation({ districts }: { districts: DistrictSummary[] }) {
   const router = useRouter();
   const [message, setMessage] = useState("");
 
   const locate = () => {
+    if (!districts.length) {
+      setMessage("Data risiko belum tersedia. Coba lagi nanti.");
+      return;
+    }
     if (!("geolocation" in navigator)) {
       setMessage("Perangkat ini tidak mendukung lokasi. Pilih kecamatan dari daftar.");
       return;
@@ -26,7 +30,7 @@ export function UseLocation() {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-        const nearest = findNearestDistrict(point, DEMO_DISTRICTS);
+        const nearest = findNearestDistrict(point, districts);
         if (!nearest) {
           setMessage("SiagaKU saat ini hanya untuk DKI Jakarta.");
           return;

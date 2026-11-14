@@ -3,10 +3,10 @@
 import { useEffect, useRef } from "react";
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { ScoredDistrict } from "@/lib/demo/districts";
+import type { DistrictSummary } from "@/features/risk/types";
 import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
 
-const COLOR: Record<ScoredDistrict["level"], string> = {
+const COLOR: Record<DistrictSummary["level"], string> = {
   low: "#2e9e5b",
   moderate: "#e2b007",
   high: "#e8771e",
@@ -24,7 +24,7 @@ const escape = (value: string) =>
  * Leaflet map of the sample districts. Plain Leaflet in one effect (not react-leaflet): the effect
  * removes the map on unmount and on React's dev double-mount, so the container is always clean.
  */
-export default function RiskMapInner({ items }: { items: ScoredDistrict[] }) {
+export default function RiskMapInner({ items }: { items: DistrictSummary[] }) {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
