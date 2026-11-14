@@ -43,3 +43,7 @@ next-env.d.ts
 
 # superpowers
 .superpowers/
+
+# taste-skill build marker (local tooling, never committed)
+.taste-skill/
+shots/

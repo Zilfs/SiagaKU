@@ -9,9 +9,11 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - [lucide-react](https://lucide.dev) - ikon
 - [class-variance-authority](https://cva.style) dan tw-animate-css - varian kelas dan animasi
 - cn (paket npm `cn`) - pembantu penggabung nama kelas dari shadcn
-- Font Geist (via next/font, Vercel, lisensi SIL OFL) - tipografi bawaan scaffold
+- Font Epilogue dan JetBrains Mono (via next/font, Google Fonts, lisensi SIL OFL) - tipografi display dan angka
+- [design-taste-frontend](https://github.com/opencode/design-taste-frontend) (taste-skill 2.5.1) - sistem layout, kartu, dan motion yang diadaptasi di `src/styles/taste/` dan `public/taste/moments/`; dipakai sebagai alat desain internal, bukan dependensi runtime
 - [zod](https://zod.dev) - validasi data dan env
 - [Supabase](https://supabase.com) (@supabase/supabase-js) - klien basis data Postgres dan penyimpanan
+- [Leaflet](https://leafletjs.com) - peta risiko interaktif; ubin peta dari [OpenStreetMap](https://www.openstreetmap.org/copyright)
 - server-only (Vercel) - menjaga modul sisi server tidak masuk ke bundel browser
 - [Vercel AI SDK](https://ai-sdk.dev) (`ai`) - panggilan model AI, streaming, structured output
 - [@ai-sdk/google](https://ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai), [@ai-sdk/groq](https://ai-sdk.dev/providers/ai-sdk-providers/groq), dan [@ai-sdk/openai-compatible](https://ai-sdk.dev/providers/openai-compatible-providers) - provider AI dan fallback
@@ -39,3 +41,4 @@ kontak darurat) beserta tautan verifikasi per baris ada di `data/README.md`.
 
 AI coding assistant: Claude Code (Anthropic) — digunakan untuk scaffolding dan implementasi.
 AI coding assistant: opencode — digunakan untuk implementasi router AI dan RAG (Task 5, Task 9).
+AI coding assistant: opencode (DeepSeek V4.1 Flash) — redesain UI/UX landing, halaman wilayah, dan peta (Task 8).
