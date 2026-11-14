@@ -40,7 +40,7 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 - Setiap fitur AI punya fallback non-AI (template).
 - Data cuaca: BMKG (tampil, resmi) + Open-Meteo (angka mm untuk skor & historis).
 - Tailwind + shadcn/ui, Leaflet, Recharts, zod, Vitest, GitHub Actions CI.
-- Tim siap aktifkan billing Gemini atau pakai provider alternatif saat penjurian.
+- Urutan provider (14 Nov): Gemini gratis → Groq gratis → Gemini berbayar lewat slot `ALT_AI_*` (endpoint OpenAI-compatible Gemini, project Google terpisah dengan billing + budget alert). Tanpa ubah kode. Embedding RAG tetap pakai key Gemini gratis (kalau habis, retrieval turun ke FTS).
 - Batas `hunian.lantai` 0–60 (14 Nov), angka lain di input rencana tetap 0–10.
 - Pembagian peran (13 Nov): W1 Frontend = Ukon, W2 Backend/Data = Rhein, W3 AI = Bagus,
   W4 Data/Konten/Dokumentasi = Syaki.
@@ -78,7 +78,7 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Supabase belum dibuat: `0001_init.sql` dan `0002_rate_limit.sql` belum dijalankan; `.env.local` & key AI belum ada.
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
-- PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
+- PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi: belum diputuskan.
 
 ## Langkah berikutnya (urut)
 1. Rhein: buat project Supabase, jalankan migrasi 0001–0002, isi `.env.local`, setup Vercel.
