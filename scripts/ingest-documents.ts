@@ -3,7 +3,7 @@
  *
  *   npx tsx --conditions=react-server scripts/ingest-documents.ts
  *
- * Reads `data/pedoman/index.json`, extracts every PDF page with unpdf, splits
+ * Reads `data/guidelines/index.json`, extracts every PDF page with unpdf, splits
  * the text into chunks, embeds them with Gemini in batches of 20, and upserts
  * the result into `documents` + `document_chunks`. Re-running is safe: the
  * chunks of a document are replaced.
@@ -33,7 +33,7 @@ type IndexEntry = {
   url: string;
 };
 
-const DATA_DIR = path.join(process.cwd(), "data", "pedoman");
+const DATA_DIR = path.join(process.cwd(), "data", "guidelines");
 const INDEX_PATH = path.join(DATA_DIR, "index.json");
 const EMBED_BATCH = 20;
 const INSERT_BATCH = 50;
@@ -219,7 +219,7 @@ async function main() {
 
   if (!Array.isArray(index) || index.length === 0) {
     console.error(
-      `No documents listed in ${INDEX_PATH}. Add PDFs to data/pedoman/ and list them in index.json first.`,
+      `No documents listed in ${INDEX_PATH}. Add PDFs to data/guidelines/ and list them in index.json first.`,
     );
     process.exitCode = 1;
     return;

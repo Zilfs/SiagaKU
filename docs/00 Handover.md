@@ -56,7 +56,7 @@ SELESAI:
 - W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) di `data/guidelines/`.
 - W4 Task 13 (Evaluasi RAG): 40 soal + 6 profil uji di `tests/eval/` (lihat `tests/eval/README.md`).
 - W3 Task 5 (Router AI): provider chain gemini -> groq -> alt, fallback, cooldown, log `ai_log` sudah masuk `dev` (PR #4).
-- W3 Task 9 (RAG): chunking, embedding 768 dim, retrieval vector dengan fallback FTS, dan skrip ingest di branch feature/rag.
+- W3 Task 9 (RAG): chunking, embedding 768 dim, retrieval vector dengan fallback FTS, dan skrip ingest di branch feature/rag. Korpus membaca `data/guidelines/` + `data/guidelines/index.json` (5 entri); folder `data/pedoman/` dihapus.
 
 BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
@@ -69,6 +69,7 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
 - `tests/eval/profil.json` P03 memakai `lantai: 12` (sesuai 05 Desain AI §7), sedangkan 07 API Spec membatasi `lantai` 0–10. Perlu keputusan Rhein: naikkan batas `lantai` (usul 0–60) atau turunkan profil uji.
 - `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
+- URL sumber dokumen pedoman `04` masih menunjuk salinan `unmerbaya.ac.id`; Syaki mengecek ulang URL resmi BNPB. Ganti link di `data/guidelines/README.md` dan `url` entri `04` di `data/guidelines/index.json` bila berubah.
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
