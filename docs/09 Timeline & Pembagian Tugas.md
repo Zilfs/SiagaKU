@@ -44,14 +44,14 @@ PIC ditetapkan 13 Nov 2026 (task per orang: [[13 Implementation Plan]]). Satu or
 - [ ] W3: `providers.ts` + `router.ts` + test (mock error 429/500/timeout); endpoint uji `/api/health?deep=1`
 - [ ] W3: `ingest-dokumen.ts` (chunk + embed), uji dengan 1 PDF
 - [ ] W1: layout global (header, footer, modal Darurat), landing, design tokens
-- [ ] W4: **`data/kecamatan.csv` 44 baris** (prioritas!), mulai `riwayat_banjir.csv`, `kelurahan_rawan.csv`, `kontak.csv`; kumpulkan ≥ 5 PDF pedoman
+- [ ] W4: **`data/districts.csv` 44 baris** (prioritas!), mulai `flood_events.csv`, `flood_prone_subdistricts.csv`, `emergency_contacts.csv`; kumpulkan ≥ 5 PDF pedoman
 - **Akhir hari:** seed kecamatan jalan, deploy hijau
 
 ### Min 15 Nov — Hari 2: F1 + mulai F2/F3
 - [ ] W1: `/peta` (Leaflet, marker per level, popup), `/wilayah/[slug]` (kartu skor, cuaca, riwayat, titik aman)
 - [ ] W2: `/api/kecamatan`, `/api/risiko/[id]`, seed riwayat/rawan/posko, hitung `kerawanan_dasar`
 - [ ] W3: ingest semua dokumen; `rag.ts` (match + FTS fallback); `/api/chat` streaming
-- [ ] W4: lanjut kurasi (target minimum data), `posko.csv`; foto demo laporan (milik sendiri / lisensi bebas)
+- [ ] W4: lanjut kurasi (target minimum data), `shelters.csv`; foto demo laporan (milik sendiri / lisensi bebas)
 - **Akhir hari:** F1 jalan end-to-end di produksi
 
 ### Sen 16 Nov — Hari 3: F2 + F3 jalan

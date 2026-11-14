@@ -19,9 +19,16 @@ untuk memberikan jawaban yang akurat berdasarkan pedoman resmi.
 Ukuran total kelima file ± 67 MB. Nama file sengaja diberi prefix `01`–`05` agar urutan
 *ingest* deterministik.
 
-> **Catatan sumber `04`:** URL sudah memakai salinan resmi Perpustakaan BNPB, hasil verifikasi
-> Syaki (W4) di #18. Kalau URL berubah, ganti link di tabel ini **dan** `url` entri `04`
-> di `index.json` agar sitasi tetap benar.
+## Catatan verifikasi sumber
+
+- **`04_bnpb_pedoman_latihan_kesiapsiagaan.pdf`** sebelumnya ditautkan ke salinan di
+  `unmerbaya.ac.id`. Isinya sudah diperiksa: benar dokumen BNPB "Buku Pedoman Latihan
+  Kesiapsiagaan Bencana Nasional" (Kata Sambutan Deputi Bidang Pencegahan dan
+  Kesiapsiagaan B. Wisnu Widjaja, Jakarta Maret 2017). Tautan diganti ke salinan digital
+  resmi di perpustakaan BNPB (`perpustakaan.bnpb.go.id`, record katalog id `845`).
+- File lokal adalah **Edisi Cetak II (Revisi), April 2017, 145 hlm**, sedangkan salinan di
+  perpustakaan BNPB adalah **Edisi Cetak I, Maret 2017, 141 hlm**. Judul, penyusun, dan
+  penerbit sama; perbedaan halaman berasal dari revisi April 2017.
 
 ## Metadata ingest (`index.json`)
 
