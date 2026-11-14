@@ -41,6 +41,7 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 - Data cuaca: BMKG (tampil, resmi) + Open-Meteo (angka mm untuk skor & historis).
 - Tailwind + shadcn/ui, Leaflet, Recharts, zod, Vitest, GitHub Actions CI.
 - Tim siap aktifkan billing Gemini atau pakai provider alternatif saat penjurian.
+- Batas `hunian.lantai` 0–60 (14 Nov), angka lain di input rencana tetap 0–10.
 - Pembagian peran (13 Nov): W1 Frontend = Ukon, W2 Backend/Data = Rhein, W3 AI = Bagus,
   W4 Data/Konten/Dokumentasi = Syaki.
 
@@ -71,7 +72,6 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 ## Masalah terbuka / risiko
 - Kuota AI saat penjurian (mitigasi: fallback, cache, rate limit, billing/alternatif).
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
-- `tests/eval/profil.json` P03 memakai `lantai: 12` (sesuai 05 Desain AI §7), sedangkan 07 API Spec membatasi `lantai` 0–10. Perlu keputusan Rhein: naikkan batas `lantai` (usul 0–60) atau turunkan profil uji.
 - `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
 - Supabase belum dibuat: `0001_init.sql` dan `0002_rate_limit.sql` belum dijalankan; `.env.local` & key AI belum ada.
 - PR #7 (RAG, Bagus) menunggu perbaikan: konflik handover + pakai folder `data/guidelines/` (bukan `data/pedoman/`).
@@ -82,7 +82,7 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 
 ## Langkah berikutnya (urut)
 1. Rhein: buat project Supabase, jalankan migrasi 0001–0002, isi `.env.local`, setup Vercel.
-2. Rhein: putuskan batas `lantai` (lihat risiko di atas), lalu Task 7 (API risiko + penjelasan AI).
+2. Rhein: Task 7 (API risiko + penjelasan AI).
 3. Bagus: perbaiki PR #7, lalu jalankan `npm run rag:ingest` setelah key ada.
 4. Syaki: issue #15. Ukon: Task 8 (UI dasar) setelah Task 7 siap.
 5. Ikuti 09 Timeline & Pembagian Tugas.
