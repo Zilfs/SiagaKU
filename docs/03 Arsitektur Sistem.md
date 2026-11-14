@@ -149,7 +149,7 @@ GROQ_API_KEY=
 GROQ_MODEL=                           # model teks (mis. gpt-oss / llama)
 GROQ_VISION_MODEL=                    # opsional, model multimodal jika tersedia
 
-ALT_AI_BASE_URL=                      # opsional, provider OpenAI-compatible
+ALT_AI_BASE_URL=                      # opsional, provider OpenAI-compatible; rencana: Gemini berbayar (https://generativelanguage.googleapis.com/v1beta/openai/, project Google terpisah dengan billing)
 ALT_AI_API_KEY=
 ALT_AI_MODEL=
 
