@@ -16,7 +16,12 @@ export function ClimateCard() {
         makin sering masuk ke kampung pesisir Jakarta. Dua hal ini membuat
         genangan bisa datang lebih cepat dari biasanya.
       </p>
-      <p className="sk-mono t-small muted">Sumber: BMKG · Kajian iklim Jakarta</p>
+      <p className="sk-mono t-small muted">
+        Sumber:{" "}
+        <a href="https://www.bmkg.go.id/iklim/" target="_blank" rel="noreferrer">
+          BMKG · Informasi Iklim Indonesia
+        </a>
+      </p>
     </section>
   );
 }

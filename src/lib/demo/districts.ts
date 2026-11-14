@@ -31,20 +31,6 @@ export type ScoredDistrict = District & {
   level: RiskLevel;
 };
 
-const LEVEL_LABEL: Record<RiskLevel, string> = {
-  low: "Rendah",
-  moderate: "Sedang",
-  high: "Tinggi",
-  very_high: "Sangat Tinggi",
-};
-
-const LEVEL_CLASS: Record<RiskLevel, string> = {
-  low: "sk-risk--low",
-  moderate: "sk-risk--moderate",
-  high: "sk-risk--high",
-  very_high: "sk-risk--very-high",
-};
-
 export function levelOf(score: number): RiskLevel {
   if (score < 25) return "low";
   if (score < 50) return "moderate";
@@ -54,14 +40,6 @@ export function levelOf(score: number): RiskLevel {
 
 export function scoreOf(district: District): number {
   return Math.round(0.55 * district.vulnerability + 0.45 * district.rainFactor);
-}
-
-export function riskLabel(level: RiskLevel): string {
-  return LEVEL_LABEL[level];
-}
-
-export function riskClass(level: RiskLevel): string {
-  return LEVEL_CLASS[level];
 }
 
 export function withScore(district: District): ScoredDistrict {

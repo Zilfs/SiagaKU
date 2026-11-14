@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Mark } from "@/components/site/Mark";
-import { EmergencyButton } from "./EmergencyButton";
+import { Mark } from "@/components/site/mark";
+import { EmergencyButton } from "./emergency-button";
 
 const PAGES = [
   { href: "/#cek", label: "Cek risiko wilayah" },

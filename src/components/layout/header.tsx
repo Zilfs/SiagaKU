@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
-import { Mark } from "@/components/site/Mark";
-import { EmergencyButton } from "./EmergencyButton";
+import { Mark } from "@/components/site/mark";
+import { EmergencyButton } from "./emergency-button";
 
 const LINKS = [
   { href: "/#cek", label: "Cek risiko" },

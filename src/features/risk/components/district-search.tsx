@@ -3,14 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, Sparkles, TriangleExclamationPoint } from "lucide-react";
-import { RiskBadge } from "@/components/risk/RiskBadge";
+import { RiskBadge } from "@/components/risk-badge";
 import {
   DEMO_DISTRICTS,
   riskAction,
-  riskLabel,
   searchDistricts,
-  type RiskLevel,
 } from "@/lib/demo/districts";
+import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 
 const LEVEL_COLOR: Record<RiskLevel, string> = {
   low: "var(--risk-low)",
@@ -44,7 +43,7 @@ function explanation(name: string, rainfallMm: number, level: RiskLevel) {
  * The landing page's product surface: search a district, read its score, its two components and the
  * plain-language action. Demo data until the risk API (Task 7) lands; every number says "data contoh".
  */
-export function KecamatanSearch() {
+export function DistrictSearch() {
   const [query, setQuery] = useState("");
   const [slug, setSlug] = useState("jatinegara");
   const [visibleRows, setVisibleRows] = useState(VISIBLE_ROWS);
@@ -96,7 +95,7 @@ export function KecamatanSearch() {
                 <span className="sk-list__name">
                   <b>{district.name}</b>
                   <span>
-                    {district.city} · {riskLabel(district.level)}
+                    {district.city} · {RISK_LEVEL_LABELS[district.level]}
                   </span>
                 </span>
                 <span className="sk-list__score">{district.score}</span>

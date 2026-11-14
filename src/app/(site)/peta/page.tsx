@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { RiskMap } from "@/components/map/RiskMap";
-import { UseLocation } from "@/components/map/UseLocation";
-import { RiskBadge } from "@/components/risk/RiskBadge";
-import { DEMO_DISTRICTS, riskLabel, type RiskLevel } from "@/lib/demo/districts";
+import { RiskMap } from "@/components/map/risk-map";
+import { UseLocation } from "@/components/map/use-location";
+import { RiskBadge } from "@/components/risk-badge";
+import { DEMO_DISTRICTS, type RiskLevel } from "@/lib/demo/districts";
+import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
 
 export const metadata: Metadata = {
   title: "Peta risiko banjir Jakarta · SiagaKU",
@@ -45,7 +46,7 @@ export default function MapPage() {
                   style={{ background: DOT[item.level] }}
                   aria-hidden="true"
                 />
-                {riskLabel(item.level)} <span className="sk-mono">{item.range}</span>
+                {RISK_LEVEL_LABELS[item.level]} <span className="sk-mono">{item.range}</span>
               </li>
             ))}
           </ul>

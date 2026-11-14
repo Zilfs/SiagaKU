@@ -4,8 +4,15 @@ import {
   OctagonExclamationPoint,
   TriangleExclamationPoint,
 } from "lucide-react";
-import type { RiskLevel } from "@/lib/demo/districts";
-import { riskClass, riskLabel } from "@/lib/demo/districts";
+import type { RiskLevel } from "@/lib/risk/level";
+import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
+
+const CLASS: Record<RiskLevel, string> = {
+  low: "sk-risk--low",
+  moderate: "sk-risk--moderate",
+  high: "sk-risk--high",
+  very_high: "sk-risk--very-high",
+};
 
 const ICON = {
   low: CircleCheck,
@@ -29,9 +36,9 @@ export function RiskBadge({
 }) {
   const Icon = ICON[level];
   return (
-    <span className={`sk-risk ${riskClass(level)}`}>
+    <span className={`sk-risk ${CLASS[level]}`}>
       <Icon size={size === "sm" ? 13 : 14} aria-hidden="true" strokeWidth={2} />
-      {riskLabel(level)}
+      {RISK_LEVEL_LABELS[level]}
       {typeof score === "number" ? (
         <span className="sk-mono" aria-hidden="true">
           {score}

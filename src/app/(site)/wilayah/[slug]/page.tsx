@@ -4,16 +4,16 @@ import { notFound } from "next/navigation";
 import {
   DEMO_DISTRICTS,
   riskAction,
-  riskLabel,
 } from "@/lib/demo/districts";
-import { AiExplanation } from "@/components/risk/AiExplanation";
-import { ClimateCard } from "@/components/risk/ClimateCard";
-import { FloodHistory } from "@/components/risk/FloodHistory";
-import { RiskBadge } from "@/components/risk/RiskBadge";
-import { RiskGauge } from "@/components/risk/RiskGauge";
-import { SafePoints } from "@/components/risk/SafePoints";
-import { ScoreBreakdown } from "@/components/risk/ScoreBreakdown";
-import { WeatherStrip } from "@/components/risk/WeatherStrip";
+import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
+import { AiExplanation } from "@/features/risk/components/ai-explanation";
+import { ClimateCard } from "@/features/risk/components/climate-card";
+import { FloodHistory } from "@/features/risk/components/flood-history";
+import { RiskBadge } from "@/components/risk-badge";
+import { RiskGauge } from "@/features/risk/components/risk-gauge";
+import { SafePoints } from "@/features/risk/components/safe-points";
+import { ScoreBreakdown } from "@/features/risk/components/score-breakdown";
+import { WeatherStrip } from "@/features/risk/components/weather-strip";
 import {
   explanationFor,
   historyFor,
@@ -36,7 +36,7 @@ export async function generateMetadata({
   if (!district) return { title: "Kecamatan tidak ditemukan · SiagaKU" };
   return {
     title: `${district.name}, ${district.city} · Risiko banjir · SiagaKU`,
-    description: `Skor risiko banjir ${district.name} hari ini: ${district.score} dari 100, level ${riskLabel(district.level)}. Lihat komponen skor, prakiraan hujan, riwayat genangan, dan titik aman.`,
+    description: `Skor risiko banjir ${district.name} hari ini: ${district.score} dari 100, level ${RISK_LEVEL_LABELS[district.level]}. Lihat komponen skor, prakiraan hujan, riwayat genangan, dan titik aman.`,
   };
 }
 
@@ -64,7 +64,7 @@ export default async function DistrictPage({
             <h1>{district.name}</h1>
             <p className="sk-detail-lede">
               Skor risiko banjir hari ini {district.score} dari 100, level{" "}
-              {riskLabel(district.level)}. Angka ini menggabungkan kerawanan
+              {RISK_LEVEL_LABELS[district.level]}. Angka ini menggabungkan kerawanan
               dasar wilayah dan prakiraan hujan tiga hari.
             </p>
             <div className="sk-detail-actions">
@@ -81,7 +81,7 @@ export default async function DistrictPage({
             <RiskGauge
               score={district.score}
               level={district.level}
-              label={riskLabel(district.level)}
+              label={RISK_LEVEL_LABELS[district.level]}
             />
             <RiskBadge level={district.level} />
             <p>{riskAction(district.level)}</p>
@@ -99,7 +99,10 @@ export default async function DistrictPage({
           <ScoreBreakdown district={district} />
           <WeatherStrip slots={weatherFor(district)} />
           <FloodHistory events={historyFor(district)} />
-          <SafePoints points={safePointsFor(district)} />
+          <SafePoints
+            points={safePointsFor(district)}
+            origin={{ lat: district.lat, lng: district.lng }}
+          />
           <ClimateCard />
         </div>
 

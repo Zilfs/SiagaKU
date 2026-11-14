@@ -1,7 +1,7 @@
-import { ActionBar } from "@/components/layout/ActionBar";
-import { EmergencyDialog } from "@/components/layout/EmergencyDialog";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
+import { ActionBar } from "@/components/layout/action-bar";
+import { EmergencyDialog } from "@/components/layout/emergency-dialog";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
 
 export default function SiteLayout({ children }: LayoutProps<"/">) {
   return (

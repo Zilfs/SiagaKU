@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { ScoredDistrict } from "@/lib/demo/districts";
-import { riskLabel } from "@/lib/demo/districts";
+import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
 
 const COLOR: Record<ScoredDistrict["level"], string> = {
   low: "#2e9e5b",
@@ -54,7 +54,7 @@ export default function RiskMapInner({ items }: { items: ScoredDistrict[] }) {
         .addTo(map)
         .bindPopup(
           `<div class="sk-map__popup"><b>${escape(district.name)}</b>` +
-            `<span>${riskLabel(district.level)} · skor ${district.score}</span>` +
+            `<span>${RISK_LEVEL_LABELS[district.level]} · skor ${district.score}</span>` +
             `<a href="/wilayah/${district.slug}">Lihat detail</a></div>`,
         );
     }

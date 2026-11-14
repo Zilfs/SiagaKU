@@ -6,10 +6,10 @@ import {
   MessageCircle,
   Phone,
 } from "lucide-react";
-import { HeroCollage } from "@/components/site/HeroCollage";
-import { KecamatanSearch } from "@/components/search/KecamatanSearch";
-import { RiskBadge } from "@/components/risk/RiskBadge";
-import { riskLabel, type RiskLevel } from "@/lib/demo/districts";
+import { HeroCollage } from "@/components/site/hero-collage";
+import { DistrictSearch } from "@/features/risk/components/district-search";
+import { RiskBadge } from "@/components/risk-badge";
+import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 
 const LEGEND: { level: RiskLevel; range: string; dot: string }[] = [
   { level: "low", range: "0–24", dot: "var(--risk-low)" },
@@ -86,6 +86,9 @@ export default function HomePage() {
         <div className="wrap">
           <div className="hero-text grid hero__grid">
             <div className="span-3">
+              <p className="sk-eyebrow sk-hero__eyebrow">
+                Mitigasi banjir · DKI Jakarta
+              </p>
               <h1 id="hero-h">Risiko banjir Jakarta, tiap kecamatan.</h1>
               <p className="hero__lead">
                 Cek skor risiko wilayahmu hari ini, lihat dari mana angkanya,
@@ -101,14 +104,17 @@ export default function HomePage() {
                 <a className="btn btn--primary" href="#cek">
                   Cek risiko wilayah
                 </a>
-                <p className="sk-hero__note">
-                  <span
-                    className="sk-dot"
-                    style={{ background: "var(--risk-low)" }}
-                    aria-hidden="true"
-                  />
-                  44 kecamatan · BMKG &amp; Open-Meteo · 14.00 WIB
-                </p>
+                <ul className="sk-hero__proof" aria-label="Cakupan dan sumber data">
+                  <li>
+                    <b>44</b> kecamatan
+                  </li>
+                  <li>
+                    <b>3 hari</b> BMKG
+                  </li>
+                  <li>
+                    <b>112</b> darurat
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -133,13 +139,13 @@ export default function HomePage() {
                     style={{ background: item.dot }}
                     aria-hidden="true"
                   />
-                  {riskLabel(item.level)} {item.range}
+                  {RISK_LEVEL_LABELS[item.level]} {item.range}
                 </li>
               ))}
             </ul>
           </div>
           <div className="sk-fill">
-            <KecamatanSearch />
+            <DistrictSearch />
           </div>
         </div>
       </section>
@@ -156,7 +162,9 @@ export default function HomePage() {
             </div>
             <div className="grid">
               <article className="card span-6">
-                <h3>Risiko tiap kecamatan</h3>
+                <h3>
+                  <span className="sk-card-index">01</span>Risiko tiap kecamatan
+                </h3>
                 <p>Satu skor per kecamatan Jakarta.</p>
                 <div className="panel">
                   <div className="sk-feature" data-ui>
@@ -188,7 +196,9 @@ export default function HomePage() {
               </article>
 
               <article className="card span-6">
-                <h3>Rencana siaga banjir</h3>
+                <h3>
+                  <span className="sk-card-index">02</span>Rencana siaga banjir
+                </h3>
                 <p>Daftar periksa per anggota keluarga.</p>
                 <div className="panel">
                   <div className="sk-feature" data-ui>
@@ -226,7 +236,9 @@ export default function HomePage() {
           <div className="group">
             <div className="grid">
               <article className="card span-6">
-                <h3>Tanya soal banjir</h3>
+                <h3>
+                  <span className="sk-card-index">03</span>Tanya soal banjir
+                </h3>
                 <p>
                   Jawaban bahasa sehari-hari dari pedoman BNPB, BPBD, dan
                   Kementerian Kesehatan, dengan sumber di tiap jawaban.
@@ -257,7 +269,9 @@ export default function HomePage() {
               </article>
 
               <article className="card span-6">
-                <h3>Lapor banjir</h3>
+                <h3>
+                  <span className="sk-card-index">04</span>Lapor banjir
+                </h3>
                 <p>
                   Kirim foto dan tinggi air. Laporan warga melengkapi data
                   resmi, bukan menggantikannya.

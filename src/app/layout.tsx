@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Epilogue, JetBrains_Mono } from "next/font/google";
-import { Moments } from "@/components/taste/Moments";
+import { Moments } from "@/components/taste/moments";
 import "./globals.css";
 
 const epilogue = Epilogue({

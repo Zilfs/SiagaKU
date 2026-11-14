@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { EmergencyDialog } from "@/components/layout/EmergencyDialog";
+import { EmergencyDialog } from "@/components/layout/emergency-dialog";
 
 describe("EmergencyDialog", () => {
   it("offers the 112 call link and says what it is for", () => {

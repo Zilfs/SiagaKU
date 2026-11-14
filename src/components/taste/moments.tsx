@@ -10,10 +10,11 @@ import { useEffect } from "react";
 export function Moments() {
   useEffect(() => {
     let cancelled = false;
-    const load = new Function(
-      "url",
-      "return import(url)",
-    ) as (url: string) => Promise<{ mountAll: (root: Document) => Promise<unknown> }>;
+    // A public asset, not a bundled module: both bundlers must leave the URL as written.
+    const load = (url: string) =>
+      import(
+        /* webpackIgnore: true */ /* turbopackIgnore: true */ url
+      ) as Promise<{ mountAll: (root: Document) => Promise<unknown> }>;
 
     const mount = async () => {
       try {

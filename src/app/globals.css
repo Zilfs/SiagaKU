@@ -2265,3 +2265,65 @@ html[data-ground="sky"] {
     max-width: 320px;
   }
 }
+
+/* ------------------------------------------------------------------ landing refresh
+   UI UX Pro Max "Trust & Authority + Accessible & Ethical", mapped to the docs/08 sea-blue
+   identity (the generator's alert red was rejected: the brief asks for calm, not panic). */
+.sk-hero__eyebrow {
+  display: none;
+}
+@media (min-width: 640px) {
+  .sk-hero__eyebrow {
+    display: block;
+    margin: 0 0 var(--s-4);
+  }
+}
+/* three proof facts under the hero's one button, in the note's old place */
+.sk-hero__proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+.sk-hero__proof li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.sk-hero__proof b {
+  font: 500 var(--t-small) / 1 var(--font-mono);
+  letter-spacing: -0.02em;
+  color: var(--p-ink);
+}
+/* the feature cards count themselves: 01 to 04 in the heading, no extra row */
+.sk-card-index {
+  margin-right: 8px;
+  font: 400 var(--t-label) / 1 var(--font-mono);
+  color: var(--muted);
+}
+/* the skill asks for a 3px focus ring and quiet 150-300ms state changes */
+:focus-visible {
+  outline-width: 3px;
+}
+.btn,
+.link,
+.sk-list button {
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+/* UI UX Pro Max follow-ups: focus never hides behind the fixed bar or header, and compact
+   labels (level, AI, verification) stay on one line instead of wrapping inside a card. */
+:where(a, button, input, summary, [tabindex]):focus-visible {
+  scroll-margin-block: calc(var(--nav) + 16px) calc(var(--bar) + 16px);
+}
+.sk-risk,
+.sk-tag {
+  white-space: nowrap;
+}

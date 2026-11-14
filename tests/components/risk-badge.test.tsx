@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { RiskBadge } from "@/components/risk/RiskBadge";
-import { riskLabel, type RiskLevel } from "@/lib/demo/districts";
+import { RiskBadge } from "@/components/risk-badge";
+import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 
 const LEVELS: RiskLevel[] = ["low", "moderate", "high", "very_high"];
 
@@ -16,7 +16,7 @@ describe("RiskBadge", () => {
   it("names every level in words", () => {
     for (const level of LEVELS) {
       const html = renderToStaticMarkup(<RiskBadge level={level} />);
-      expect(html).toContain(riskLabel(level));
+      expect(html).toContain(RISK_LEVEL_LABELS[level]);
     }
   });
 
