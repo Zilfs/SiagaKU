@@ -298,10 +298,10 @@ Script di `scripts/` (dijalankan lokal dengan `tsx`, memakai service role key):
 
 | Script | Input | Output |
 |---|---|---|
-| `seed-kecamatan.ts` | `data/kecamatan.csv` (44 baris: nama, kota, kode, adm4, lat, lng, pesisir_rob) | tabel `kecamatan` |
-| `seed-banjir.ts` | `data/riwayat_banjir.csv`, `data/kelurahan_rawan.csv` | tabel terkait + hitung `kerawanan_dasar` |
+| `seed-kecamatan.ts` | `data/districts.csv` (44 baris: nama, kota, kode, adm4, lat, lng, pesisir_rob) | tabel `kecamatan` |
+| `seed-banjir.ts` | `data/flood_events.csv`, `data/flood_prone_subdistricts.csv` | tabel terkait + hitung `kerawanan_dasar` |
 | `seed-kelurahan.ts` | Dataset kode wilayah (prefix `31.`) + panggil BMKG per adm4 (≤ 50/menit) untuk lat/lng | `kelurahan` (±267 baris) + flag `rawan` dari `kelurahan_rawan` |
-| `seed-posko.ts` | `data/posko.csv`, `data/kontak.csv` | `posko_evakuasi`, `kontak_darurat` |
+| `seed-posko.ts` | `data/shelters.csv`, `data/emergency_contacts.csv` | `posko_evakuasi`, `kontak_darurat` |
 | `seed-iklim.ts` | Open-Meteo archive per kota, 2016–2025 | `iklim_tahunan` |
 | `ingest-dokumen.ts` | `data/pedoman/*.pdf` atau `.md` + `data/pedoman/index.json` (metadata) | `dokumen`, `dokumen_chunk` + embedding |
 | `seed-demo.ts` | `data/demo/laporan/*.jpg` + JSON | 6–10 laporan `is_demo=true` |
@@ -310,7 +310,7 @@ Semua CSV ada di repo (`data/`) supaya juri bisa memeriksa asal data. Ini menamb
 
 ### Format CSV contoh
 
-`data/riwayat_banjir.csv`
+`data/flood_events.csv`
 ```csv
 kecamatan_slug,kelurahan,tanggal,tinggi_max_cm,jumlah_rt,keterangan,sumber_url
 jatinegara,Kampung Melayu,2025-03-03,250,,Luapan Kali Ciliwung,https://tirto.id/...

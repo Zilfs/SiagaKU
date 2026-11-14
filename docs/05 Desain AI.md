@@ -238,7 +238,7 @@ Input: deret `hari_hujan_lebat` dan `total_hujan_mm` 2016–2025 per kota. Outpu
 
 ## 7. Evaluasi (wajib sebelum feature freeze)
 
-File `tests/eval/pertanyaan.json`: 40 pertanyaan.
+File `tests/eval/questions.json`: 40 pertanyaan.
 | Kelompok | Jumlah | Kriteria lulus |
 |---|---|---|
 | Dalam cakupan, ada di dokumen | 25 | Jawaban benar + ≥ 1 sitasi relevan |
