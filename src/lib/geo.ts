@@ -28,3 +28,9 @@ export function findNearestDistrict<T extends LatLng>(
   }
   return best;
 }
+
+/** Indonesian distance label: metres under 1 km, one decimal above. */
+export function formatDistance(km: number): string {
+  if (km < 1) return `${Math.max(50, Math.round((km * 1000) / 50) * 50)} m`;
+  return `${km.toFixed(1).replace(".", ",")} km`;
+}

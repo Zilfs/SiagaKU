@@ -68,6 +68,8 @@ SELESAI:
 - Proteksi branch `dev` & `main` aktif (wajib PR, 1 approval orang lain, CI hijau, tanpa force-push).
 - URL resmi dokumen pedoman `04` sudah diverifikasi Syaki (Perpustakaan BNPB).
 - `CREDITS.md` diperbarui dengan daftar PDF pedoman.
+- W1 Task 8 (UI dasar, irisan pertama): sistem visual + landing baru (token warna, header/footer/dialog Darurat, hero triptych, panel cek risiko, empat kartu fitur, langkah, sumber data, FAQ), `/wilayah/[slug]` + 404 ramah, dan `/peta` Leaflet dengan tombol "Gunakan lokasiku". Semua memakai data contoh (`src/lib/demo/`) sampai Task 7 siap; tes `tests/components/{risk-badge,emergency}.test.tsx` ditambahkan.
+- W1: branch `feature/landing-redesign` (dari `dev` `3c700d8`) berisi landing + halaman wilayah + peta, untuk direview sebelum lanjut T10/T11/T14.
 
 BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
@@ -82,12 +84,15 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Supabase project `lqyrtrmorzndqdpdqcaz` (14 Nov): migrasi 0001–0003 dijalankan lewat MCP Supabase, seed 44/240/116/283/9 baris, `/api/health` dan endpoint T7 sudah dites dengan data asli. **Jangan pakai `supabase db push`**: riwayat migrasi remote memakai versi tanggal (`20261114…_init`), bukan `0001`, jadi CLI akan mencoba membuat ulang tabel. Migrasi baru: tambah file `supabase/migrations/000N_*.sql` di PR lalu jalankan lewat MCP (`apply_migration`). Advisor tersisa: `vector` di schema public (dibiarkan, memindahkannya berisiko) dan RLS tanpa policy (disengaja, akses hanya lewat server).
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
-- PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi: belum diputuskan.
+- PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
+- W1 landing/wilayah/peta masih memakai data contoh (`src/lib/demo/`); API Task 7 sudah ada di `dev`, wiring berikutnya.
+- Font: `docs/08` menyebut Plus Jakarta Sans, implementasi memakai Epilogue + JetBrains Mono (SIL OFL). Rhein perlu memutuskan dan menyelaraskan docs.
 
 ## Langkah berikutnya (urut)
 1. Rhein: isi key AI (Gemini dan/atau Groq) di `.env.local`, cek `meta.provider` di `/api/risk/jatinegara/explanation`, lalu setup Vercel (env sama dengan `.env.local`).
 2. Rhein: `npm run db:seed` setelah Supabase siap, lalu tes endpoint T7 dan `/api/health`; Ukon: Task 8 pakai tipe di `src/features/risk/types.ts`.
 3. Bagus: jalankan `npm run rag:ingest` setelah key ada (PR #7 sudah di-merge), lalu lanjut chat API.
 4. Syaki: Task 17 (README utama, proposal, video).
-5. Ikuti 09 Timeline & Pembagian Tugas.
+5. Ukon: review/merge PR `feature/landing-redesign`, lalu T10-UI (`/tanya`), T11-UI (`/rencana`), T14-UI/PWA (`/peringatan`).
+6. Ikuti 09 Timeline & Pembagian Tugas.
 ```

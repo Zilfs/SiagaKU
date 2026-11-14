@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="SiagaKU">
+  <rect width="32" height="32" rx="7" fill="#0E5E8C"/>
+  <path d="M16 4.5 26 8.4v8.9c0 6.1-4.4 10.6-10 12.2C10.4 27.9 6 23.4 6 17.3V8.4z" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linejoin="round"/>
+  <path d="M16 11.4c2.7 3 4.2 5 4.2 7.1a4.2 4.2 0 0 1-8.4 0c0-2.1 1.5-4.1 4.2-7.1z" fill="#FFFFFF"/>
+</svg>

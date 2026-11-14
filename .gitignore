@@ -50,3 +50,7 @@ supabase/.branches/
 
 # per-developer MCP config
 .mcp.json
+
+# taste-skill build marker (local tooling, never committed)
+.taste-skill/
+shots/

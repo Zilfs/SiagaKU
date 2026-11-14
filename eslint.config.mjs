@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored taste-skill assets, kept as shipped (see CREDITS.md).
+    "public/taste/**",
   ]),
 ]);
 
