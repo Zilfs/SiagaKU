@@ -64,6 +64,7 @@ SELESAI:
   camelCase (mis. `score`, `level: "high"`, `components.rainfallFactor`), bukan key Indonesia di docs/07;
   bentuk lengkap ada di `src/features/risk/types.ts` (`DistrictSummary`, `RiskDetail`). Bagian `iklim` tidak ada (F5 dipotong).
 - W2 Task 12: `GET /api/health` (cek DB; `?deep=1` + `Authorization: Bearer CRON_SECRET` ping tiap provider, `skip` bila env kosong; 503 bila gagal), cron harian `vercel.json` (keep-alive Supabase), header keamanan di `next.config.ts`, `src/app/error.tsx`, halaman `/tentang` (rumus skor & tabel hujan dibaca dari `src/lib/risk/`, sumber, AI, privasi, kredit, disclaimer, tim; gaya polos, menunggu sistem visual PR #22).
+- W3 Task 10 (backend Tanya SiagaKU): `POST /api/chat` streaming AI SDK (`createUIMessageStream`), `detectEmergency` rule-based (`src/features/chat/detect-emergency.ts`), prompt + konteks bernomor (`server/chat-prompt.ts`), cache 24 jam hanya untuk satu pesan tanpa `kecamatan_id` (`ai:chat:{sha256}`), rate limit 20/10 menit, fallback teks "Maaf, SiagaKU sedang sibuk…" + kartu darurat bila semua provider gagal. Data part aktual bahasa Inggris: `data-emergency` `{active}`, `data-sources` `{items}`, `data-meta` `{provider,model,fallback,cached}` (bukan `darurat`/`aktif` di docs/07). Payload `useChat` (`parts`) dan `content` sama-sama diterima. UI `/tanya` + komponen chat belum (Ukon).
 - W2 Task 4 (seed): `npm run db:seed` (`scripts/seed.ts` + `scripts/lib/{csv,seed-data}.ts`) memvalidasi 5 CSV, memetakan slug ke id, menghitung `base_vulnerability` (kejadian per tanggal unik 5 tahun; kelurahan rawan +30 flat sampai T14), lalu mengisi 5 tabel. Diuji ke Postgres lokal dengan migrasi 0001 (44/240/116/283/9 baris; Jatinegara 80, Cengkareng 80, Kalideres 100). `src/lib/geo.ts`: `distanceKm`, `findNearestDistrict`.
 - Proteksi branch `dev` & `main` aktif (wajib PR, 1 approval orang lain, CI hijau, tanpa force-push).
 - URL resmi dokumen pedoman `04` sudah diverifikasi Syaki (Perpustakaan BNPB).
@@ -72,7 +73,7 @@ SELESAI:
 - W1: landing + halaman wilayah + peta sudah di-merge ke `dev` (PR #22, 14 Nov).
 - Font diputuskan: Epilogue + JetBrains Mono (SIL OFL), sesuai implementasi PR #22. `docs/08` diselaraskan dari vault.
 
-BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 17 (README utama, proposal, video).
+BELUM: ingest korpus pedoman ke Supabase (butuh `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`; `GEMINI_API_KEY` sudah ada di `.env.local`; target >= 5 dokumen, >= 150 chunk); UI `/tanya` + komponen chat (Ukon); uji manual chat dengan key asli; Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
@@ -91,7 +92,7 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 ## Langkah berikutnya (urut)
 1. Rhein: isi key AI (Gemini dan/atau Groq) di `.env.local` dan env Production Vercel, lalu cek `meta.provider` di `/api/risk/jatinegara/explanation` (Vercel dan seed Supabase sudah jalan).
 2. Ukon: wiring landing/wilayah/peta ke `/api/districts` dan `/api/risk/[id]` (tipe di `src/features/risk/types.ts`), hapus `src/lib/demo/`, tambah tes `formatDistance`.
-3. Bagus: jalankan `npm run rag:ingest` setelah key ada (PR #7 sudah di-merge), lalu lanjut chat API.
+3. Bagus: minta `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` dari Rhein secara pribadi (bukan PR/grup chat), jalankan `npm run rag:ingest`, catat jumlah dokumen/chunk di handover. T10 backend sudah ada di branch `feature/chat-bot`; lanjut uji manual + serahkan kontrak data part ke Ukon.
 4. Syaki: Task 17 (README utama, proposal, video).
 5. Ukon: T10-UI (`/tanya`), T11-UI (`/rencana`), T14-UI/PWA (`/peringatan`).
 6. Ikuti 09 Timeline & Pembagian Tugas.
