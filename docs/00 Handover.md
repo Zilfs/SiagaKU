@@ -41,6 +41,7 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 - Data cuaca: BMKG (tampil, resmi) + Open-Meteo (angka mm untuk skor & historis).
 - Tailwind + shadcn/ui, Leaflet, Recharts, zod, Vitest, GitHub Actions CI.
 - Tim siap aktifkan billing Gemini atau pakai provider alternatif saat penjurian.
+- Batas `hunian.lantai` 0–60 (14 Nov), angka lain di input rencana tetap 0–10.
 - Pembagian peran (13 Nov): W1 Frontend = Ukon, W2 Backend/Data = Rhein, W3 AI = Bagus,
   W4 Data/Konten/Dokumentasi = Syaki.
 
@@ -55,8 +56,14 @@ SELESAI:
   5. `kontak.csv` (9 kontak darurat terverifikasi; 0812-1237-575 = Pusdalops BNPB, bukan BPBD)
 - W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) di `data/guidelines/`.
 - W4 Task 13 (Evaluasi RAG): 40 soal + 6 profil uji di `tests/eval/` (lihat `tests/eval/README.md`).
-- W3 Task 5 (Router AI): provider chain gemini -> groq -> alt, fallback, cooldown, log `ai_log` sudah masuk `dev` (PR #4).
+- W3 Task 5: router AI gemini → groq → alt (`src/lib/ai/`), merge PR #4.
 - W3 Task 9 (RAG): chunking, embedding 768 dim, retrieval vector dengan fallback FTS, dan skrip ingest di branch feature/rag. Korpus membaca `data/guidelines/` + `data/guidelines/index.json` (5 entri); folder `data/pedoman/` dihapus.
+- W2 Task 1–3: boilerplate + CI, migrasi `0001_init.sql` (12 tabel, RLS, RPC RAG, bucket `reports`),
+  cache `getOrSet`, skor risiko, klien BMKG & Open-Meteo. Struktur kode feature-based (`docs/14 Struktur Kode.md`).
+- W2 Task 6: `src/lib/rate-limit.ts` (fixed window, bucket chat/plan/report/explanation, fail open saat DB error),
+  `src/lib/http.ts` (`jsonError`, `HttpError`, `parseJson`), migrasi `0002_rate_limit.sql` (`hit_rate_limit`).
+- Proteksi branch `dev` & `main` aktif (wajib PR, 1 approval orang lain, CI hijau, tanpa force-push).
+- URL resmi dokumen pedoman `04` sudah diverifikasi Syaki di #18 (Perpustakaan BNPB); `data/guidelines/index.json` memakai URL tersebut.
 
 BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
@@ -67,17 +74,18 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 ## Masalah terbuka / risiko
 - Kuota AI saat penjurian (mitigasi: fallback, cache, rate limit, billing/alternatif).
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
-- `tests/eval/profil.json` P03 memakai `lantai: 12` (sesuai 05 Desain AI §7), sedangkan 07 API Spec membatasi `lantai` 0–10. Perlu keputusan Rhein: naikkan batas `lantai` (usul 0–60) atau turunkan profil uji.
 - `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
-- URL sumber dokumen pedoman `04` masih menunjuk salinan `unmerbaya.ac.id`; Syaki mengecek ulang URL resmi BNPB. Ganti link di `data/guidelines/README.md` dan `url` entri `04` di `data/guidelines/index.json` bila berubah.
+- Supabase belum dibuat: `0001_init.sql` dan `0002_rate_limit.sql` belum dijalankan; `.env.local` & key AI belum ada.
+- PR #7 (RAG, Bagus): perbaikan review selesai (folder `data/guidelines/`, konflik handover, URL 04), menunggu approval akhir.
+- Issue #15 (Syaki): nama file data → bahasa Inggris, cek sumber PDF 04, cantumkan PDF di CREDITS.
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
 
 ## Langkah berikutnya (urut)
-1. Review 13 Implementation Plan, pilih metode eksekusi (subagent-driven / native).
-2. Eksekusi mulai Task 1.
-3. Hari 0: akun GitHub/Vercel/Supabase/AI Studio/Groq, create-next-app, deploy pertama, CI.
-4. Hari 1: migrasi SQL, data/kecamatan.csv (44 baris), router AI, ingest RAG, layout.
+1. Rhein: buat project Supabase, jalankan migrasi 0001–0002, isi `.env.local`, setup Vercel.
+2. Rhein: Task 7 (API risiko + penjelasan AI).
+3. Bagus: perbaiki PR #7, lalu jalankan `npm run rag:ingest` setelah key ada.
+4. Syaki: issue #15. Ukon: Task 8 (UI dasar) setelah Task 7 siap.
 5. Ikuti 09 Timeline & Pembagian Tugas.
 ```
