@@ -47,3 +47,6 @@ next-env.d.ts
 # supabase cli (link state, local stack)
 supabase/.temp/
 supabase/.branches/
+
+# per-developer MCP config
+.mcp.json

@@ -78,13 +78,13 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Kuota AI saat penjurian (mitigasi: fallback, cache, rate limit, billing/alternatif).
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
 - `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
-- Supabase belum dibuat: `0001_init.sql` dan `0002_rate_limit.sql` belum dijalankan; `.env.local` & key AI belum ada.
+- Supabase project `lqyrtrmorzndqdpdqcaz` (14 Nov): migrasi 0001–0003 dijalankan lewat MCP Supabase, seed 44/240/116/283/9 baris, `/api/health` dan endpoint T7 sudah dites dengan data asli. **Jangan pakai `supabase db push`**: riwayat migrasi remote memakai versi tanggal (`20261114…_init`), bukan `0001`, jadi CLI akan mencoba membuat ulang tabel. Migrasi baru: tambah file `supabase/migrations/000N_*.sql` di PR lalu jalankan lewat MCP (`apply_migration`). Advisor tersisa: `vector` di schema public (dibiarkan, memindahkannya berisiko) dan RLS tanpa policy (disengaja, akses hanya lewat server).
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi: belum diputuskan.
 
 ## Langkah berikutnya (urut)
-1. Rhein: buat project Supabase, jalankan migrasi lewat CLI (`npx supabase login`, `npx supabase link --project-ref <ref>`, `npx supabase db push`), isi `.env.local`, `npm run db:seed`, setup Vercel.
+1. Rhein: isi key AI (Gemini dan/atau Groq) di `.env.local`, cek `meta.provider` di `/api/risk/jatinegara/explanation`, lalu setup Vercel (env sama dengan `.env.local`).
 2. Rhein: `npm run db:seed` setelah Supabase siap, lalu tes endpoint T7 dan `/api/health`; Ukon: Task 8 pakai tipe di `src/features/risk/types.ts`.
 3. Bagus: jalankan `npm run rag:ingest` setelah key ada (PR #7 sudah di-merge), lalu lanjut chat API.
 4. Syaki: Task 17 (README utama, proposal, video).
