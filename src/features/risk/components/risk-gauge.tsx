@@ -1,4 +1,4 @@
-import type { RiskLevel } from "@/lib/demo/districts";
+import type { RiskLevel } from "@/lib/risk/level";
 
 const COLOR: Record<RiskLevel, string> = {
   low: "var(--risk-low)",

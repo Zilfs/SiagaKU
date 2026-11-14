@@ -37,7 +37,7 @@ export function Footer() {
 
         <div className="closing__links">
           <div className="grid">
-            <div className="span-6 stack-5">
+            <div className="span-4 stack-5">
               <Link className="nav__logo" href="/" aria-label="SiagaKU, ke beranda">
                 <Mark />
                 SiagaKU
@@ -46,7 +46,7 @@ export function Footer() {
                 Informasi risiko banjir dan rencana siaga untuk warga Jakarta.
               </p>
             </div>
-            <div className="span-3 start-7 footer__col">
+            <div className="span-3 start-6 footer__col">
               <h4>Halaman</h4>
               <ul>
                 {PAGES.map((page) => (
@@ -56,11 +56,13 @@ export function Footer() {
                 ))}
               </ul>
             </div>
-            <div className="span-3 footer__col">
+            <div className="span-3 start-10 footer__col">
               <h4>Darurat</h4>
               <ul>
                 <li>
-                  <EmergencyButton>Darurat 112</EmergencyButton>
+                  <EmergencyButton className="footer__button">
+                    Darurat 112
+                  </EmergencyButton>
                 </li>
                 <li>
                   <a href="tel:112">Telepon 112</a>

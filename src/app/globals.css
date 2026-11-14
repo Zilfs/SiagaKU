@@ -1507,15 +1507,25 @@ html[data-ground="sky"] {
 .nav__actions .btn,
 .nav:not(.is-open) .nav__actions .btn,
 .hero--triptych .hero__cta .btn,
-.btn--xl,
 .sk-call .btn {
   height: var(--btn-h);
   padding-inline: var(--s-5);
   font: 500 var(--t-body) / 1 var(--font-text);
   letter-spacing: 0;
 }
+/* the close's one large action keeps the kit's size: a 640 box, taller than the 48px row buttons */
 .btn--xl {
-  width: 100%;
+  width: min(100%, 640px);
+  height: clamp(56px, calc(3.2vw + 32px), 64px);
+  font: 500 var(--t-lead) / 1 var(--font-text);
+  letter-spacing: 0;
+}
+@media (max-width: 639px) {
+  .btn--xl {
+    width: 100%;
+    height: 48px;
+    font: 500 var(--t-body) / 1 var(--font-text);
+  }
 }
 
 /* the section head's split stands on the page's one pair of split lines (7 + 5) */
@@ -1617,18 +1627,17 @@ html[data-ground="sky"] {
   .closing__links .footer__col {
     grid-column: auto / span 1;
   }
-  /* its links run in a wrapping row: three rows of 44px would push the legal line past the fold */
+  /* its links run as a vertical list again: the two columns are side by side */
   .closing__links .footer__col ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 18px;
+    display: grid;
+    gap: 0;
   }
   .closing__cta {
     gap: var(--s-4);
   }
   /* the close and the links keep their air, but the screen ends on the fold */
   footer.closing > .wrap {
-    row-gap: 20px;
+    row-gap: 28px;
   }
   .closing__links {
     gap: var(--s-3);
@@ -2326,4 +2335,57 @@ html[data-ground="sky"] {
 .sk-risk,
 .sk-tag {
   white-space: nowrap;
+}
+
+/* the footer's close word: capped so it never runs into the links under it */
+.close__word {
+  font-size: clamp(56px, 19vw, 132px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  padding-bottom: 0.05em;
+}
+/* the emergency control inside the footer list reads as one more footer link */
+.footer__button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.footer__button:hover {
+  color: var(--action);
+}
+
+/* the close button keeps its height in the flex column (the wordmark must not shrink it) */
+.closing__cta > .btn--xl {
+  flex: 0 0 auto;
+}
+
+/* the close: a calmer wordmark and a tighter stack, so the name never runs into the links */
+@media (min-width: 640px) {
+  .closing__cta {
+    gap: var(--s-5);
+  }
+}
+.close__word {
+  font-size: clamp(52px, 6.4vw, 92px);
+}
+/* a phone footer keeps the two link lists and the legal line; the brand block is already in the header */
+@media (max-width: 639px) {
+  .closing__links > .grid > :first-child {
+    display: none;
+  }
+}
+
+/* phone close: the name sits between the button and the links with even air around the block */
+@media (max-width: 639px) {
+  .closing__cta {
+    justify-content: space-between;
+  }
+  .close__word {
+    margin-top: 0;
+    font-size: clamp(56px, 16vw, 72px);
+  }
 }

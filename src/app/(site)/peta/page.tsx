@@ -3,8 +3,8 @@ import Link from "next/link";
 import { RiskMap } from "@/components/map/risk-map";
 import { UseLocation } from "@/components/map/use-location";
 import { RiskBadge } from "@/components/risk-badge";
-import { DEMO_DISTRICTS, type RiskLevel } from "@/lib/demo/districts";
-import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
+import { DEMO_DISTRICTS } from "@/lib/demo/districts";
+import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 
 export const metadata: Metadata = {
   title: "Peta risiko banjir Jakarta · SiagaKU",

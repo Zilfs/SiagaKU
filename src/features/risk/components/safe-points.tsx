@@ -1,6 +1,6 @@
 import { Accessibility, MapPin, Route } from "lucide-react";
 import type { SafePoint } from "@/features/risk/types";
-import { formatDistance, haversineKm } from "@/lib/geo";
+import { distanceKm, formatDistance } from "@/lib/geo";
 
 /**
  * The nearest safe points in the Task 7 shape; the distance is computed from the point's lat/lng,
@@ -24,7 +24,7 @@ export function SafePoints({
           const distance =
             point.lat != null && point.lng != null
               ? formatDistance(
-                  haversineKm(origin, { lat: point.lat, lng: point.lng }),
+                  distanceKm(origin, { lat: point.lat, lng: point.lng }),
                 )
               : "jarak belum ada";
           return (
