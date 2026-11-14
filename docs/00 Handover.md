@@ -62,6 +62,10 @@ SELESAI:
   cache `getOrSet`, skor risiko, klien BMKG & Open-Meteo. Struktur kode feature-based (`docs/14 Struktur Kode.md`).
 - W2 Task 6: `src/lib/rate-limit.ts` (fixed window, bucket chat/plan/report/explanation, fail open saat DB error),
   `src/lib/http.ts` (`jsonError`, `HttpError`, `parseJson`), migrasi `0002_rate_limit.sql` (`hit_rate_limit`).
+- W2 Task 7: `GET /api/districts`, `GET /api/risk/[id]` (id atau slug), `GET /api/risk/[id]/explanation`
+  (AI + cache 3 jam, fallback template). Kode di `src/features/risk/`. Key JSON respons bahasa Inggris
+  camelCase (mis. `score`, `level: "high"`, `components.rainfallFactor`), bukan key Indonesia di docs/07;
+  bentuk lengkap ada di `src/features/risk/types.ts` (`DistrictSummary`, `RiskDetail`). Bagian `iklim` tidak ada (F5 dipotong).
 - Proteksi branch `dev` & `main` aktif (wajib PR, 1 approval orang lain, CI hijau, tanpa force-push).
 - URL resmi dokumen pedoman `04` sudah diverifikasi Syaki di #18 (Perpustakaan BNPB); `data/guidelines/index.json` memakai URL tersebut.
 
@@ -84,8 +88,8 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 
 ## Langkah berikutnya (urut)
 1. Rhein: buat project Supabase, jalankan migrasi 0001–0002, isi `.env.local`, setup Vercel.
-2. Rhein: Task 7 (API risiko + penjelasan AI).
-3. Bagus: perbaiki PR #7, lalu jalankan `npm run rag:ingest` setelah key ada.
+2. Rhein: seed data (Task 4 script) supaya API T7 punya data; Ukon: Task 8 pakai tipe di `src/features/risk/types.ts`.
+3. Bagus: jalankan `npm run rag:ingest` setelah key ada (PR #7 sudah di-merge), lalu lanjut chat API.
 4. Syaki: issue #15. Ukon: Task 8 (UI dasar) setelah Task 7 siap.
 5. Ikuti 09 Timeline & Pembagian Tugas.
 ```
