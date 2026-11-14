@@ -48,14 +48,9 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 ## Status (14 Nov 2026)
 SELESAI:
 - Brainstorming, design doc, PRD, dan dokumentasi teknis lengkap (13 file .md).
-- W4 Task 4 (Kurasi Data): 5 file CSV lengkap & terverifikasi, plus `data/README.md`:
-  1. `kecamatan.csv` (44 kecamatan, koordinat BMKG API, status pesisir rob)
-  2. `riwayat_banjir.csv` (240 kejadian banjir 2025–2026 dari rilis BPBD)
-  3. `kelurahan_rawan.csv` (116 kelurahan rawan 2023 dari Satu Data Jakarta)
-  4. `posko.csv` (283 titik pengungsian dari JSC & kantor kelurahan Jakarta Satu, 44/44 kecamatan)
-  5. `kontak.csv` (9 kontak darurat terverifikasi; 0812-1237-575 = Pusdalops BNPB, bukan BPBD)
-- W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) di `data/guidelines/`.
-- W4 Task 13 (Evaluasi RAG): 40 soal + 6 profil uji di `tests/eval/` (lihat `tests/eval/README.md`).
+- W4 Task 4 (Kurasi Data): 5 file CSV lengkap & terverifikasi (rename ke Inggris: `districts.csv`, `flood_events.csv`, `flood_prone_subdistricts.csv`, `shelters.csv`, `emergency_contacts.csv`).
+- W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi di `data/guidelines/` + `index.json`.
+- W4 Task 13 (Evaluasi RAG): 40 soal + 6 profil uji di `tests/eval/` (key JSON: `group`, `question`, `must_include`, `name`, `district_slug`).
 - W3 Task 5: router AI gemini → groq → alt (`src/lib/ai/`), merge PR #4.
 - W3 Task 9 (RAG): chunking, embedding 768 dim, retrieval vector dengan fallback FTS, dan skrip ingest di branch feature/rag. Korpus membaca `data/guidelines/` + `data/guidelines/index.json` (5 entri); folder `data/pedoman/` dihapus.
 - W2 Task 1–3: boilerplate + CI, migrasi `0001_init.sql` (12 tabel, RLS, RPC RAG, bucket `reports`),
@@ -67,7 +62,8 @@ SELESAI:
   camelCase (mis. `score`, `level: "high"`, `components.rainfallFactor`), bukan key Indonesia di docs/07;
   bentuk lengkap ada di `src/features/risk/types.ts` (`DistrictSummary`, `RiskDetail`). Bagian `iklim` tidak ada (F5 dipotong).
 - Proteksi branch `dev` & `main` aktif (wajib PR, 1 approval orang lain, CI hijau, tanpa force-push).
-- URL resmi dokumen pedoman `04` sudah diverifikasi Syaki di #18 (Perpustakaan BNPB); `data/guidelines/index.json` memakai URL tersebut.
+- URL resmi dokumen pedoman `04` sudah diverifikasi Syaki (Perpustakaan BNPB).
+- `CREDITS.md` diperbarui dengan daftar PDF pedoman.
 
 BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
@@ -80,8 +76,6 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
 - `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
 - Supabase belum dibuat: `0001_init.sql` dan `0002_rate_limit.sql` belum dijalankan; `.env.local` & key AI belum ada.
-- PR #7 (RAG, Bagus): perbaikan review selesai (folder `data/guidelines/`, konflik handover, URL 04), menunggu approval akhir.
-- Issue #15 (Syaki): nama file data → bahasa Inggris, cek sumber PDF 04, cantumkan PDF di CREDITS.
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
@@ -90,6 +84,6 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 1. Rhein: buat project Supabase, jalankan migrasi 0001–0002, isi `.env.local`, setup Vercel.
 2. Rhein: seed data (Task 4 script) supaya API T7 punya data; Ukon: Task 8 pakai tipe di `src/features/risk/types.ts`.
 3. Bagus: jalankan `npm run rag:ingest` setelah key ada (PR #7 sudah di-merge), lalu lanjut chat API.
-4. Syaki: issue #15. Ukon: Task 8 (UI dasar) setelah Task 7 siap.
+4. Syaki: Task 17 (README utama, proposal, video).
 5. Ikuti 09 Timeline & Pembagian Tugas.
 ```
