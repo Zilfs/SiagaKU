@@ -47,12 +47,18 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 ## Status (14 Nov 2026)
 SELESAI:
 - Brainstorming, design doc, PRD, dan dokumentasi teknis lengkap (13 file .md).
-- W4 Task 4 (Kurasi Data): 5 file CSV (`kecamatan.csv`, `riwayat_banjir.csv`, `kelurahan_rawan.csv`, `posko.csv`, `kontak.csv`) lengkap & terverifikasi.
-- W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) diunduh dan ditempatkan di `data/guidelines/`.
-- W3 Task 5 (Router AI): provider chain gemini -> groq -> alt, fallback, cooldown, log `ai_log` di branch feature/ai-provider-fallback (PR #4 ke dev).
+- W4 Task 4 (Kurasi Data): 5 file CSV lengkap & terverifikasi, plus `data/README.md`:
+  1. `kecamatan.csv` (44 kecamatan, koordinat BMKG API, status pesisir rob)
+  2. `riwayat_banjir.csv` (240 kejadian banjir 2025–2026 dari rilis BPBD)
+  3. `kelurahan_rawan.csv` (116 kelurahan rawan 2023 dari Satu Data Jakarta)
+  4. `posko.csv` (283 titik pengungsian dari JSC & kantor kelurahan Jakarta Satu, 44/44 kecamatan)
+  5. `kontak.csv` (9 kontak darurat terverifikasi; 0812-1237-575 = Pusdalops BNPB, bukan BPBD)
+- W4 Task 9 (Dokumen RAG): 5 file PDF pedoman resmi (BPBD DKI, BNPB, Kemendikbud) di `data/guidelines/`.
+- W4 Task 13 (Evaluasi RAG): 40 soal + 6 profil uji di `tests/eval/` (lihat `tests/eval/README.md`).
+- W3 Task 5 (Router AI): provider chain gemini -> groq -> alt, fallback, cooldown, log `ai_log` sudah masuk `dev` (PR #4).
 - W3 Task 9 (RAG): chunking, embedding 768 dim, retrieval vector dengan fallback FTS, dan skrip ingest di branch feature/rag.
 
-BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 13 (soal evaluasi RAG); Task 17 (README utama, proposal, video).
+BELUM: ingest korpus pedoman ke Supabase (butuh GEMINI_API_KEY; target >= 5 dokumen, >= 150 chunk); Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
@@ -61,6 +67,8 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 ## Masalah terbuka / risiko
 - Kuota AI saat penjurian (mitigasi: fallback, cache, rate limit, billing/alternatif).
 - Data riwayat banjir & posko harus dikurasi manual (target minimum di 06 Data & Database).
+- `tests/eval/profil.json` P03 memakai `lantai: 12` (sesuai 05 Desain AI §7), sedangkan 07 API Spec membatasi `lantai` 0–10. Perlu keputusan Rhein: naikkan batas `lantai` (usul 0–60) atau turunkan profil uji.
+- `docs/06 Data & Database.md` baris 205 memakai kode Ceger `31.75.10.1004` (itu kode Munjul); yang benar `31.75.10.1008`.
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.

@@ -1,0 +1,128 @@
+[
+  {
+    "id": "P01",
+    "nama": "Keluarga bayi + lansia kursi roda di rumah 1 lantai dekat sungai",
+    "kecamatan_slug": "jatinegara",
+    "request": {
+      "kecamatan_id": 37,
+      "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
+      "anggota": {
+        "dewasa": 2,
+        "anak": 0,
+        "balita_bayi": 1,
+        "lansia": 1,
+        "ibu_hamil": 0,
+        "disabilitas": [{ "jenis": "pengguna_kursi_roda" }],
+        "obat_rutin": 1,
+        "hewan": []
+      },
+      "kondisi": { "kendaraan": "motor", "jarak_sungai": "dekat", "pernah_banjir": true }
+    },
+    "harus": ["bayi", "lansia", "kursi roda"]
+  },
+  {
+    "id": "P02",
+    "nama": "Mahasiswa kos",
+    "kecamatan_slug": "mampang-prapatan",
+    "request": {
+      "kecamatan_id": 27,
+      "hunian": { "jenis": "kos", "lantai": 1 },
+      "anggota": {
+        "dewasa": 1,
+        "anak": 0,
+        "balita_bayi": 0,
+        "lansia": 0,
+        "ibu_hamil": 0,
+        "disabilitas": [],
+        "obat_rutin": 0,
+        "hewan": []
+      },
+      "kondisi": { "kendaraan": "tidak_ada", "jarak_sungai": "sedang", "pernah_banjir": false }
+    },
+    "harus": []
+  },
+  {
+    "id": "P03",
+    "nama": "Apartemen lantai 12",
+    "kecamatan_slug": "kelapa-gading",
+    "request": {
+      "kecamatan_id": 16,
+      "hunian": { "jenis": "apartemen", "lantai": 12 },
+      "anggota": {
+        "dewasa": 2,
+        "anak": 1,
+        "balita_bayi": 0,
+        "lansia": 0,
+        "ibu_hamil": 0,
+        "disabilitas": [],
+        "obat_rutin": 0,
+        "hewan": []
+      },
+      "kondisi": { "kendaraan": "mobil", "jarak_sungai": "jauh", "pernah_banjir": false }
+    },
+    "harus": ["lift"]
+  },
+  {
+    "id": "P04",
+    "nama": "Keluarga dengan ibu hamil + kucing di pesisir rob",
+    "kecamatan_slug": "penjaringan",
+    "request": {
+      "kecamatan_id": 11,
+      "hunian": { "jenis": "rumah_bertingkat", "lantai": 1 },
+      "anggota": {
+        "dewasa": 2,
+        "anak": 0,
+        "balita_bayi": 0,
+        "lansia": 0,
+        "ibu_hamil": 1,
+        "disabilitas": [],
+        "obat_rutin": 0,
+        "hewan": ["kucing"]
+      },
+      "kondisi": { "kendaraan": "motor", "jarak_sungai": "dekat", "pernah_banjir": true }
+    },
+    "harus": ["hamil", "kucing"]
+  },
+  {
+    "id": "P05",
+    "nama": "Lansia tinggal sendiri",
+    "kecamatan_slug": "tebet",
+    "request": {
+      "kecamatan_id": 25,
+      "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
+      "anggota": {
+        "dewasa": 0,
+        "anak": 0,
+        "balita_bayi": 0,
+        "lansia": 1,
+        "ibu_hamil": 0,
+        "disabilitas": [],
+        "obat_rutin": 1,
+        "hewan": []
+      },
+      "kondisi": { "kendaraan": "tidak_ada", "jarak_sungai": "sedang", "pernah_banjir": true }
+    },
+    "harus": ["lansia"]
+  },
+  {
+    "id": "P06",
+    "nama": "Keluarga besar 7 orang",
+    "kecamatan_slug": "cengkareng",
+    "request": {
+      "kecamatan_id": 17,
+      "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
+      "anggota": {
+        "dewasa": 2,
+        "anak": 3,
+        "balita_bayi": 1,
+        "lansia": 1,
+        "ibu_hamil": 0,
+        "disabilitas": [],
+        "obat_rutin": 0,
+        "hewan": []
+      },
+      "kondisi": { "kendaraan": "tidak_ada", "jarak_sungai": "dekat", "pernah_banjir": true }
+    },
+    "harus": ["anak", "bayi"]
+  }
+]
