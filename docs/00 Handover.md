@@ -42,6 +42,7 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 - Tailwind + shadcn/ui, Leaflet, Recharts, zod, Vitest, GitHub Actions CI.
 - Urutan provider (14 Nov): Gemini gratis → Groq gratis → Gemini berbayar lewat slot `ALT_AI_*` (endpoint OpenAI-compatible Gemini, project Google terpisah dengan billing + budget alert). Tanpa ubah kode. Embedding RAG tetap pakai key Gemini gratis (kalau habis, retrieval turun ke FTS).
 - Kode error baru `UNAUTHORIZED` (401) untuk route ber-token (health deep, cron T14); helper `isBearer` di `src/lib/http.ts`.
+- Key AI opsional (14 Nov): `parseEnv` tidak lagi menolak env tanpa Gemini/Groq, hanya memberi peringatan. Tanpa key, penjelasan, chat, dan rencana memakai template, jadi site tetap jalan (sebelumnya seluruh route 500).
 - Batas `hunian.lantai` 0–60 (14 Nov), angka lain di input rencana tetap 0–10.
 - Pembagian peran (13 Nov): W1 Frontend = Ukon, W2 Backend/Data = Rhein, W3 AI = Bagus,
   W4 Data/Konten/Dokumentasi = Syaki.
