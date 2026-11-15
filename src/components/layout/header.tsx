@@ -11,7 +11,7 @@ const LINKS = [
   { href: "/peta", label: "Peta" },
   { href: "/#cara", label: "Cara kerja" },
   { href: "/#fitur", label: "Fitur" },
-  { href: "/#tanya", label: "Tanya" },
+  { href: "/tanya", label: "Tanya" },
 ];
 
 /**
