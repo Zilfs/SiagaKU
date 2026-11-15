@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   title: "SiagaKU: Cek risiko banjir Jakarta per kecamatan",
   description:
     "Cek skor risiko banjir kecamatanmu hari ini, lihat dari mana angkanya, lalu susun rencana siaga keluarga. Tanpa akun, tanpa data pribadi.",
+  appleWebApp: {
+    capable: true,
+    title: "SiagaKU",
+    statusBarStyle: "default",
+  },
   other: {
     "site-kind": "software",
     "page-type": "software",
@@ -27,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7fafc",
+  themeColor: "#0E5E8C",
   colorScheme: "light",
 };
 

@@ -6,6 +6,7 @@ const PAGES = [
   { href: "/#cek", label: "Cek risiko wilayah" },
   { href: "/peta", label: "Peta risiko" },
   { href: "/#cara", label: "Cara kerja" },
+  { href: "/peringatan", label: "Peringatan dini" },
   { href: "/tentang", label: "Tentang & metodologi" },
   { href: "/#data", label: "Sumber data" },
 ];
