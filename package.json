@@ -11,7 +11,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "rag:ingest": "tsx --conditions=react-server scripts/ingest-documents.ts",
     "format": "prettier --write .",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx scripts/seed.ts",
+    "rag:backfill": "tsx --conditions=react-server scripts/ingest-documents.ts --backfill"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.120",
