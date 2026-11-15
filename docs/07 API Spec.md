@@ -63,36 +63,50 @@ Detail risiko satu kecamatan.
 ```
 Jika semua provider gagal: `200` dengan teks template dan `meta.provider = "template"`.
 
-## POST `/api/rencana`
-Rate limit: 5/10 menit per IP.
+## POST `/api/plans`
+Rate limit: 5/10 menit per IP. (Path plan lama `/api/rencana`; kode memakai bahasa Inggris sesuai `AGENTS.md`.)
 Request:
 ```json
 {
-  "kecamatan_id": 12,
-  "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
-  "anggota": { "dewasa": 2, "anak": 0, "balita_bayi": 1, "lansia": 1, "ibu_hamil": 0,
-               "disabilitas": [ { "jenis": "pengguna_kursi_roda" } ], "obat_rutin": 1, "hewan": ["kucing"] },
-  "kondisi": { "kendaraan": "motor", "jarak_sungai": "dekat", "pernah_banjir": true }
+  "district_id": 12,
+  "housing": { "type": "single_story", "floor": 1 },
+  "members": { "adults": 2, "children": 0, "infants": 1, "elderly": 1, "pregnant": 0,
+               "disabilities": [ { "type": "wheelchair_user" } ], "routineMedicine": 1, "pets": ["kucing"] },
+  "conditions": { "vehicle": "motorcycle", "riverDistance": "close", "floodedBefore": true }
 }
 ```
 Enum:
-- `hunian.jenis`: `rumah_1_lantai | rumah_bertingkat | kos | apartemen`
-- `disabilitas[].jenis`: `pengguna_kursi_roda | tunanetra | tunarungu | intelektual | lainnya`
-- `kondisi.kendaraan`: `tidak_ada | motor | mobil | keduanya`
-- `kondisi.jarak_sungai`: `dekat | sedang | jauh | tidak_tahu`
+- `housing.type`: `single_story | multi_story | rented_room | apartment`
+- `members.disabilities[].type`: `wheelchair_user | blind | deaf | intellectual | other`
+- `conditions.vehicle`: `none | motorcycle | car | both`
+- `conditions.riverDistance`: `close | medium | far | unknown`
 
-Batas: setiap angka 0–10, kecuali `hunian.lantai` 0–60 (apartemen Jakarta bisa di atas lantai 10); total anggota 1–15.
+Batas: setiap angka 0–10, kecuali `housing.floor` 0–60 (apartemen Jakarta bisa di atas lantai 10); total anggota 1–15. Objek `.strict()`: field asing ditolak.
 
 Response `201`:
 ```json
-{ "slug": "k8f2ma9xq1", "url": "/rencana/k8f2ma9xq1", "meta": { "provider": "gemini", "fallback": false } }
+{ "slug": "k8f2ma9xq1", "url": "/rencana/k8f2ma9xq1", "meta": { "provider": "gemini", "model": "...", "fallback": false } }
 ```
+Jika semua provider gagal: `201` dengan rencana dasar dan `meta.provider = "template"`, `meta.model = null`.
 
-## GET `/api/rencana/{slug}`
+## GET `/api/plans/{slug}`
 ```json
-{ "slug": "...", "created_at": "...", "kecamatan": {...}, "profil": {...},
-  "rencana": { /* RencanaSiaga */ }, "titik_aman": [ ... ], "kontak_darurat": [ { "nama": "Jakarta Siaga", "nomor": "112" } ] }
+{ "slug": "...", "createdAt": "...", "district": { "id": 12, "slug": "jatinegara", "name": "...", "city": "..." },
+  "profile": { /* body POST */ }, "plan": { /* PreparednessPlan */ },
+  "safePoints": [ ... ], "emergencyContacts": [ { "name": "Jakarta Siaga", "phone": "112", "scope": "DKI" } ] }
 ```
+`plan` (disimpan di `preparedness_plans.plan`):
+```json
+{
+  "summary": "...",
+  "recommendedReadinessLevel": "advisory | watch | warning",
+  "goKit": [ { "item": "...", "quantity": "...", "audience": "semua | bayi | lansia | ...", "priority": "required | important | optional", "reason": "..." } ],
+  "before": ["..."], "during": ["..."], "after": ["..."],
+  "vulnerableGroups": [ { "group": "...", "notes": ["..."] } ],
+  "safePointIds": [31, 32], "safePointReason": "..."
+}
+```
+`safePointIds` selalu subset dari shelter kecamatan itu; ID asing dari model dibuang, dan jika kosong dipakai dua titik pertama.
 (Halaman `/rencana/[slug]` sebaiknya query DB langsung dari RSC; endpoint ini untuk kebutuhan klien/eval.)
 
 ## POST `/api/chat`
@@ -130,30 +144,31 @@ Laporan `ai_status='selesai' AND apakah_banjir` dalam N jam terakhir **+ semua `
 { "data": [ { "id": "...", "lat": -6.2, "lng": 106.8, "foto_url": "...", "keparahan": 2, "ringkasan": "...", "is_demo": true, "created_at": "..." } ] }
 ```
 
-## GET `/api/kelurahan?q=ceg`
-Autocomplete kelurahan (trigram). `[{ "kode": "...", "nama": "Ceger", "kecamatan": "Cipayung", "kota": "Jakarta Timur" }]` (maks 10).
+## GET `/api/subdistricts?q=ceg`
+Autocomplete kelurahan (docs: `/api/kelurahan`). `q` 2–40 huruf. `[{ "code": "31.75.10.1004", "name": "Munjul", "district": "Cipayung", "districtSlug": "cipayung", "city": "Jakarta Timur" }]` (maks 10).
 
-## GET `/api/peringatan/{kode}`
-Status peringatan satu kelurahan (untuk banner & halaman `/peringatan`). Pakai `peringatan_status` jika `evaluated_at` < 1 jam; jika tidak, evaluasi on-demand.
+## GET `/api/early-warning/{code}`
+Status peringatan satu kelurahan (docs: `/api/peringatan/{kode}`), untuk banner & halaman `/peringatan`. Pakai `early_warning_status` jika `evaluatedAt` < 1 jam; jika tidak, evaluasi on-demand. Jika BMKG gagal, status tersimpan terakhir dikirim dengan `stale: true`; jika belum pernah ada, `502 UPSTREAM_FAILED`. Kode salah format → 400, tidak dikenal → 404.
+Status memakai enum glosarium: `normal | advisory | watch | warning` (Normal/Waspada/Siaga/Awas); `rainfallCategory` memakai enum kategori hujan (`none | light | moderate | heavy | very_heavy | extreme`).
 ```json
-{ "kelurahan": { "kode": "...", "nama": "Ceger", "kecamatan_slug": "cipayung" },
-  "status": "Siaga", "skor": 62, "hujan_24j_mm": 38.5, "kategori_hujan": "Sedang",
-  "jendela": { "mulai": "2026-11-18T15:00:00+07:00", "selesai": "2026-11-18T18:00:00+07:00" },
-  "evaluated_at": "...", "sumber": "BMKG" }
+{ "subdistrict": { "code": "31.75.10.1004", "name": "Munjul", "districtSlug": "cipayung", "districtName": "Cipayung" },
+  "status": "watch", "score": 62, "rainfall24hMm": 38.5, "rainfallCategory": "moderate",
+  "window": { "start": "2026-11-18T08:00:00.000Z", "end": "2026-11-18T11:00:00.000Z" },
+  "evaluatedAt": "...", "stale": false, "source": "BMKG" }
 ```
 
 ## POST `/api/push/subscribe`
-Request: `{ "subscription": { "endpoint": "...", "keys": { "p256dh": "...", "auth": "..." } }, "kelurahan_kode": "..." }`
-Upsert by `endpoint` (ganti kelurahan jika sudah ada). Rate limit 10/jam per IP. Response `201 { "ok": true }`.
+Request: `{ "subscription": { "endpoint": "https://...", "keys": { "p256dh": "...", "auth": "..." } }, "subdistrictCode": "..." }`
+Upsert by `endpoint` (ganti kelurahan jika sudah ada). Kelurahan tidak dikenal → 400. Rate limit 10/jam per IP. Response `201 { "ok": true }`. VAPID belum diisi → `503 UPSTREAM_FAILED` (UI menyembunyikan tombol push).
 
 ## POST `/api/push/unsubscribe`
 Request: `{ "endpoint": "..." }` → hapus. `200 { "ok": true }`.
 
 ## POST `/api/push/test`
-Request: `{ "endpoint": "..." }` (harus terdaftar). Kirim notifikasi contoh: judul "🔔 Notifikasi uji SiagaKU", isi "Peringatan banjir untuk {kelurahan} sudah aktif. Contoh: ⚠️ Potensi banjir, hujan lebat diperkirakan 15.00–18.00 WIB." Rate limit 3/10 menit per IP.
+Request: `{ "endpoint": "..." }` (harus terdaftar, jika tidak 404). Kirim notifikasi contoh: judul "🔔 Notifikasi uji SiagaKU", isi "Peringatan banjir untuk {kelurahan} sudah aktif. Contoh: ⚠️ Potensi banjir, hujan lebat diperkirakan 15.00–18.00 WIB." Rate limit 3/10 menit per IP.
 
-## POST `/api/cron/peringatan`
-Header `Authorization: Bearer ${CRON_SECRET}` (tanpa itu 401). Menjalankan alur di [[06 Data & Database#7. Logika Peringatan Dini]]. Response: `{ "dievaluasi": 23, "dikirim": 4, "dihapus": 1, "durasi_ms": 18342 }`.
+## POST `/api/cron/early-warning`
+Header `Authorization: Bearer ${CRON_SECRET}` (tanpa itu 401). Dipanggil tiap jam oleh `.github/workflows/early-warning.yml`. Menjalankan alur di [[06 Data & Database#7. Logika Peringatan Dini]]. Response: `{ "evaluated": 23, "sent": 4, "removed": 1, "failed": 0, "durationMs": 18342 }`.
 
 ## GET `/api/health`
 ```json

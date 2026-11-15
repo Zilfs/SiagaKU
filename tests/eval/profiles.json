@@ -4,19 +4,23 @@
     "name": "Keluarga bayi + lansia kursi roda di rumah 1 lantai dekat sungai",
     "district_slug": "jatinegara",
     "request": {
-      "kecamatan_id": 37,
-      "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
-      "anggota": {
-        "dewasa": 2,
-        "anak": 0,
-        "balita_bayi": 1,
-        "lansia": 1,
-        "ibu_hamil": 0,
-        "disabilitas": [{ "jenis": "pengguna_kursi_roda" }],
-        "obat_rutin": 1,
-        "hewan": []
+      "district_id": 37,
+      "housing": { "type": "single_story", "floor": 1 },
+      "members": {
+        "adults": 2,
+        "children": 0,
+        "infants": 1,
+        "elderly": 1,
+        "pregnant": 0,
+        "disabilities": [{ "type": "wheelchair_user" }],
+        "routineMedicine": 1,
+        "pets": []
       },
-      "kondisi": { "kendaraan": "motor", "jarak_sungai": "dekat", "pernah_banjir": true }
+      "conditions": {
+        "vehicle": "motorcycle",
+        "riverDistance": "close",
+        "floodedBefore": true
+      }
     },
     "must_include": ["bayi", "lansia", "kursi roda"]
   },
@@ -25,19 +29,23 @@
     "name": "Mahasiswa kos",
     "district_slug": "mampang-prapatan",
     "request": {
-      "kecamatan_id": 27,
-      "hunian": { "jenis": "kos", "lantai": 1 },
-      "anggota": {
-        "dewasa": 1,
-        "anak": 0,
-        "balita_bayi": 0,
-        "lansia": 0,
-        "ibu_hamil": 0,
-        "disabilitas": [],
-        "obat_rutin": 0,
-        "hewan": []
+      "district_id": 27,
+      "housing": { "type": "rented_room", "floor": 1 },
+      "members": {
+        "adults": 1,
+        "children": 0,
+        "infants": 0,
+        "elderly": 0,
+        "pregnant": 0,
+        "disabilities": [],
+        "routineMedicine": 0,
+        "pets": []
       },
-      "kondisi": { "kendaraan": "tidak_ada", "jarak_sungai": "sedang", "pernah_banjir": false }
+      "conditions": {
+        "vehicle": "none",
+        "riverDistance": "medium",
+        "floodedBefore": false
+      }
     },
     "must_include": []
   },
@@ -46,19 +54,23 @@
     "name": "Apartemen lantai 12",
     "district_slug": "kelapa-gading",
     "request": {
-      "kecamatan_id": 16,
-      "hunian": { "jenis": "apartemen", "lantai": 12 },
-      "anggota": {
-        "dewasa": 2,
-        "anak": 1,
-        "balita_bayi": 0,
-        "lansia": 0,
-        "ibu_hamil": 0,
-        "disabilitas": [],
-        "obat_rutin": 0,
-        "hewan": []
+      "district_id": 16,
+      "housing": { "type": "apartment", "floor": 12 },
+      "members": {
+        "adults": 2,
+        "children": 1,
+        "infants": 0,
+        "elderly": 0,
+        "pregnant": 0,
+        "disabilities": [],
+        "routineMedicine": 0,
+        "pets": []
       },
-      "kondisi": { "kendaraan": "mobil", "jarak_sungai": "jauh", "pernah_banjir": false }
+      "conditions": {
+        "vehicle": "car",
+        "riverDistance": "far",
+        "floodedBefore": false
+      }
     },
     "must_include": ["lift"]
   },
@@ -67,19 +79,23 @@
     "name": "Keluarga dengan ibu hamil + kucing di pesisir rob",
     "district_slug": "penjaringan",
     "request": {
-      "kecamatan_id": 11,
-      "hunian": { "jenis": "rumah_bertingkat", "lantai": 1 },
-      "anggota": {
-        "dewasa": 2,
-        "anak": 0,
-        "balita_bayi": 0,
-        "lansia": 0,
-        "ibu_hamil": 1,
-        "disabilitas": [],
-        "obat_rutin": 0,
-        "hewan": ["kucing"]
+      "district_id": 11,
+      "housing": { "type": "multi_story", "floor": 1 },
+      "members": {
+        "adults": 2,
+        "children": 0,
+        "infants": 0,
+        "elderly": 0,
+        "pregnant": 1,
+        "disabilities": [],
+        "routineMedicine": 0,
+        "pets": ["kucing"]
       },
-      "kondisi": { "kendaraan": "motor", "jarak_sungai": "dekat", "pernah_banjir": true }
+      "conditions": {
+        "vehicle": "motorcycle",
+        "riverDistance": "close",
+        "floodedBefore": true
+      }
     },
     "must_include": ["hamil", "kucing"]
   },
@@ -88,19 +104,23 @@
     "name": "Lansia tinggal sendiri",
     "district_slug": "tebet",
     "request": {
-      "kecamatan_id": 25,
-      "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
-      "anggota": {
-        "dewasa": 0,
-        "anak": 0,
-        "balita_bayi": 0,
-        "lansia": 1,
-        "ibu_hamil": 0,
-        "disabilitas": [],
-        "obat_rutin": 1,
-        "hewan": []
+      "district_id": 25,
+      "housing": { "type": "single_story", "floor": 1 },
+      "members": {
+        "adults": 0,
+        "children": 0,
+        "infants": 0,
+        "elderly": 1,
+        "pregnant": 0,
+        "disabilities": [],
+        "routineMedicine": 1,
+        "pets": []
       },
-      "kondisi": { "kendaraan": "tidak_ada", "jarak_sungai": "sedang", "pernah_banjir": true }
+      "conditions": {
+        "vehicle": "none",
+        "riverDistance": "medium",
+        "floodedBefore": true
+      }
     },
     "must_include": ["lansia"]
   },
@@ -109,19 +129,23 @@
     "name": "Keluarga besar 7 orang",
     "district_slug": "cengkareng",
     "request": {
-      "kecamatan_id": 17,
-      "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
-      "anggota": {
-        "dewasa": 2,
-        "anak": 3,
-        "balita_bayi": 1,
-        "lansia": 1,
-        "ibu_hamil": 0,
-        "disabilitas": [],
-        "obat_rutin": 0,
-        "hewan": []
+      "district_id": 17,
+      "housing": { "type": "single_story", "floor": 1 },
+      "members": {
+        "adults": 2,
+        "children": 3,
+        "infants": 1,
+        "elderly": 1,
+        "pregnant": 0,
+        "disabilities": [],
+        "routineMedicine": 0,
+        "pets": []
       },
-      "kondisi": { "kendaraan": "tidak_ada", "jarak_sungai": "dekat", "pernah_banjir": true }
+      "conditions": {
+        "vehicle": "none",
+        "riverDistance": "close",
+        "floodedBefore": true
+      }
     },
     "must_include": ["anak", "bayi"]
   }

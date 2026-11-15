@@ -5,7 +5,11 @@ import { EmergencyButton } from "./emergency-button";
 const PAGES = [
   { href: "/#cek", label: "Cek risiko wilayah" },
   { href: "/peta", label: "Peta risiko" },
+  { href: "/rencana", label: "Rencana siaga" },
+  { href: "/laporan", label: "Laporan warga" },
   { href: "/#cara", label: "Cara kerja" },
+  { href: "/peringatan", label: "Peringatan dini" },
+  { href: "/tentang", label: "Tentang & metodologi" },
   { href: "/#data", label: "Sumber data" },
 ];
 
