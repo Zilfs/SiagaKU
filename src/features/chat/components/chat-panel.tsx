@@ -72,14 +72,19 @@ export function ChatPanel({
     .reverse()
     .find((message) => message.role === "assistant");
   const sources = sourcesOf(dataOf<unknown>(latestAssistant, "sources"));
-  const rawEmergency = dataOf<boolean | { detected?: boolean }>(
-    latestAssistant,
-    "darurat",
-  );
+  const rawEmergency =
+    dataOf<boolean | { active?: boolean; detected?: boolean }>(
+      latestAssistant,
+      "emergency",
+    ) ??
+    dataOf<boolean | { active?: boolean; detected?: boolean }>(
+      latestAssistant,
+      "darurat",
+    );
   const emergency =
     typeof rawEmergency === "boolean"
       ? rawEmergency
-      : Boolean(rawEmergency?.detected);
+      : Boolean(rawEmergency?.active ?? rawEmergency?.detected);
   const meta = dataOf<Meta>(latestAssistant, "meta");
   const ai = Boolean(meta?.provider && meta.provider !== "template");
 
