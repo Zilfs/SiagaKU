@@ -30,11 +30,36 @@ const STEPS = [
   { title: "Kondisi rumah", note: "Kendaraan, sungai, riwayat banjir" },
 ];
 
-const HOUSING: { value: HousingType; label: string; note: string; Icon: typeof Home }[] = [
-  { value: "single_story", label: "Rumah satu lantai", note: "Semua ruang di lantai dasar", Icon: Home },
-  { value: "multi_story", label: "Rumah bertingkat", note: "Ada lantai atas untuk mengungsi", Icon: Building2 },
-  { value: "rented_room", label: "Kamar sewa", note: "Satu kamar, berbagi bangunan", Icon: DoorOpen },
-  { value: "apartment", label: "Apartemen", note: "Gedung bertingkat dengan lift", Icon: Building2 },
+const HOUSING: {
+  value: HousingType;
+  label: string;
+  note: string;
+  Icon: typeof Home;
+}[] = [
+  {
+    value: "single_story",
+    label: "Rumah satu lantai",
+    note: "Semua ruang di lantai dasar",
+    Icon: Home,
+  },
+  {
+    value: "multi_story",
+    label: "Rumah bertingkat",
+    note: "Ada lantai atas untuk mengungsi",
+    Icon: Building2,
+  },
+  {
+    value: "rented_room",
+    label: "Kamar sewa",
+    note: "Satu kamar, berbagi bangunan",
+    Icon: DoorOpen,
+  },
+  {
+    value: "apartment",
+    label: "Apartemen",
+    note: "Gedung bertingkat dengan lift",
+    Icon: Building2,
+  },
 ];
 
 const DISABILITIES: { value: DisabilityType; label: string }[] = [
@@ -143,7 +168,9 @@ export function PlanWizard({
   const [submitting, setSubmitting] = useState(false);
 
   const total = adults + children + infants + elderly + pregnant;
-  const selectedDistrict = districts.find((district) => district.id === districtId);
+  const selectedDistrict = districts.find(
+    (district) => district.id === districtId,
+  );
   const validation = {
     districtId,
     total,
@@ -152,7 +179,13 @@ export function PlanWizard({
   };
   const totalValid = total >= 1 && total <= 15;
 
+  const updateCount = (setter: (value: number) => void) => (value: number) => {
+    setError("");
+    setter(value);
+  };
+
   const toggleDisability = (type: DisabilityType) => {
+    setError("");
     setDisabilities((current) =>
       current.includes(type)
         ? current.filter((item) => item !== type)
@@ -194,8 +227,7 @@ export function PlanWizard({
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (submitting) return;
-    const problem =
-      wizardError(0, validation) ?? wizardError(1, validation);
+    const problem = wizardError(0, validation) ?? wizardError(1, validation);
     if (problem) {
       setError(problem);
       return;
@@ -225,9 +257,11 @@ export function PlanWizard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const result = (await response.json().catch(() => null)) as
-        | { url?: string; slug?: string; error?: { code?: string } }
-        | null;
+      const result = (await response.json().catch(() => null)) as {
+        url?: string;
+        slug?: string;
+        error?: { code?: string };
+      } | null;
 
       if (response.status === 201 && (result?.url || result?.slug)) {
         router.push(result.url ?? `/rencana/${result.slug}`);
@@ -278,7 +312,11 @@ export function PlanWizard({
             aria-current={index === step ? "step" : undefined}
           >
             <span className="sk-wizard__num">
-              {index < step ? <Check size={14} aria-hidden="true" /> : index + 1}
+              {index < step ? (
+                <Check size={14} aria-hidden="true" />
+              ) : (
+                index + 1
+              )}
             </span>
             <span>
               <b>{item.title}</b>
@@ -297,7 +335,10 @@ export function PlanWizard({
               <select
                 id="rencana-kecamatan"
                 value={districtId}
-                onChange={(event) => setDistrictId(Number(event.target.value))}
+                onChange={(event) => {
+                  setError("");
+                  setDistrictId(Number(event.target.value));
+                }}
               >
                 {districts.map((district) => (
                   <option key={district.id} value={district.id}>
@@ -320,12 +361,13 @@ export function PlanWizard({
                     key={value}
                     type="button"
                     className={
-                      housingType === value
-                        ? "sk-choice is-on"
-                        : "sk-choice"
+                      housingType === value ? "sk-choice is-on" : "sk-choice"
                     }
                     aria-pressed={housingType === value}
-                    onClick={() => setHousingType(value)}
+                    onClick={() => {
+                      setError("");
+                      setHousingType(value);
+                    }}
                   >
                     <Icon size={20} aria-hidden="true" />
                     <b>{label}</b>
@@ -343,11 +385,12 @@ export function PlanWizard({
                 min={0}
                 max={60}
                 value={floor}
-                onChange={(event) =>
+                onChange={(event) => {
+                  setError("");
                   setFloor(
                     Math.min(60, Math.max(0, Number(event.target.value) || 0)),
-                  )
-                }
+                  );
+                }}
                 inputMode="numeric"
               />
               <p className="sk-field__hint">
@@ -361,17 +404,42 @@ export function PlanWizard({
           <fieldset className="sk-fieldset">
             <legend>Anggota keluarga</legend>
             <div className="sk-step-list">
-              <Stepper id="dewasa" label="Dewasa" value={adults} onChange={setAdults} />
-              <Stepper id="anak" label="Anak-anak" value={children} onChange={setChildren} />
-              <Stepper id="bayi" label="Bayi" value={infants} onChange={setInfants} />
-              <Stepper id="lansia" label="Lansia" value={elderly} onChange={setElderly} />
-              <Stepper id="hamil" label="Ibu hamil" value={pregnant} onChange={setPregnant} />
+              <Stepper
+                id="dewasa"
+                label="Dewasa"
+                value={adults}
+                onChange={updateCount(setAdults)}
+              />
+              <Stepper
+                id="anak"
+                label="Anak-anak"
+                value={children}
+                onChange={updateCount(setChildren)}
+              />
+              <Stepper
+                id="bayi"
+                label="Bayi"
+                value={infants}
+                onChange={updateCount(setInfants)}
+              />
+              <Stepper
+                id="lansia"
+                label="Lansia"
+                value={elderly}
+                onChange={updateCount(setElderly)}
+              />
+              <Stepper
+                id="hamil"
+                label="Ibu hamil"
+                value={pregnant}
+                onChange={updateCount(setPregnant)}
+              />
               <Stepper
                 id="obat"
                 label="Obat rutin"
                 note="Jumlah anggota yang minum obat rutin"
                 value={routineMedicine}
-                onChange={setRoutineMedicine}
+                onChange={updateCount(setRoutineMedicine)}
               />
             </div>
 
@@ -551,8 +619,8 @@ export function PlanWizard({
                 <li>
                   <span>Hunian</span>
                   <b>
-                    {HOUSING.find((item) => item.value === housingType)?.label} ·
-                    lantai {floor}
+                    {HOUSING.find((item) => item.value === housingType)?.label}{" "}
+                    · lantai {floor}
                   </b>
                 </li>
                 <li>
@@ -590,17 +658,18 @@ export function PlanWizard({
 
         <div className="sk-wizard__actions">
           {step > 0 ? (
-            <button type="button" className="btn" onClick={back} disabled={submitting}>
+            <button
+              type="button"
+              className="btn"
+              onClick={back}
+              disabled={submitting}
+            >
               <ArrowLeft size={16} aria-hidden="true" />
               Kembali
             </button>
           ) : null}
           {step < 2 ? (
-            <button
-              type="button"
-              className="btn btn--primary"
-              onClick={next}
-            >
+            <button type="button" className="btn btn--primary" onClick={next}>
               Lanjut
               <ArrowRight size={16} aria-hidden="true" />
             </button>
@@ -612,7 +681,11 @@ export function PlanWizard({
             >
               {submitting ? (
                 <>
-                  <LoaderCircle size={16} className="sk-spin" aria-hidden="true" />
+                  <LoaderCircle
+                    size={16}
+                    className="sk-spin"
+                    aria-hidden="true"
+                  />
                   Menyusun rencana…
                 </>
               ) : (
