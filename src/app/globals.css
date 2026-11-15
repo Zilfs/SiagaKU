@@ -2666,10 +2666,14 @@ html[data-ground="sky"] {
   }
 }
 
-/* 1024–1199: five links and the two actions do not fit; drop the optional one, keep the sheet
-   untouched below 1024 so every link is still there on a phone */
-@media (min-width: 1024px) and (max-width: 1199px) {
+/* the small-laptop bar holds four words (system.css); the optional links wait for 1280px */
+@media (min-width: 1024px) and (max-width: 1279px) {
   .nav__item--optional {
     display: none;
+  }
+  /* the equal side tracks overflow when the actions are wider than half the bar: let the logo and
+     actions take their width and give the words the rest */
+  .nav--centre .nav__bar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
   }
 }
