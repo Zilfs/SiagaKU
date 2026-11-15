@@ -5,7 +5,7 @@ import {
   ChecklistTimeline,
   type TimelineItem,
 } from "@/components/checklist-timeline";
-import { gsap, MOTION_OK, ScrollTrigger, useGSAP } from "./gsap";
+import { gsap, MOTION_OK, onceInView, useGSAP } from "./gsap";
 
 const ITEMS: TimelineItem[] = [
   {
@@ -66,13 +66,8 @@ export function PlanPreview() {
         if (!rail) return;
         // the rail's own CSS transition (transform only) carries the fill from 0 to the progress
         gsap.set(rail, { "--sk-fill": 0 });
-        ScrollTrigger.create({
-          trigger: root,
-          start: "top 80%",
-          once: true,
-          onEnter: () => {
-            gsap.set(rail, { "--sk-fill": PROGRESS });
-          },
+        return onceInView(root, "20%", () => {
+          gsap.set(rail, { "--sk-fill": PROGRESS });
         });
       });
     },

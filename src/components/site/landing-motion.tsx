@@ -2,7 +2,7 @@
 
 import { useRef, type ReactNode } from "react";
 import { formatCount } from "./motion-math";
-import { gsap, MOTION_OK, useGSAP } from "./gsap";
+import { gsap, MOTION_OK, onceInView, useGSAP } from "./gsap";
 
 /** A section head whose children rise in once, the first time it scrolls into view. */
 export function Reveal({
@@ -20,14 +20,16 @@ export function Reveal({
       // already on screen (a deep link, a tall screen): leave it as rendered, no flash
       if (!el || el.getBoundingClientRect().top < window.innerHeight) return;
       gsap.matchMedia().add(MOTION_OK, () => {
-        gsap.from(el.children, {
-          autoAlpha: 0,
+        // opacity only, never visibility: the hidden heads stay in the a11y tree, find-in-page and Tab
+        const rise = gsap.from(el.children, {
+          opacity: 0,
           y: 16,
           duration: 0.6,
           ease: "power3.out",
           stagger: 0.08,
-          scrollTrigger: { trigger: el, start: "top 85%", once: true },
+          paused: true,
         });
+        return onceInView(el, "15%", () => rise.play());
       });
     },
     { scope: ref },
