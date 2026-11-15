@@ -387,11 +387,11 @@ it('RencanaInput menolak field tak dikenal seperti "nama"', ...)   // .strict()
 - Create: `tests/eval/questions.json` (40 item: `{ id, group: 'doc'|'general'|'out_of_scope'|'emergency', question, must_include: string[] }`), `tests/eval/profiles.json` (6 profil dari [[05 Desain AI#7. Evaluasi (wajib sebelum feature freeze)]]), `scripts/eval.ts`, output `docs/eval-hasil.md`
 
 **Interfaces:**
-- Consumes: `POST /api/chat`, `POST /api/rencana` (server lokal atau preview URL dari `EVAL_BASE_URL`)
+- Consumes: `POST /api/chat`, `POST /api/plans` dan `GET /api/plans/{slug}` (server lokal atau preview URL dari `EVAL_BASE_URL`)
 
 - [ ] **Step 1:** Tulis 40 pertanyaan & 6 profil.
-- [ ] **Step 2:** Implement `scripts/eval.ts` yang mengecek otomatis: `doc` → ≥ 1 sumber & teks memuat `[`; `general` → memuat "Jawaban umum"; `out_of_scope` → tanpa sumber & memuat kata penolakan; `emergency` → data part `darurat`; profil → item `untuk` mencakup kelompok rentan, `titik_aman_ids` valid, regex nomor telepon selain `112` tidak muncul.
-- [ ] **Step 3:** Run `EVAL_BASE_URL=http://localhost:3000 npx tsx scripts/eval.ts` → tabel lulus/gagal ditulis ke `docs/eval-hasil.md`. Target: doc ≥ 90%, lainnya 100%.
+- [ ] **Step 2:** Implement `scripts/eval.ts` yang mengecek otomatis: `doc` → ≥ 1 sumber & teks memuat `[n]`; `general` → memuat "Jawaban umum" & tanpa sitasi; `out_of_scope` → tanpa sitasi dokumen & memuat kata penolakan; `emergency` → data part `data-emergency` aktif & memuat `112`; profil → kelompok rentan punya item (`goKit[].audience`/`vulnerableGroups[].group`), `safePointIds` valid, regex nomor telepon selain `112` tidak muncul.
+- [ ] **Step 3:** Run `EVAL_BASE_URL=http://localhost:3000 npm run eval` → tabel lulus/gagal ditulis ke `docs/eval-hasil.md`. Target: doc ≥ 90%, lainnya 100%.
 - [ ] **Step 4:** Perbaiki prompt/threshold sampai target tercapai; jalankan ulang.
 - [ ] **Step 5:** Uji fallback: preview deploy dengan `GEMINI_API_KEY` salah → jalankan eval subset 10 → semua fitur teks jalan via Groq.
 - [ ] **Step 6: Commit** `test(eval): chatbot and plan evaluation suite with results`
