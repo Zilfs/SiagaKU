@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { WatchArea } from "@/features/alert/components/watch-area";
+import { districtNameFromSlug } from "@/features/early-warning/alert-data";
+import { WatchArea } from "@/features/early-warning/components/watch-area";
 
 export const metadata: Metadata = {
   title: "Peringatan dini banjir · SiagaKU",
@@ -7,7 +8,19 @@ export const metadata: Metadata = {
     "Pantau kelurahanmu dan dapatkan kabar saat wilayah berpotensi banjir: status Normal, Waspada, Siaga, atau Awas dari prakiraan BMKG dan kerawanan wilayah.",
 };
 
-export default function PeringatanPage() {
+// the district context comes from searchParams, so the page waits for the request
+export const instant = false;
+
+export default async function PeringatanPage({
+  searchParams,
+}: PageProps<"/peringatan">) {
+  const params = await searchParams;
+  const value = params?.kecamatan;
+  const districtSlug = Array.isArray(value) ? value[0] : value;
+  const districtName = districtSlug
+    ? districtNameFromSlug(districtSlug)
+    : undefined;
+
   return (
     <article className="sk-page sk-alert-page">
       <div className="wrap">
@@ -22,7 +35,7 @@ export default function PeringatanPage() {
         </header>
 
         <div className="sk-alert-grid">
-          <WatchArea />
+          <WatchArea districtName={districtName} />
 
           <section className="sk-card sk-alert-how" aria-labelledby="cara-h">
             <div className="sk-card__head">

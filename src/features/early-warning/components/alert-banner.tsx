@@ -3,6 +3,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { TriangleExclamationPoint, X } from "lucide-react";
+import { toAlertInfo, toStatusName, type AlertInfo } from "../alert-data";
 import {
   getHiddenSnapshot,
   getServerSnapshot,
@@ -11,13 +12,6 @@ import {
   parseWatched,
   subscribe,
 } from "../local-store";
-
-type AlertData = {
-  status?: string;
-  kategoriHujan?: string | null;
-  hujan24jMm?: number;
-  jendela?: { mulai?: string; selesai?: string } | null;
-};
 
 const mountedSnapshot = () => true;
 
@@ -43,17 +37,19 @@ export function AlertBanner() {
   );
   const watched = parseWatched(watchRaw);
   const kode = watched?.kode;
-  const [state, setState] = useState<{ kode: string; data: AlertData | null } | null>(
+  const [state, setState] = useState<{ kode: string; data: AlertInfo | null } | null>(
     null,
   );
 
   useEffect(() => {
     if (!kode) return;
     let cancelled = false;
-    fetch(`/api/peringatan/${kode}`)
+    fetch(`/api/early-warning/${kode}`)
       .then((response) => (response.ok ? response.json() : null))
-      .then((data: AlertData | null) => {
-        if (!cancelled) setState({ kode, data });
+      .then((payload: unknown) => {
+        if (!cancelled) {
+          setState({ kode, data: payload ? toAlertInfo(payload) : null });
+        }
       })
       .catch(() => {
         if (!cancelled) setState({ kode, data: null });
@@ -69,9 +65,11 @@ export function AlertBanner() {
     process.env.NODE_ENV !== "production" && typeof window !== "undefined"
       ? new URLSearchParams(window.location.search).get("debugStatus")
       : null;
-  const preview = debug === "Siaga" || debug === "Awas" ? debug : null;
+  const previewStatus = toStatusName(debug);
+  const preview =
+    previewStatus === "Siaga" || previewStatus === "Awas" ? previewStatus : null;
   const data = watched && state?.kode === watched.kode ? state.data : null;
-  const status = preview ?? data?.status;
+  const status = preview ?? data?.status ?? null;
 
   if (status !== "Siaga" && status !== "Awas") return null;
   if (!preview && hidden) return null;
@@ -89,11 +87,9 @@ export function AlertBanner() {
         <b>
           {status} di {watched?.nama ?? "wilayah contoh"}
         </b>
-        {data?.kategoriHujan ? ` · ${data.kategoriHujan}` : ""}
-        {data?.hujan24jMm != null ? ` · hujan ${data.hujan24jMm} mm` : ""}
-        {data?.jendela?.mulai && data.jendela.selesai
-          ? ` · ${data.jendela.mulai}–${data.jendela.selesai}`
-          : ""}
+        {data?.category ? ` · ${data.category}` : ""}
+        {data?.rainfallMm != null ? ` · hujan ${data.rainfallMm} mm` : ""}
+        {data?.windowLabel ? ` · ${data.windowLabel}` : ""}
       </p>
       <Link href="/peringatan">Lihat detail</Link>
       <button

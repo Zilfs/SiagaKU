@@ -21,6 +21,12 @@ function urlBase64ToUint8Array(base64: string): Uint8Array<ArrayBuffer> {
   return bytes;
 }
 
+async function currentSubscription(): Promise<PushSubscription | null> {
+  if (typeof window === "undefined" || !("serviceWorker" in navigator)) return null;
+  const registration = await navigator.serviceWorker.ready;
+  return registration.pushManager.getSubscription();
+}
+
 /** Ask for permission, subscribe this browser, and store the subscription for the kelurahan. */
 export async function subscribePush(kode: string): Promise<PushSubscription> {
   if (!pushDidukung() || !VAPID_PUBLIC_KEY) {
@@ -43,9 +49,8 @@ export async function subscribePush(kode: string): Promise<PushSubscription> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      endpoint: json.endpoint,
-      keys: json.keys,
-      kode,
+      subscription: json,
+      kelurahan_kode: kode,
     }),
   });
   if (!response.ok) {
@@ -55,15 +60,27 @@ export async function subscribePush(kode: string): Promise<PushSubscription> {
 }
 
 export async function unsubscribePush(): Promise<void> {
-  if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
-  const registration = await navigator.serviceWorker.ready;
-  const subscription = await registration.pushManager.getSubscription();
-  if (subscription) await subscription.unsubscribe();
-  await fetch("/api/push/unsubscribe", { method: "POST" }).catch(() => {});
+  const subscription = await currentSubscription();
+  if (!subscription) return;
+  const endpoint = subscription.endpoint;
+  await fetch("/api/push/unsubscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ endpoint }),
+  }).catch(() => {});
+  await subscription.unsubscribe().catch(() => {});
 }
 
 export async function sendTestPush(): Promise<void> {
-  const response = await fetch("/api/push/test", { method: "POST" });
+  const subscription = await currentSubscription();
+  if (!subscription) {
+    throw new Error("Aktifkan notifikasi dulu di perangkat ini.");
+  }
+  const response = await fetch("/api/push/test", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ endpoint: subscription.endpoint }),
+  });
   if (!response.ok) {
     throw new Error("Notifikasi uji belum bisa dikirim.");
   }

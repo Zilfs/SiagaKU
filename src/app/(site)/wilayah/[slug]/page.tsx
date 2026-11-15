@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { RiskBadge } from "@/components/risk-badge";
+import { WatchButton } from "@/features/early-warning/components/watch-button";
 import { AiExplanation } from "@/features/risk/components/ai-explanation";
 import { ClimateCard } from "@/features/risk/components/climate-card";
 import { FloodHistory } from "@/features/risk/components/flood-history";
@@ -91,6 +92,10 @@ export default async function DistrictPage({
               <Link className="btn btn--primary" href="/rencana">
                 Buat rencana siaga
               </Link>
+              <WatchButton
+                districtSlug={district.slug}
+                districtName={district.name}
+              />
               <Link className="link" href={`/tanya?kecamatan=${district.slug}`}>
                 Tanya soal {district.name}
               </Link>

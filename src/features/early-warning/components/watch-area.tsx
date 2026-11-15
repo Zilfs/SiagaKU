@@ -8,6 +8,12 @@ import {
 } from "react";
 import { Search } from "lucide-react";
 import {
+  parseSubdistricts,
+  toAlertInfo,
+  type AlertInfo,
+  type Subdistrict,
+} from "../alert-data";
+import {
   clearWatched,
   getServerSnapshot,
   getWatchSnapshot,
@@ -18,30 +24,7 @@ import {
 import { IosInstallHint } from "./ios-install-hint";
 import { PushControls } from "./push-controls";
 
-type Kelurahan = {
-  kode: string;
-  nama: string;
-  kecamatan?: string;
-  kecamatanSlug?: string;
-  kecamatan_slug?: string;
-};
-
-type AlertData = {
-  status?: string;
-  skor?: number;
-  hujan24jMm?: number;
-  kategoriHujan?: string | null;
-  jendela?: { mulai?: string; selesai?: string } | null;
-};
-
-const STATUS_ORDER = ["Normal", "Waspada", "Siaga", "Awas"] as const;
-type StatusName = (typeof STATUS_ORDER)[number];
-
-function isStatus(value: string | undefined): value is StatusName {
-  return STATUS_ORDER.includes(value as StatusName);
-}
-
-export function WatchArea() {
+export function WatchArea({ districtName }: { districtName?: string }) {
   const watchRaw = useSyncExternalStore(
     subscribe,
     getWatchSnapshot,
@@ -51,20 +34,22 @@ export function WatchArea() {
   const kode = watched?.kode;
 
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Kelurahan[]>([]);
+  const [results, setResults] = useState<Subdistrict[]>([]);
   const [searching, setSearching] = useState(false);
   const [message, setMessage] = useState("");
-  const [state, setState] = useState<{ kode: string; data: AlertData | null } | null>(
+  const [state, setState] = useState<{ kode: string; data: AlertInfo | null } | null>(
     null,
   );
 
   useEffect(() => {
     if (!kode) return;
     let cancelled = false;
-    fetch(`/api/peringatan/${kode}`)
+    fetch(`/api/early-warning/${kode}`)
       .then((response) => (response.ok ? response.json() : null))
-      .then((data: AlertData | null) => {
-        if (!cancelled) setState({ kode, data });
+      .then((payload: unknown) => {
+        if (!cancelled) {
+          setState({ kode, data: payload ? toAlertInfo(payload) : null });
+        }
       })
       .catch(() => {
         if (!cancelled) setState({ kode, data: null });
@@ -76,7 +61,7 @@ export function WatchArea() {
 
   const loading = Boolean(kode) && state?.kode !== kode;
   const data = state?.kode === kode ? state?.data : null;
-  const status = isStatus(data?.status) ? data.status : null;
+  const status = data?.status ?? null;
 
   const search = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -85,14 +70,17 @@ export function WatchArea() {
     setSearching(true);
     setMessage("");
     try {
-      const response = await fetch(`/api/kelurahan?q=${encodeURIComponent(term)}`);
+      const response = await fetch(`/api/subdistricts?q=${encodeURIComponent(term)}`);
       if (!response.ok) throw new Error("not ready");
-      const payload = (await response.json()) as
-        | Kelurahan[]
-        | { data?: Kelurahan[] };
-      const list = Array.isArray(payload) ? payload : (payload.data ?? []);
-      setResults(Array.isArray(list) ? list : []);
-      if (!list.length) setMessage("Tidak ada kelurahan yang cocok.");
+      const list = parseSubdistricts(await response.json());
+      const inDistrict = districtName
+        ? list.filter((item) =>
+            item.kecamatan.toLowerCase().includes(districtName.toLowerCase()),
+          )
+        : list;
+      const visible = inDistrict.length > 0 ? inDistrict : list;
+      setResults(visible);
+      if (!visible.length) setMessage("Tidak ada kelurahan yang cocok.");
     } catch {
       setResults([]);
       setMessage("Data kelurahan belum tersedia. Coba lagi nanti.");
@@ -101,11 +89,11 @@ export function WatchArea() {
     }
   };
 
-  const choose = (item: Kelurahan) => {
+  const choose = (item: Subdistrict) => {
     setWatched({
       kode: item.kode,
       nama: item.nama,
-      kecamatanSlug: item.kecamatanSlug ?? item.kecamatan_slug,
+      kecamatan: item.kecamatan,
     });
     setResults([]);
     setQuery("");
@@ -123,8 +111,9 @@ export function WatchArea() {
         <>
           <div className="sk-watch__current">
             <b>{watched.nama}</b>
-            {watched.kecamatanSlug ? <span>{watched.kecamatanSlug}</span> : null}
-          </div>
+            {(watched.kecamatan ?? watched.kecamatanSlug) ? (
+              <span>{watched.kecamatan ?? watched.kecamatanSlug}</span>
+            ) : null}          </div>
 
           <div className="sk-watch__status" aria-live="polite">
             {loading ? (
@@ -134,17 +123,11 @@ export function WatchArea() {
                 <span className={`sk-status sk-status--${status.toLowerCase()}`}>
                   {status}
                 </span>
-                {data?.kategoriHujan ? (
-                  <p>Prakiraan: {data.kategoriHujan}</p>
+                {data?.category ? <p>Prakiraan: {data.category}</p> : null}
+                {data?.rainfallMm != null ? (
+                  <p>Hujan 24 jam: {data.rainfallMm} mm</p>
                 ) : null}
-                {data?.hujan24jMm != null ? (
-                  <p>Hujan 24 jam: {data.hujan24jMm} mm</p>
-                ) : null}
-                {data?.jendela?.mulai && data.jendela.selesai ? (
-                  <p>
-                    Jendela hujan: {data.jendela.mulai}–{data.jendela.selesai}
-                  </p>
-                ) : null}
+                {data?.windowLabel ? <p>Jendela hujan: {data.windowLabel}</p> : null}
               </>
             ) : (
               <p className="sk-field__hint">
@@ -163,6 +146,12 @@ export function WatchArea() {
         </>
       ) : (
         <>
+          {districtName ? (
+            <p className="sk-watch__context">
+              Kecamatan <b>{districtName}</b>. Cari kelurahanmu di bawah.
+            </p>
+          ) : null}
+
           <form className="sk-watch__search" onSubmit={search}>
             <label className="sr-only" htmlFor="kelurahan-cari">
               Cari kelurahan
@@ -190,9 +179,7 @@ export function WatchArea() {
                   <button type="button" onClick={() => choose(item)}>
                     <b>{item.nama}</b>
                     <span>
-                      {item.kecamatan ??
-                        item.kecamatanSlug ??
-                        item.kecamatan_slug ??
+                      {[item.kecamatan, item.kota].filter(Boolean).join(" · ") ||
                         item.kode}
                     </span>
                   </button>

@@ -6,6 +6,7 @@ const HIDE_KEY = "siagaku:banner-hidden-until";
 export type WatchedArea = {
   kode: string;
   nama: string;
+  kecamatan?: string;
   kecamatanSlug?: string;
 };
 

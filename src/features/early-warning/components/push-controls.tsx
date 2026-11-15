@@ -6,7 +6,7 @@ import {
   sendTestPush,
   subscribePush,
   unsubscribePush,
-} from "@/lib/push-client";
+} from "../push-client";
 
 /** Enable push for the watched kelurahan, send a test, or stop watching. */
 export function PushControls({
