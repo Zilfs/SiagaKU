@@ -18,6 +18,7 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - [Vercel AI SDK](https://ai-sdk.dev) (`ai`, `@ai-sdk/react`) - panggilan model AI, streaming, structured output, hook chat
 - [@ai-sdk/google](https://ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai), [@ai-sdk/groq](https://ai-sdk.dev/providers/ai-sdk-providers/groq), dan [@ai-sdk/openai-compatible](https://ai-sdk.dev/providers/openai-compatible-providers) - provider AI dan fallback
 - [unpdf](https://github.com/unjs/unpdf) - ekstraksi teks PDF per halaman untuk ingest RAG
+- [web-push](https://github.com/web-push-libs/web-push) (MPL-2.0) dan @types/web-push - pengiriman notifikasi peringatan dini (VAPID)
 - [Vitest](https://vitest.dev) dan @vitejs/plugin-react - pengujian
 - [Prettier](https://prettier.io) - pemformat kode
 - [tsx](https://tsx.is) - menjalankan skrip TypeScript

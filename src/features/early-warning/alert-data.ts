@@ -1,3 +1,8 @@
+import {
+  RAINFALL_CATEGORY_LABELS,
+  type RainfallCategory,
+} from "@/lib/risk/score";
+
 /** Normalise the early-warning and subdistrict APIs (docs/07), whatever casing W3 lands. */
 
 export const STATUS_NAMES = ["Normal", "Waspada", "Siaga", "Awas"] as const;
@@ -26,9 +31,11 @@ export type RawAlert = {
   hujan_24j_mm?: number;
   hujan24jMm?: number;
   rainfall_24h_mm?: number;
+  rainfall24hMm?: number;
   kategori_hujan?: string | null;
   kategoriHujan?: string | null;
   rainfall_category?: string | null;
+  rainfallCategory?: string | null;
   jendela?: { mulai?: string; selesai?: string } | null;
   window?: { start?: string; end?: string } | null;
 };
@@ -64,6 +71,14 @@ export function formatWindow(
   return `${clock(start)}–${clock(end)} WIB`;
 }
 
+/** The API sends the English enum ("moderate"); show its Indonesian label ("Sedang"). */
+function categoryLabel(value: string | null): string | null {
+  if (value && value in RAINFALL_CATEGORY_LABELS) {
+    return RAINFALL_CATEGORY_LABELS[value as RainfallCategory];
+  }
+  return value;
+}
+
 export function toAlertInfo(raw: RawAlert | null | undefined): AlertInfo {
   if (!raw) {
     return {
@@ -78,9 +93,18 @@ export function toAlertInfo(raw: RawAlert | null | undefined): AlertInfo {
     status: toStatusName(raw.status),
     score: raw.skor ?? raw.score ?? null,
     rainfallMm:
-      raw.hujan_24j_mm ?? raw.hujan24jMm ?? raw.rainfall_24h_mm ?? null,
-    category:
-      raw.kategori_hujan ?? raw.kategoriHujan ?? raw.rainfall_category ?? null,
+      raw.rainfall24hMm ??
+      raw.hujan_24j_mm ??
+      raw.hujan24jMm ??
+      raw.rainfall_24h_mm ??
+      null,
+    category: categoryLabel(
+      raw.rainfallCategory ??
+        raw.kategori_hujan ??
+        raw.kategoriHujan ??
+        raw.rainfall_category ??
+        null,
+    ),
     windowLabel: formatWindow(
       raw.jendela?.mulai ?? raw.window?.start,
       raw.jendela?.selesai ?? raw.window?.end,

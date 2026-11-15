@@ -50,7 +50,7 @@ export async function subscribePush(kode: string): Promise<PushSubscription> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       subscription: json,
-      kelurahan_kode: kode,
+      subdistrictCode: kode,
     }),
   });
   if (!response.ok) {
