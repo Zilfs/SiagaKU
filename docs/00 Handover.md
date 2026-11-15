@@ -82,8 +82,10 @@ SELESAI:
 - Korpus RAG (14 Nov): `npm run rag:ingest` memasukkan 5 dokumen, 447 chunk, semua ber-embedding. Kuota gratis embedding Gemini 100 teks/menit, jadi ingest dijeda 13 dtk per 20 teks; kalau ada chunk tanpa embedding, jalankan `npm run rag:backfill`.
 - W1 Task 15 UI (15 Nov, branch `feature/report-ui`): `/lapor` (foto + kompres canvas 1600 px/1 MB, EXIF hilang, pilih kecamatan atau lokasi, deskripsi opsional, status unggah → AI) dan `/laporan` (peta Leaflet dengan marker kamera + daftar kartu 72 jam, label **Contoh** untuk demo, empty/error state). Memakai kontrak docs/07 yang diterjemahkan sesuai AGENTS: `POST /api/reports/upload-url`, `POST /api/reports`, `GET /api/reports?hours=72`; belum ada di `dev`.
 - W2 Task 17 smoke (15 Nov, branch `feature/smoke-test`): `npm run smoke` (`SMOKE_BASE_URL=https://<prod>`; 44 `/wilayah/{slug}` → 200, `/api/health` `ok:true`, 1 `POST /api/plans` → 201, 1 `POST /api/chat` → stream berisi teks; exit 1 bila ada FAIL) dan `npm run check:bundle` (setelah `npm run build`, memindai `.next/static` untuk nama dan nilai secret server; nilai tidak pernah dicetak). Uji pertama ke `siaga-ku.vercel.app`: 45/47 PASS, plans & chat 404 karena production belum memuat T10/T11. Catatan: tiap run menulis 1 baris rencana ke DB production; run ulang < 10 menit kena rate limit 429 di `/api/plans`.
+- Rilis production (15 Nov, PR #49 `dev` → `main`, `e7d9cb1`, admin bypass): memuat #37/#38 chat, #41/#42 rencana, #43/#46 peringatan dini, #44 UI lapor, #45 tentang, #47 eval, #48 smoke. Vercel Production ditambah `GROQ_API_KEY` (sensitive) + `GROQ_MODEL=openai/gpt-oss-120b` (dipilih dari uji: 0,7 dtk, jawaban Indonesia paling lengkap; key Groq tidak punya model vision). `/api/health?deep=1`: gemini ok, groq ok, alt skip. Smoke 47/47 PASS, `check:bundle` 41 file 0 hit. Migrasi 0004 sudah ada di Supabase, kelurahan sudah ter-seed (Ceger 31.75.10.1008 → Waspada), VAPID di Vercel, secret GitHub `CRON_SECRET` + `SITE_URL` ada.
+- QA browser production (15 Nov): landing/cek risiko, `/wilayah`, 404, dialog 112, `/peta`, `/rencana` → `/rencana/[slug]` (checklist tersimpan), `/tanya` (sitasi + kartu 112), `/peringatan`, `/laporan` (data Contoh), `/tentang` jalan, console 0 error. Ditemukan dan diperbaiki di branch `fix/plan-wizard-step`: klik **Lanjut** di langkah 2 wizard langsung submit (langkah 3 terlewati; tombol Lanjut/submit kini punya `key` berbeda) dan "Titik aman terdekat" tidak urut jarak. QA meninggalkan 1 rencana uji di production (`/rencana/8clvdummw4`).
 
-BELUM: T11-UI `/rencana` (PR #42, review kedua 15 Nov: request changes, 3 poin); backend T15 lapor banjir (`/api/reports*`, vision; PIC belum ditentukan); T13 eval live (runner selesai, menunggu kredensial); key chat masih `kecamatan_id` (perlu rename ke `district_id`); T17 (README utama, proposal, video, Lighthouse, tag `v1.0.0`). T14: migrasi 0004 + seed kelurahan + VAPID/secret GitHub belum dijalankan di production.
+BELUM: backend T15 lapor banjir (`/api/reports*`, vision; PIC belum ditentukan; `/lapor` live tapi unggahan gagal, `/laporan` menampilkan data Contoh); T13 eval live (runner selesai, menunggu kredensial); key chat masih `kecamatan_id` (perlu rename ke `district_id`); T17 (README utama, proposal, video, Lighthouse, tag `v1.0.0`); uji push T14 di perangkat; minor chat: judul sumber menempel dengan penerbit tanpa spasi, AI kadang menulis `[SiagaKU]` seperti sitasi.
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
@@ -97,14 +99,14 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
-- API yang belum ada di `dev`: `/api/reports`, `/api/reports/upload-url` (T15). `/lapor` dan menu "Lapor" sudah di `dev`; tahan rilis ke `main` sampai backend T15 ada atau sembunyikan menunya.
+- `/lapor` sudah live di production tanpa backend T15: unggahan foto gagal. Bangun `/api/reports*` atau sembunyikan menu "Lapor"/"Laporan" sebelum penjurian.
+- Rilis #48 dan #49 di-merge dengan admin bypass tanpa review anggota lain; minta satu anggota mencoba production.
 
 ## Langkah berikutnya (urut)
-1. Rhein: merge T14 backend, jalankan migrasi 0004 lewat MCP, `npm run db:seed-subdistricts`, buat VAPID (`npx web-push generate-vapid-keys`) → env Vercel, isi secret GitHub `CRON_SECRET` + `SITE_URL`, jalankan workflow Early warning sekali, lalu uji push di Chrome/Android/iPhone (plan T14 langkah 9).
-2. Rhein: tambah Groq (`GROQ_API_KEY` + `GROQ_MODEL`) sebagai cadangan kalau kuota Gemini gratis habis saat penjurian; tentukan PIC backend T15.
-3. Bagus: T13 runner selesai (`npm run eval`); jalankan eval live begitu `.env.local` punya kredensial Supabase/Gemini, lalu isi tabel di `docs/eval-hasil.md` dan perbaiki prompt sampai target. Rapikan key chat `kecamatan_id` → `district_id` di PR terpisah.
-4. Syaki: Task 17 (README utama, proposal, video).
-5. Ukon: perbaiki PR #42 sesuai review kedua (slug tidak dikenal mengunci wizard, checklist tertimpa `[]`, label tipe titik aman Indonesia lewat peta label bersama yang juga dipakai `features/risk/components/safe-points.tsx`), lalu `git pull origin dev`.
-6. Rhein: setelah rilis `dev` → `main`, jalankan `SMOKE_BASE_URL=<prod> npm run smoke` dan `npm run build && npm run check:bundle` sampai semua PASS, lalu Lighthouse mobile `/` dan `/wilayah/jatinegara` (skor ke README).
-7. Ikuti 09 Timeline & Pembagian Tugas.
+1. Rhein: merge `fix/plan-wizard-step` → `dev`, rilis lagi ke `main`, lalu ulang `SMOKE_BASE_URL=https://siaga-ku.vercel.app npm run smoke` dan coba wizard sampai langkah 3.
+2. Rhein: tentukan PIC backend T15 (atau sembunyikan menu lapor); cek workflow Early warning jalan tiap jam dari `main`, lalu uji push di Chrome/Android/iPhone (plan T14 langkah 9).
+3. Bagus: jalankan eval live (`npm run eval`) begitu `.env.local` punya kredensial Supabase/Gemini (Groq sudah terisi), isi `docs/eval-hasil.md`, perbaiki prompt sampai target. Rapikan key chat `kecamatan_id` → `district_id` di PR terpisah.
+4. Syaki: Task 17 (README utama, proposal, video); Lighthouse mobile `/` dan `/wilayah/jatinegara` (skor ke README).
+5. Ukon: perbaiki minor UI chat (spasi antara judul sumber dan penerbit).
+6. Ikuti 09 Timeline & Pembagian Tugas.
 ```
