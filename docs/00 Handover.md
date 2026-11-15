@@ -80,8 +80,9 @@ SELESAI:
 - AI live (14 Nov): `GEMINI_MODEL=gemini-3.5-flash-lite` di `.env.local` dan Vercel Production (key sensitive). Dipilih karena menjawab ~2 dtk; `gemini-3.5-flash` ~14 dtk (mepet `AI_TIMEOUT_MS` 20 dtk), `gemini-3.8-flash`/`gemini-flash-latest` timeout, `gemini-2.5-flash` tidak tersedia untuk key baru. Hindari alias `-latest`. Penjelasan risiko di production sudah `provider: "gemini"`.
 - Korpus RAG (14 Nov): `npm run rag:ingest` memasukkan 5 dokumen, 447 chunk, semua ber-embedding. Kuota gratis embedding Gemini 100 teks/menit, jadi ingest dijeda 13 dtk per 20 teks; kalau ada chunk tanpa embedding, jalankan `npm run rag:backfill`.
 - W1 Task 15 UI (15 Nov, branch `feature/report-ui`): `/lapor` (foto + kompres canvas 1600 px/1 MB, EXIF hilang, pilih kecamatan atau lokasi, deskripsi opsional, status unggah → AI) dan `/laporan` (peta Leaflet dengan marker kamera + daftar kartu 72 jam, label **Contoh** untuk demo, empty/error state). Memakai kontrak docs/07 yang diterjemahkan sesuai AGENTS: `POST /api/reports/upload-url`, `POST /api/reports`, `GET /api/reports?hours=72`; belum ada di `dev`.
+- W2 Task 17 smoke (15 Nov, branch `feature/smoke-test`): `npm run smoke` (`SMOKE_BASE_URL=https://<prod>`; 44 `/wilayah/{slug}` → 200, `/api/health` `ok:true`, 1 `POST /api/plans` → 201, 1 `POST /api/chat` → stream berisi teks; exit 1 bila ada FAIL) dan `npm run check:bundle` (setelah `npm run build`, memindai `.next/static` untuk nama dan nilai secret server; nilai tidak pernah dicetak). Uji pertama ke `siaga-ku.vercel.app`: 45/47 PASS, plans & chat 404 karena production belum memuat T10/T11. Catatan: tiap run menulis 1 baris rencana ke DB production; run ulang < 10 menit kena rate limit 429 di `/api/plans`.
 
-BELUM: T11-UI `/rencana` (PR #42, menunggu perbaikan Ukon); backend T15 lapor banjir (`/api/reports*`, vision; PIC belum ditentukan); T13 eval AI; T17 (README utama, proposal, video, smoke test). T14: migrasi 0004 + seed kelurahan + VAPID/secret GitHub belum dijalankan di production.
+BELUM: T11-UI `/rencana` (PR #42, review kedua 15 Nov: request changes, 3 poin); backend T15 lapor banjir (`/api/reports*`, vision; PIC belum ditentukan); T13 eval AI; T17 (README utama, proposal, video, Lighthouse, tag `v1.0.0`; smoke test ada di `feature/smoke-test`). T14: migrasi 0004 + seed kelurahan + VAPID/secret GitHub belum dijalankan di production.
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
@@ -102,6 +103,7 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 2. Rhein: tambah Groq (`GROQ_API_KEY` + `GROQ_MODEL`) sebagai cadangan kalau kuota Gemini gratis habis saat penjurian; tentukan PIC backend T15.
 3. Bagus: T10 dan T11 backend sudah di `dev` (PR #37, #41); uji manual dengan key asli, lalu tulis `scripts/eval.ts` + `docs/eval-hasil.md` (T13) memakai 40 soal dan 6 profil di `tests/eval/`.
 4. Syaki: Task 17 (README utama, proposal, video).
-5. Ukon: perbaiki PR #42 (`/rencana/[slug]` memanggil `features/plan/server` langsung), lalu `git pull origin dev`.
-6. Ikuti 09 Timeline & Pembagian Tugas.
+5. Ukon: perbaiki PR #42 sesuai review kedua (slug tidak dikenal mengunci wizard, checklist tertimpa `[]`, label tipe titik aman Indonesia lewat peta label bersama yang juga dipakai `features/risk/components/safe-points.tsx`), lalu `git pull origin dev`.
+6. Rhein: PR `feature/smoke-test` → `dev`; setelah rilis `dev` → `main`, jalankan `SMOKE_BASE_URL=<prod> npm run smoke` dan `npm run build && npm run check:bundle` sampai semua PASS, lalu Lighthouse mobile `/` dan `/wilayah/jatinegara` (skor ke README).
+7. Ikuti 09 Timeline & Pembagian Tugas.
 ```
