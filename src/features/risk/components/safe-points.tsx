@@ -1,6 +1,7 @@
-import { Accessibility, MapPin, Route } from "lucide-react";
+import { MapPin, Route } from "lucide-react";
 import type { SafePoint } from "@/features/risk/types";
 import { distanceKm, formatDistance } from "@/lib/geo";
+import { safePointTypeLabel } from "@/lib/safe-point-label";
 
 /**
  * The nearest safe points in the Task 7 shape; the distance is computed from the point's lat/lng,
@@ -35,16 +36,12 @@ export function SafePoints({
             return (
               <li key={point.id}>
                 <span className="sk-safepoints__icon" aria-hidden="true">
-                  {point.type === "Titik kumpul" ? (
-                    <Accessibility size={18} />
-                  ) : (
-                    <MapPin size={18} />
-                  )}
+                  <MapPin size={18} />
                 </span>
                 <span className="sk-safepoints__name">
                   <b>{point.name}</b>
                   <span>
-                    {point.type} ·{" "}
+                    {safePointTypeLabel(point.type)} ·{" "}
                     {point.isVerified ? "Terverifikasi" : "Belum diverifikasi"}
                   </span>
                 </span>

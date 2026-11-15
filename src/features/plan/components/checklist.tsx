@@ -7,6 +7,7 @@ import type { GoKitItem } from "@/features/plan/ui-types";
 export function Checklist({ slug, items }: { slug: string; items: GoKitItem[] }) {
   const storageKey = `siagaku:checklist:${slug}`;
   const [checked, setChecked] = useState<string[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [filter, setFilter] = useState<"required" | "all">("required");
 
   useEffect(() => {
@@ -18,15 +19,18 @@ export function Checklist({ slug, items }: { slug: string; items: GoKitItem[] })
     } catch {
       // a full or blocked storage keeps the checklist unchecked
     }
+    setLoaded(true);
   }, [storageKey]);
 
   useEffect(() => {
+    // never write before the stored list has been read: [] must not overwrite progress
+    if (!loaded) return;
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(checked));
     } catch {
       // ignore a blocked storage
     }
-  }, [checked, storageKey]);
+  }, [checked, storageKey, loaded]);
 
   const toggle = (item: string) => {
     setChecked((current) =>

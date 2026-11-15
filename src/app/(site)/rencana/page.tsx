@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { PlanWizard } from "@/features/plan/components/plan-wizard";
-import type { DistrictOption } from "@/features/plan/ui-types";
+import type { PlanDistrict } from "@/features/plan/ui-types";
 import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default async function RencanaPage({
   const initialSlug =
     typeof params.kecamatan === "string" ? params.kecamatan : undefined;
 
-  let districts: DistrictOption[] = [];
+  let districts: PlanDistrict[] = [];
   try {
     const list = await listDistrictsWithScore();
     districts = list.map(({ id, slug, name, city }) => ({

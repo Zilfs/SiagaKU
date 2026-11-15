@@ -16,12 +16,13 @@ import {
 } from "lucide-react";
 import type {
   DisabilityType,
-  DistrictOption,
   HousingType,
+  PlanDistrict,
   PlanRequest,
   RiverDistance,
   Vehicle,
 } from "@/features/plan/ui-types";
+import { initialDistrictId, wizardError } from "../wizard-validation";
 
 const STEPS = [
   { title: "Wilayah & hunian", note: "Tempat tinggal dan jenis rumah" },
@@ -114,18 +115,16 @@ export function PlanWizard({
   districts,
   initialSlug,
 }: {
-  districts: DistrictOption[];
+  districts: PlanDistrict[];
   initialSlug?: string;
 }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [districtId, setDistrictId] = useState(
-    initialSlug
-      ? (districts.find((district) => district.slug === initialSlug)?.id ?? "")
-      : (districts[0]?.id ?? ""),
+  const [districtId, setDistrictId] = useState<number | "">(() =>
+    initialDistrictId(districts, initialSlug),
   );
   const [housingType, setHousingType] = useState<HousingType>("single_story");
-  const [floor, setFloor] = useState(1);
+  const [floor, setFloor] = useState(0);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
@@ -135,6 +134,7 @@ export function PlanWizard({
   const [hasDisability, setHasDisability] = useState(false);
   const [disabilities, setDisabilities] = useState<DisabilityType[]>([]);
   const [petInput, setPetInput] = useState("");
+  const [petError, setPetError] = useState("");
   const [pets, setPets] = useState<string[]>([]);
   const [vehicle, setVehicle] = useState<Vehicle>("none");
   const [riverDistance, setRiverDistance] = useState<RiverDistance>("unknown");
@@ -144,14 +144,12 @@ export function PlanWizard({
 
   const total = adults + children + infants + elderly + pregnant;
   const selectedDistrict = districts.find((district) => district.id === districtId);
-
-  const stepValid =
-    step === 0
-      ? districtId !== "" && floor >= 0 && floor <= 60
-      : step === 1
-        ? total >= 1 && total <= 15 && (!hasDisability || disabilities.length > 0)
-        : true;
-
+  const validation = {
+    districtId,
+    total,
+    hasDisability,
+    disabilityCount: disabilities.length,
+  };
   const totalValid = total >= 1 && total <= 15;
 
   const toggleDisability = (type: DisabilityType) => {
@@ -164,22 +162,24 @@ export function PlanWizard({
 
   const addPet = () => {
     const pet = petInput.trim();
-    if (!pet || pets.length >= 10) return;
+    if (!pet) return;
+    if (pets.some((item) => item.toLowerCase() === pet.toLowerCase())) {
+      setPetError("Hewan ini sudah ada di daftar.");
+      return;
+    }
+    if (pets.length >= 10) {
+      setPetError("Maksimal 10 hewan peliharaan.");
+      return;
+    }
     setPets((current) => [...current, pet]);
     setPetInput("");
+    setPetError("");
   };
 
   const next = () => {
-    if (!stepValid) {
-      setError(
-        step === 0
-          ? "Pilih kecamatan dan jenis hunian dulu."
-          : total === 0
-            ? "Isi minimal satu anggota keluarga."
-            : total > 15
-              ? "Total anggota keluarga maksimal 15."
-              : "Pilih minimal satu jenis disabilitas.",
-      );
+    const problem = wizardError(step, validation);
+    if (problem) {
+      setError(problem);
       return;
     }
     setError("");
@@ -193,7 +193,13 @@ export function PlanWizard({
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!stepValid || submitting) return;
+    if (submitting) return;
+    const problem =
+      wizardError(0, validation) ?? wizardError(1, validation);
+    if (problem) {
+      setError(problem);
+      return;
+    }
     setError("");
     setSubmitting(true);
 
@@ -231,8 +237,6 @@ export function PlanWizard({
         setError(
           "Kamu sudah membuat beberapa rencana. Coba lagi dalam beberapa menit.",
         );
-      } else if (response.status === 404) {
-        setError("Rencana belum bisa dibuat. Coba lagi sebentar lagi.");
       } else {
         setError("Rencana belum bisa dibuat. Coba lagi sebentar lagi.");
       }
@@ -346,7 +350,7 @@ export function PlanWizard({
                 }
                 inputMode="numeric"
               />
-              <p className={floor > 60 ? "sk-field__error" : "sk-field__hint"}>
+              <p className="sk-field__hint">
                 Isi 0 kalau rumah tanpa lantai atas.
               </p>
             </div>
@@ -426,7 +430,10 @@ export function PlanWizard({
                   value={petInput}
                   maxLength={30}
                   placeholder="Contoh: kucing"
-                  onChange={(event) => setPetInput(event.target.value)}
+                  onChange={(event) => {
+                    setPetInput(event.target.value);
+                    setPetError("");
+                  }}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
                       event.preventDefault();
@@ -438,6 +445,11 @@ export function PlanWizard({
                   Tambah
                 </button>
               </div>
+              {petError ? (
+                <p className="sk-field__error" role="alert">
+                  {petError}
+                </p>
+              ) : null}
               {pets.length > 0 ? (
                 <ul className="sk-pet-list" aria-label="Hewan peliharaan">
                   {pets.map((pet) => (
@@ -549,7 +561,17 @@ export function PlanWizard({
                 </li>
                 <li>
                   <span>Disabilitas</span>
-                  <b>{disabilities.length ? disabilities.length : "Tidak ada"}</b>
+                  <b>
+                    {disabilities.length
+                      ? disabilities
+                          .map(
+                            (type) =>
+                              DISABILITIES.find((item) => item.value === type)
+                                ?.label ?? type,
+                          )
+                          .join(", ")
+                      : "Tidak ada"}
+                  </b>
                 </li>
                 <li>
                   <span>Hewan</span>
@@ -578,7 +600,6 @@ export function PlanWizard({
               type="button"
               className="btn btn--primary"
               onClick={next}
-              disabled={!stepValid}
             >
               Lanjut
               <ArrowRight size={16} aria-hidden="true" />
@@ -587,7 +608,7 @@ export function PlanWizard({
             <button
               type="submit"
               className="btn btn--primary"
-              disabled={submitting || !stepValid}
+              disabled={submitting}
             >
               {submitting ? (
                 <>

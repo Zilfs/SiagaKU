@@ -19,25 +19,18 @@ import type {
   PlanRequest,
   PreparednessPlan,
 } from "./schemas";
+import type { SafePoint } from "@/features/risk/types";
 
 export type Vehicle = PlanRequest["conditions"]["vehicle"];
 export type RiverDistance = PlanRequest["conditions"]["riverDistance"];
 export type VulnerableGroup = PreparednessPlan["vulnerableGroups"][number];
 
+/** A district row as the wizard's select needs it; also the plan's district in the response. */
 export type PlanDistrict = {
   id: number;
   slug: string;
   name: string;
   city: string;
-};
-
-export type PlanSafePoint = {
-  id: number;
-  name: string;
-  type: string;
-  isVerified: boolean;
-  lat: number | null;
-  lng: number | null;
 };
 
 export type PlanResponse = {
@@ -46,19 +39,6 @@ export type PlanResponse = {
   district: PlanDistrict;
   profile: PlanRequest;
   plan: PreparednessPlan;
-  safePoints: PlanSafePoint[];
+  safePoints: SafePoint[];
   emergencyContacts: EmergencyContact[];
-};
-
-export type PlanCreated = {
-  slug: string;
-  url: string;
-  meta?: { provider?: string; model?: string | null; fallback?: boolean };
-};
-
-export type DistrictOption = {
-  id: number;
-  slug: string;
-  name: string;
-  city: string;
 };

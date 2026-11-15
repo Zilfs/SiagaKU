@@ -7,6 +7,7 @@ import {
   TriangleExclamationPoint,
 } from "lucide-react";
 import type { PlanResponse, ReadinessLevel } from "@/features/plan/ui-types";
+import { safePointTypeLabel } from "@/lib/safe-point-label";
 import { Checklist } from "./checklist";
 import { PlanTabs } from "./plan-tabs";
 import { ShareActions } from "./share-actions";
@@ -85,7 +86,7 @@ export function PlanView({ plan }: { plan: PlanResponse }) {
         </section>
 
         <div className="sk-plan-grid">
-          <Checklist slug={plan.slug} items={content.goKit} />
+          <Checklist key={plan.slug} slug={plan.slug} items={content.goKit} />
           <PlanTabs
             before={content.before}
             during={content.during}
@@ -123,7 +124,7 @@ export function PlanView({ plan }: { plan: PlanResponse }) {
                   <div>
                     <b>{point.name}</b>
                     <span>
-                      {point.type} ·{" "}
+                      {safePointTypeLabel(point.type)} ·{" "}
                       {point.isVerified ? "Terverifikasi" : "Perkiraan"}
                     </span>
                   </div>

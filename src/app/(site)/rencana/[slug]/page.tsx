@@ -7,6 +7,7 @@ import {
   listEmergencyContacts,
 } from "@/features/plan/server/plan-repository";
 import type { PlanResponse } from "@/features/plan/ui-types";
+import type { StoredPlan } from "@/features/plan/schemas";
 import { listShelters } from "@/features/risk/server/risk-repository";
 
 export const metadata: Metadata = {
@@ -24,29 +25,28 @@ export default async function PlanDetailPage({
   await connection();
 
   // same composition as handlePlanDetail: call the feature services, not our own route handler
-  let plan: PlanResponse | null = null;
+  let stored: StoredPlan | null;
   try {
-    const stored = await findPlanBySlug(slug);
-    if (stored) {
-      const [safePoints, emergencyContacts] = await Promise.all([
-        listShelters(stored.districtId),
-        listEmergencyContacts(),
-      ]);
-      plan = {
-        slug: stored.slug,
-        createdAt: stored.createdAt,
-        district: stored.district,
-        profile: stored.profile,
-        plan: stored.plan,
-        safePoints,
-        emergencyContacts,
-      };
-    }
+    stored = await findPlanBySlug(slug);
   } catch (error) {
     console.error("GET plan detail failed", slug, error);
+    throw error;
   }
+  if (!stored) notFound();
 
-  if (!plan) notFound();
+  const [safePoints, emergencyContacts] = await Promise.all([
+    listShelters(stored.districtId),
+    listEmergencyContacts(),
+  ]);
+  const plan: PlanResponse = {
+    slug: stored.slug,
+    createdAt: stored.createdAt,
+    district: stored.district,
+    profile: stored.profile,
+    plan: stored.plan,
+    safePoints,
+    emergencyContacts,
+  };
 
   return <PlanView plan={plan} />;
 }
