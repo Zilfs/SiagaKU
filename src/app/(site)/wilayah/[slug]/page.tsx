@@ -90,7 +90,10 @@ export default async function DistrictPage({
               hari.
             </p>
             <div className="sk-detail-actions">
-              <Link className="btn btn--primary" href="/rencana">
+              <Link
+                className="btn btn--primary"
+                href={`/rencana?kecamatan=${district.slug}`}
+              >
                 Buat rencana siaga
               </Link>
               <WatchButton

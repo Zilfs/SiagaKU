@@ -9,6 +9,7 @@ import { EmergencyButton } from "./emergency-button";
 const LINKS: { href: string; label: string; optional?: boolean }[] = [
   { href: "/#cek", label: "Cek risiko" },
   { href: "/peta", label: "Peta" },
+  { href: "/rencana", label: "Rencana" },
   { href: "/#cara", label: "Cara kerja", optional: true },
   { href: "/#fitur", label: "Fitur", optional: true },
   { href: "/tanya", label: "Tanya" },
