@@ -52,6 +52,26 @@ describe("toAlertInfo", () => {
     expect(info.windowLabel).toBeNull();
   });
 
+  it("reads the /api/early-warning/[code] response and labels the category", () => {
+    const info = toAlertInfo({
+      status: "watch",
+      score: 64,
+      rainfall24hMm: 30,
+      rainfallCategory: "moderate",
+      window: {
+        start: "2026-11-18T08:00:00.000Z",
+        end: "2026-11-18T11:00:00.000Z",
+      },
+    });
+    expect(info).toEqual({
+      status: "Siaga",
+      score: 64,
+      rainfallMm: 30,
+      category: "Sedang",
+      windowLabel: "15.00–18.00 WIB",
+    });
+  });
+
   it("handles a null body", () => {
     expect(toAlertInfo(null)).toMatchObject({ status: null, windowLabel: null });
   });

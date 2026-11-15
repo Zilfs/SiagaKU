@@ -1,8 +1,10 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { supabaseServer } from "@/lib/db/client";
+import { jsonError } from "@/lib/http";
 
-export type Bucket = "chat" | "plan" | "report" | "explanation";
+export type Bucket =
+  "chat" | "plan" | "report" | "explanation" | "push_subscribe" | "push_test";
 
 /** Requests allowed per window, per IP (docs/07 API Spec). */
 export const RATE_LIMITS: Record<Bucket, { limit: number; windowSec: number }> =
@@ -11,6 +13,8 @@ export const RATE_LIMITS: Record<Bucket, { limit: number; windowSec: number }> =
     plan: { limit: 5, windowSec: 600 },
     report: { limit: 5, windowSec: 3600 },
     explanation: { limit: 30, windowSec: 600 },
+    push_subscribe: { limit: 10, windowSec: 3600 },
+    push_test: { limit: 3, windowSec: 600 },
   };
 
 export function getClientIp(req: Request): string {
@@ -80,4 +84,28 @@ export async function checkRateLimit(
   }
   if (count <= limit) return { ok: true, retryAfterSec: 0 };
   return { ok: false, retryAfterSec: Math.ceil(startSec + windowSec - nowSec) };
+}
+
+/** Applies the bucket's limit to the caller's IP; returns the 429 response, or null when allowed. */
+export async function limitRequest(
+  req: Request,
+  bucket: Bucket,
+  salt: string,
+  check: typeof checkRateLimit = checkRateLimit,
+): Promise<Response | null> {
+  const { limit, windowSec } = RATE_LIMITS[bucket];
+  const rl = await check(
+    hashIp(getClientIp(req), salt),
+    bucket,
+    limit,
+    windowSec,
+  );
+  if (rl.ok) return null;
+  const res = jsonError(
+    "RATE_LIMITED",
+    "Terlalu banyak permintaan, coba lagi beberapa menit lagi.",
+    429,
+  );
+  res.headers.set("Retry-After", String(rl.retryAfterSec));
+  return res;
 }
