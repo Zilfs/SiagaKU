@@ -21,7 +21,6 @@ const answer = (overrides: Partial<ChatAnswer> = {}): ChatAnswer => ({
   emergency: false,
   provider: "gemini",
   model: "gemini-3.5-flash-lite",
-  fallback: false,
   cached: false,
   ...overrides,
 });
@@ -325,6 +324,11 @@ describe("disallowedPhones", () => {
       disallowedPhones(["Banjir hingga 110 cm di Kampung Melayu."]),
     ).toEqual([]);
     expect(disallowedPhones(["Genangan 115 m dan 119%."])).toEqual([]);
+  });
+
+  it("flags an emergency number followed by a word starting with m", () => {
+    expect(disallowedPhones(["Hubungi 110 malam ini."])).toEqual(["110"]);
+    expect(disallowedPhones(["Telepon 113 minta bantuan."])).toEqual(["113"]);
   });
 });
 

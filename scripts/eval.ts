@@ -177,13 +177,11 @@ function applySseEvent(event: string, result: ChatAnswer): void {
       const data = part.data as {
         provider?: unknown;
         model?: unknown;
-        fallback?: unknown;
         cached?: unknown;
       };
       result.provider =
         typeof data?.provider === "string" ? data.provider : null;
       result.model = typeof data?.model === "string" ? data.model : null;
-      result.fallback = data?.fallback === true;
       result.cached = data?.cached === true;
     }
   }
@@ -196,7 +194,6 @@ async function readSse(answer: Response): Promise<ChatAnswer> {
     emergency: false,
     provider: null,
     model: null,
-    fallback: false,
     cached: false,
   };
 
@@ -236,7 +233,7 @@ async function errorMessage(response: Response): Promise<string> {
   }
 }
 
-function failedChat(item: ChatQuestion, reason: string): ChatRow {
+function failedChat(item: ChatQuestion, reason: string, ms: number): ChatRow {
   return {
     id: item.id,
     group: item.group,
@@ -246,18 +243,18 @@ function failedChat(item: ChatQuestion, reason: string): ChatRow {
     model: null,
     cached: false,
     sources: 0,
-    ms: 0,
+    ms,
   };
 }
 
-function failedPlan(profile: PlanProfile, reason: string): PlanRow {
+function failedPlan(profile: PlanProfile, reason: string, ms: number): PlanRow {
   return {
     id: profile.id,
     name: profile.name,
     pass: false,
     reason,
     provider: null,
-    ms: 0,
+    ms,
   };
 }
 
@@ -281,7 +278,7 @@ async function runChatQuestion(
   );
 
   if (!response.ok) {
-    return failedChat(item, await errorMessage(response));
+    return failedChat(item, await errorMessage(response), Date.now() - started);
   }
 
   const answer = await readSse(response);
@@ -317,7 +314,11 @@ async function runProfile(
   );
 
   if (!created.ok) {
-    return failedPlan(profile, `POST: ${await errorMessage(created)}`);
+    return failedPlan(
+      profile,
+      `POST: ${await errorMessage(created)}`,
+      Date.now() - started,
+    );
   }
 
   const body = (await created.json()) as {
@@ -325,13 +326,21 @@ async function runProfile(
     meta?: { provider?: unknown };
   };
   if (typeof body.slug !== "string") {
-    return failedPlan(profile, "POST tidak mengembalikan slug");
+    return failedPlan(
+      profile,
+      "POST tidak mengembalikan slug",
+      Date.now() - started,
+    );
   }
 
   const provider =
     typeof body.meta?.provider === "string" ? body.meta.provider : null;
   if (provider === "template") {
-    return failedPlan(profile, "rencana dasar (model gagal)");
+    return failedPlan(
+      profile,
+      "rencana dasar (model gagal)",
+      Date.now() - started,
+    );
   }
 
   const detail = await requestWithRetry(
@@ -342,7 +351,11 @@ async function runProfile(
   );
 
   if (!detail.ok) {
-    return failedPlan(profile, `GET: ${await errorMessage(detail)}`);
+    return failedPlan(
+      profile,
+      `GET: ${await errorMessage(detail)}`,
+      Date.now() - started,
+    );
   }
 
   const payload = (await detail.json()) as PlanPayload;
@@ -527,11 +540,12 @@ async function main(): Promise<void> {
     const selected =
       options.limit === null ? questions : questions.slice(0, options.limit);
     for (const [index, item] of selected.entries()) {
+      const started = Date.now();
       let row: ChatRow;
       try {
         row = await runChatQuestion(item, index, options.baseUrl);
       } catch (error) {
-        row = failedChat(item, failureReason(error));
+        row = failedChat(item, failureReason(error), Date.now() - started);
       }
       chatRows.push(row);
       console.log(`${item.id} ${row.pass ? "pass" : "FAIL"} ${row.reason}`);
@@ -542,11 +556,12 @@ async function main(): Promise<void> {
   const planRows: PlanRow[] = [];
   if (!options.chatOnly) {
     for (const [index, profile] of profiles.entries()) {
+      const started = Date.now();
       let row: PlanRow;
       try {
         row = await runProfile(profile, index, options.baseUrl);
       } catch (error) {
-        row = failedPlan(profile, failureReason(error));
+        row = failedPlan(profile, failureReason(error), Date.now() - started);
       }
       planRows.push(row);
       console.log(`${profile.id} ${row.pass ? "pass" : "FAIL"} ${row.reason}`);
