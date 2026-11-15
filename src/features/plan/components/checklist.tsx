@@ -1,10 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Backpack } from "lucide-react";
+import { ChecklistTimeline } from "@/components/checklist-timeline";
 import type { GoKitItem } from "@/features/plan/ui-types";
+import { progressShare, visibleItems } from "@/lib/checklist-progress";
 
 /** The go-kit checklist, persisted per plan slug; "Wajib" shows the required items only. */
-export function Checklist({ slug, items }: { slug: string; items: GoKitItem[] }) {
+export function Checklist({
+  slug,
+  items,
+}: {
+  slug: string;
+  items: GoKitItem[];
+}) {
   const storageKey = `siagaku:checklist:${slug}`;
   const [checked, setChecked] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -40,16 +49,16 @@ export function Checklist({ slug, items }: { slug: string; items: GoKitItem[] })
     );
   };
 
-  const ready = items.filter((item) => checked.includes(item.item)).length;
-  const visible =
-    filter === "required"
-      ? items.filter((item) => item.priority === "required")
-      : items;
+  const isChecked = (item: { item: string }) => checked.includes(item.item);
+  const ready = items.filter(isChecked).length;
 
   return (
     <section className="sk-card sk-checklist-card" aria-labelledby="tas-h">
       <div className="sk-card__head">
-        <h2 id="tas-h">Tas siaga</h2>
+        <h2 id="tas-h" className="sk-heading-icon">
+          <Backpack size={18} aria-hidden="true" />
+          Tas siaga
+        </h2>
         <span className="sk-mono">
           {ready}/{items.length} siap
         </span>
@@ -72,30 +81,12 @@ export function Checklist({ slug, items }: { slug: string; items: GoKitItem[] })
           Semua
         </button>
       </div>
-      <ul className="sk-checklist">
-        {visible.map((item) => (
-          <li key={item.item}>
-            <label>
-              <input
-                type="checkbox"
-                checked={checked.includes(item.item)}
-                onChange={() => toggle(item.item)}
-              />
-              <span>
-                <b>{item.item}</b>
-                <small>
-                  {item.quantity} · {item.audience}
-                  {item.priority !== "required" ? " · penting" : ""}
-                </small>
-                <span className="sk-checklist__reason">{item.reason}</span>
-              </span>
-            </label>
-          </li>
-        ))}
-      </ul>
-      <div className="sk-progress" aria-hidden="true">
-        <i style={{ width: `${items.length ? (ready / items.length) * 100 : 0}%` }} />
-      </div>
+      <ChecklistTimeline
+        items={visibleItems(items, filter)}
+        isChecked={isChecked}
+        progress={progressShare(items, isChecked)}
+        onToggle={(item) => toggle(item.item)}
+      />
     </section>
   );
 }

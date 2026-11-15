@@ -135,7 +135,10 @@ export function PlanView({ plan }: { plan: PlanResponse }) {
 
           <section className="sk-card sk-plan-safe" aria-labelledby="aman-h">
             <div className="sk-card__head">
-              <h2 id="aman-h">Titik aman</h2>
+              <h2 id="aman-h" className="sk-heading-icon">
+                <MapPin size={18} aria-hidden="true" />
+                Titik aman
+              </h2>
               <span className="sk-mono">
                 {content.safePointIds.length} disarankan
               </span>
@@ -146,6 +149,11 @@ export function PlanView({ plan }: { plan: PlanResponse }) {
                   key={point.id}
                   className={selected.has(point.id) ? "is-on" : ""}
                 >
+                  <MapPin
+                    className="sk-plan-safe__pin"
+                    size={16}
+                    aria-hidden="true"
+                  />
                   <div>
                     <b>{point.name}</b>
                     <span>

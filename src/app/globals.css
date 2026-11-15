@@ -3934,60 +3934,160 @@ html[data-ground="sky"] {
   background: var(--p-ink);
   color: var(--p-inv-ink);
 }
-.sk-checklist {
+/* Go-kit timeline: a rail on the left filled by --sk-fill (0..1), a node per item, a collapsible reason. */
+.sk-timeline {
+  --sk-node: 26px;
+  position: relative;
   display: grid;
-  margin: 0;
+  margin: 4px 0 0;
   padding: 0;
   list-style: none;
 }
-.sk-checklist li {
-  border-top: 1px solid var(--line);
+.sk-timeline::before,
+.sk-timeline::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--sk-node) / 2 + 12px);
+  bottom: calc(var(--sk-node) / 2 + 12px);
+  left: calc(var(--sk-node) / 2 - 1px);
+  width: 2px;
+  border-radius: 2px;
+  background: var(--line-strong);
 }
-.sk-checklist li:first-child {
-  border-top: 0;
+.sk-timeline::after {
+  background: var(--p-action);
+  transform: scaleY(var(--sk-fill, 0));
+  transform-origin: top;
 }
-.sk-checklist label {
+.sk-timeline__item {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   padding: 12px 0;
+}
+.sk-timeline__node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  flex: none;
+  width: var(--sk-node);
+  height: var(--sk-node);
+  place-items: center;
+}
+.sk-timeline__check {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 2px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--p-bg);
+}
+input.sk-timeline__check {
   cursor: pointer;
 }
-.sk-checklist input {
-  flex: none;
-  width: 20px;
-  height: 20px;
-  margin-top: 2px;
-  accent-color: var(--p-action);
+.sk-timeline__check:focus-visible {
+  outline: 2px solid var(--p-action);
+  outline-offset: 2px;
 }
-.sk-checklist b {
+.sk-timeline__node > svg {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  color: var(--p-inv-ink);
+  opacity: 0;
+  pointer-events: none;
+}
+.sk-timeline__item.is-done .sk-timeline__check {
+  border-color: var(--p-action);
+  background: var(--p-action);
+}
+.sk-timeline__item.is-done .sk-timeline__node > svg {
+  opacity: 1;
+}
+.sk-timeline__body {
+  min-width: 0;
+  flex: 1;
+}
+.sk-timeline__toggle {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.sk-timeline__toggle:focus-visible {
+  outline: 2px solid var(--p-action);
+  outline-offset: 2px;
+}
+.sk-timeline__toggle b {
   display: block;
   font-weight: 500;
 }
-.sk-checklist small {
+.sk-timeline__toggle small {
   display: block;
   color: var(--muted);
   font-size: var(--t-label);
 }
-.sk-checklist__reason {
-  display: block;
+.sk-timeline__toggle > svg {
+  flex: none;
   margin-top: 2px;
+  color: var(--muted);
+}
+.sk-timeline__toggle[aria-expanded="true"] > svg {
+  transform: rotate(180deg);
+}
+.sk-timeline__details {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+}
+.sk-timeline__details[data-open] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+.sk-timeline__details > p {
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
   color: var(--muted);
   font-size: var(--t-small);
   line-height: 1.4;
 }
-.sk-progress {
-  height: 8px;
-  margin-top: 12px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--p-surface);
+.sk-timeline__details[data-open] > p {
+  padding-top: 6px;
 }
-.sk-progress i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--p-action);
+@media (prefers-reduced-motion: no-preference) {
+  .sk-timeline::after {
+    transition: transform 400ms ease;
+  }
+  .sk-timeline__check,
+  .sk-timeline__node > svg,
+  .sk-timeline__toggle > svg {
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease,
+      opacity 200ms ease,
+      transform 200ms ease;
+  }
+  .sk-timeline__details {
+    transition:
+      grid-template-rows 250ms ease,
+      visibility 250ms;
+  }
+  .sk-timeline__details > p {
+    transition: padding-top 250ms ease;
+  }
 }
 .sk-plan-steps {
   display: grid;
@@ -4042,7 +4142,6 @@ html[data-ground="sky"] {
   color: var(--muted);
   font-size: var(--t-small);
 }
-.sk-plan-safe li,
 .sk-plan-contacts li {
   display: flex;
   align-items: center;
@@ -4051,14 +4150,31 @@ html[data-ground="sky"] {
   padding: 12px 0;
   border-top: 1px solid var(--line);
 }
-.sk-plan-safe li:first-child,
 .sk-plan-contacts li:first-child {
   border-top: 0;
 }
+/* Safe points are separate row cards with a pin; the recommended ones are tinted. */
+.sk-plan-safe > ul {
+  gap: 8px;
+}
+.sk-plan-safe li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.sk-plan-safe li > div {
+  min-width: 0;
+  flex: 1;
+}
+.sk-plan-safe__pin {
+  flex: none;
+  color: var(--p-action);
+}
 .sk-plan-safe li.is-on {
-  margin-inline: -8px;
-  padding-inline: 8px;
-  border-radius: 8px;
+  border-color: transparent;
   background: var(--p-surface);
 }
 .sk-plan-safe li div,
@@ -4118,12 +4234,24 @@ html[data-ground="sky"] {
     box-shadow: none !important;
     break-inside: avoid;
   }
-  .sk-checklist {
+  .sk-timeline {
+    display: block;
     columns: 2;
     column-gap: 24px;
   }
-  .sk-checklist li {
+  .sk-timeline::before,
+  .sk-timeline::after {
+    display: none;
+  }
+  .sk-timeline__item {
     break-inside: avoid;
+  }
+  .sk-timeline__details {
+    grid-template-rows: 1fr;
+    visibility: visible;
+  }
+  .sk-timeline__toggle > svg {
+    display: none;
   }
   .sk-tabs {
     display: none;
