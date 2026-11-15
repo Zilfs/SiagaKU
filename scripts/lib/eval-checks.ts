@@ -261,7 +261,7 @@ export function disallowedPhones(texts: string[]): string[] {
   }
   for (const number of OTHER_EMERGENCY_NUMBERS) {
     const pattern = new RegExp(
-      `(^|[^0-9])${number}(?![0-9])(?!\\s*(?:(?:cm|mm|m)\\b|%))`,
+      `(^|[^0-9])${number}(?![0-9])(?!\\s*(?:(?:cm|mm|m|meter)\\b|%))`,
     );
     if (pattern.test(joined)) found.add(number);
   }

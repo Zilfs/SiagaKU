@@ -48,6 +48,10 @@ type PlanRow = {
   ms: number;
 };
 
+/** Row fields produced by a run; `main` adds the wall-clock time. */
+type ChatResult = Omit<ChatRow, "ms">;
+type PlanResult = Omit<PlanRow, "ms">;
+
 type Options = {
   baseUrl: string;
   outPath: string;
@@ -233,7 +237,7 @@ async function errorMessage(response: Response): Promise<string> {
   }
 }
 
-function failedChat(item: ChatQuestion, reason: string, ms: number): ChatRow {
+function failedChat(item: ChatQuestion, reason: string): ChatResult {
   return {
     id: item.id,
     group: item.group,
@@ -243,18 +247,16 @@ function failedChat(item: ChatQuestion, reason: string, ms: number): ChatRow {
     model: null,
     cached: false,
     sources: 0,
-    ms,
   };
 }
 
-function failedPlan(profile: PlanProfile, reason: string, ms: number): PlanRow {
+function failedPlan(profile: PlanProfile, reason: string): PlanResult {
   return {
     id: profile.id,
     name: profile.name,
     pass: false,
     reason,
     provider: null,
-    ms,
   };
 }
 
@@ -262,8 +264,7 @@ async function runChatQuestion(
   item: ChatQuestion,
   index: number,
   baseUrl: string,
-): Promise<ChatRow> {
-  const started = Date.now();
+): Promise<ChatResult> {
   const response = await requestWithRetry(
     `${baseUrl}/api/chat`,
     {
@@ -278,7 +279,7 @@ async function runChatQuestion(
   );
 
   if (!response.ok) {
-    return failedChat(item, await errorMessage(response), Date.now() - started);
+    return failedChat(item, await errorMessage(response));
   }
 
   const answer = await readSse(response);
@@ -292,7 +293,6 @@ async function runChatQuestion(
     model: answer.model,
     cached: answer.cached,
     sources: answer.sources,
-    ms: Date.now() - started,
   };
 }
 
@@ -300,8 +300,7 @@ async function runProfile(
   profile: PlanProfile,
   index: number,
   baseUrl: string,
-): Promise<PlanRow> {
-  const started = Date.now();
+): Promise<PlanResult> {
   const created = await requestWithRetry(
     `${baseUrl}/api/plans`,
     {
@@ -314,11 +313,7 @@ async function runProfile(
   );
 
   if (!created.ok) {
-    return failedPlan(
-      profile,
-      `POST: ${await errorMessage(created)}`,
-      Date.now() - started,
-    );
+    return failedPlan(profile, `POST: ${await errorMessage(created)}`);
   }
 
   const body = (await created.json()) as {
@@ -326,21 +321,13 @@ async function runProfile(
     meta?: { provider?: unknown };
   };
   if (typeof body.slug !== "string") {
-    return failedPlan(
-      profile,
-      "POST tidak mengembalikan slug",
-      Date.now() - started,
-    );
+    return failedPlan(profile, "POST tidak mengembalikan slug");
   }
 
   const provider =
     typeof body.meta?.provider === "string" ? body.meta.provider : null;
   if (provider === "template") {
-    return failedPlan(
-      profile,
-      "rencana dasar (model gagal)",
-      Date.now() - started,
-    );
+    return failedPlan(profile, "rencana dasar (model gagal)");
   }
 
   const detail = await requestWithRetry(
@@ -351,11 +338,7 @@ async function runProfile(
   );
 
   if (!detail.ok) {
-    return failedPlan(
-      profile,
-      `GET: ${await errorMessage(detail)}`,
-      Date.now() - started,
-    );
+    return failedPlan(profile, `GET: ${await errorMessage(detail)}`);
   }
 
   const payload = (await detail.json()) as PlanPayload;
@@ -366,7 +349,6 @@ async function runProfile(
     pass: check.pass,
     reason: check.reason,
     provider,
-    ms: Date.now() - started,
   };
 }
 
@@ -541,12 +523,13 @@ async function main(): Promise<void> {
       options.limit === null ? questions : questions.slice(0, options.limit);
     for (const [index, item] of selected.entries()) {
       const started = Date.now();
-      let row: ChatRow;
+      let result: ChatResult;
       try {
-        row = await runChatQuestion(item, index, options.baseUrl);
+        result = await runChatQuestion(item, index, options.baseUrl);
       } catch (error) {
-        row = failedChat(item, failureReason(error), Date.now() - started);
+        result = failedChat(item, failureReason(error));
       }
+      const row: ChatRow = { ...result, ms: Date.now() - started };
       chatRows.push(row);
       console.log(`${item.id} ${row.pass ? "pass" : "FAIL"} ${row.reason}`);
       if (index < selected.length - 1) await sleep(DELAY_MS);
@@ -557,12 +540,13 @@ async function main(): Promise<void> {
   if (!options.chatOnly) {
     for (const [index, profile] of profiles.entries()) {
       const started = Date.now();
-      let row: PlanRow;
+      let result: PlanResult;
       try {
-        row = await runProfile(profile, index, options.baseUrl);
+        result = await runProfile(profile, index, options.baseUrl);
       } catch (error) {
-        row = failedPlan(profile, failureReason(error), Date.now() - started);
+        result = failedPlan(profile, failureReason(error));
       }
+      const row: PlanRow = { ...result, ms: Date.now() - started };
       planRows.push(row);
       console.log(`${profile.id} ${row.pass ? "pass" : "FAIL"} ${row.reason}`);
       if (index < profiles.length - 1) await sleep(DELAY_MS);

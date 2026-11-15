@@ -326,6 +326,12 @@ describe("disallowedPhones", () => {
     expect(disallowedPhones(["Genangan 115 m dan 119%."])).toEqual([]);
   });
 
+  it("does not treat a spelled-out distance as an emergency number", () => {
+    expect(disallowedPhones(["Posko sekitar 110 meter dari rumah."])).toEqual(
+      [],
+    );
+  });
+
   it("flags an emergency number followed by a word starting with m", () => {
     expect(disallowedPhones(["Hubungi 110 malam ini."])).toEqual(["110"]);
     expect(disallowedPhones(["Telepon 113 minta bantuan."])).toEqual(["113"]);
