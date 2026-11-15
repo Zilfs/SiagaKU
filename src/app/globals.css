@@ -2389,3 +2389,377 @@ html[data-ground="sky"] {
     font-size: clamp(56px, 16vw, 72px);
   }
 }
+
+/* ------------------------------------------------------------------ Tanya SiagaKU
+   One chat surface on /tanya and a compact one in the district widget; the answer keeps its
+   sources under it and the emergency card comes before the answer that triggered it. */
+.sk-tanya__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .sk-tanya__grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  }
+}
+.sk-tanya__aside {
+  display: grid;
+  gap: var(--s-4);
+}
+.sk-tanya__call {
+  background: var(--p-ink);
+  border-color: transparent;
+  color: var(--p-inv-ink);
+}
+.sk-tanya__call h2,
+.sk-tanya__call p {
+  color: var(--p-inv-ink);
+}
+.sk-tanya__call .sk-mono {
+  color: var(--p-inv-muted);
+}
+.sk-tanya__call .btn {
+  --action: var(--p-inv-action);
+  --action-ink: var(--p-inv-action-ink);
+  justify-self: start;
+}
+.sk-chat {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  height: min(72svh, 680px);
+  min-height: 520px;
+  overflow: clip;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--p-bg);
+}
+.sk-chat__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--p-surface);
+}
+.sk-chat__title {
+  display: grid;
+  gap: 2px;
+}
+.sk-chat__title b {
+  font: 500 var(--t-card) / 1.2 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.sk-chat__title span {
+  font-size: var(--t-small);
+  color: var(--muted);
+}
+.sk-chat__status {
+  font: 400 var(--t-label) / 1 var(--font-mono);
+  color: var(--muted);
+}
+.sk-chat__log {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  padding: 20px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.sk-chat__empty {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  color: var(--muted);
+}
+.sk-chat__empty p {
+  margin: 0;
+  max-width: 52ch;
+}
+.sk-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sk-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--p-bg);
+  color: var(--p-ink);
+  font: 500 var(--t-small) / 1.25 var(--font-text);
+  cursor: pointer;
+}
+.sk-chip:hover {
+  background: var(--p-surface);
+}
+.sk-msg {
+  display: grid;
+  gap: 6px;
+  max-width: 86%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-size: var(--t-body);
+  line-height: 1.5;
+}
+.sk-msg--user {
+  justify-self: end;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+  background: var(--p-action);
+  color: var(--p-action-ink);
+}
+.sk-msg--assistant {
+  border-bottom-left-radius: 4px;
+  background: var(--p-surface);
+  color: var(--p-ink);
+}
+.sk-msg--system {
+  max-width: none;
+  border: 1px solid #f0d7b8;
+  border-radius: 12px;
+  background: #fdf3e8;
+  color: #43260c;
+  font-size: var(--t-small);
+}
+.sk-msg__body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.sk-msg__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 500 var(--t-label) / 1 var(--font-mono);
+  color: var(--p-action);
+}
+.sk-msg--user .sk-msg__badge {
+  color: inherit;
+}
+.sk-cite {
+  font: 500 var(--t-small) / 1 var(--font-mono);
+  color: var(--p-action);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.sk-msg--user .sk-cite {
+  color: inherit;
+}
+.sk-chat__typing {
+  font: 400 var(--t-small) / 1.3 var(--font-mono);
+  color: var(--muted);
+}
+.sk-chat__form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  background: var(--p-bg);
+}
+.sk-chat__form input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--p-ink);
+  font: inherit;
+}
+.sk-chat__form input:focus-visible {
+  outline: 3px solid var(--p-action);
+  outline-offset: 1px;
+}
+.sk-chat__send {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 12px;
+}
+.sk-chat__stop {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--p-bg);
+  color: var(--p-ink);
+  cursor: pointer;
+}
+.sk-chat__note {
+  margin: 0;
+  padding: 0 16px 12px;
+  font-size: var(--t-label);
+  line-height: 1.4;
+  color: var(--muted);
+}
+.sk-sources {
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+.sk-sources__title {
+  margin: 0 0 6px;
+  font: 500 var(--t-label) / 1 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sk-sources ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-sources li {
+  line-height: 1.4;
+}
+.sk-sources__meta {
+  color: var(--muted);
+}
+.sk-sources a {
+  margin-left: 6px;
+  color: var(--p-action);
+}
+.sk-chat-emergency {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--p-ink);
+  color: var(--p-inv-ink);
+}
+.sk-chat-emergency__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+}
+.sk-chat-emergency b {
+  font-size: var(--t-body);
+}
+.sk-chat-emergency p {
+  margin: 4px 0 0;
+  color: var(--p-inv-muted);
+  font-size: var(--t-small);
+  line-height: 1.45;
+}
+.sk-chat-emergency .btn {
+  grid-column: 1 / -1;
+  justify-self: start;
+  --action: var(--p-inv-action);
+  --action-ink: var(--p-inv-action-ink);
+}
+
+/* the district page's floating widget */
+.sk-chat-fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--bar, 0px) + 16px);
+  z-index: 35;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--p-action);
+  color: var(--p-action-ink);
+  box-shadow: 0 12px 28px -16px rgb(11 27 38 / 0.5);
+  font: 500 var(--t-small) / 1 var(--font-text);
+  cursor: pointer;
+}
+.sk-chat-fab:hover {
+  background: color-mix(in oklab, var(--p-action) 86%, var(--p-ink));
+}
+.sk-chat-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 44;
+  border: 0;
+  background: rgb(11 27 38 / 0.38);
+  cursor: pointer;
+}
+.sk-chat-widget {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 45;
+  display: grid;
+  width: min(420px, calc(100vw - 32px));
+  height: min(640px, calc(100svh - 96px));
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--p-bg);
+  box-shadow: 0 24px 64px -24px rgb(11 27 38 / 0.55);
+}
+.sk-chat-widget__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--p-bg);
+  color: var(--p-ink);
+  cursor: pointer;
+}
+.sk-chat--compact {
+  height: 100%;
+  min-height: 0;
+}
+.sk-chat--compact .sk-chat__status {
+  display: none;
+}
+.sk-chat--compact .sk-chat__head {
+  padding-right: 52px;
+}
+@media (max-width: 639px) {
+  .sk-chat {
+    height: min(68svh, 600px);
+    min-height: 480px;
+  }
+  .sk-chat-widget {
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100svh;
+    padding: 8px;
+    border-radius: 0;
+  }
+  .sk-chat-fab {
+    right: 12px;
+    bottom: 80px;
+  }
+}
+
+/* the chat keeps its input on the first screen: 62svh on desktop, 60svh on a phone */
+.sk-chat {
+  height: min(59svh, 530px);
+  min-height: 440px;
+}
+@media (max-width: 639px) {
+  .sk-chat {
+    height: min(60svh, 520px);
+    min-height: 420px;
+  }
+}
