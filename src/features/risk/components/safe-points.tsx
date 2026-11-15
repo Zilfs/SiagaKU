@@ -14,6 +14,17 @@ export function SafePoints({
   points: SafePoint[];
   origin: { lat: number; lng: number };
 }) {
+  // nearest first; points without coordinates go last
+  const sorted = points
+    .map((point) => ({
+      point,
+      km:
+        point.lat != null && point.lng != null
+          ? distanceKm(origin, { lat: point.lat, lng: point.lng })
+          : null,
+    }))
+    .sort((a, b) => (a.km ?? Infinity) - (b.km ?? Infinity));
+
   return (
     <section className="sk-card sk-safepoints" aria-labelledby="aman-h">
       <div className="sk-card__head">
@@ -26,13 +37,8 @@ export function SafePoints({
         </p>
       ) : (
         <ul className="sk-safepoints__list">
-          {points.map((point) => {
-            const distance =
-              point.lat != null && point.lng != null
-                ? formatDistance(
-                    distanceKm(origin, { lat: point.lat, lng: point.lng }),
-                  )
-                : "—";
+          {sorted.map(({ point, km }) => {
+            const distance = km === null ? "—" : formatDistance(km);
             return (
               <li key={point.id}>
                 <span className="sk-safepoints__icon" aria-hidden="true">

@@ -669,13 +669,20 @@ export function PlanWizard({
               Kembali
             </button>
           ) : null}
+          {/* distinct keys: reusing one element and flipping its type to "submit" mid-click submits the form */}
           {step < 2 ? (
-            <button type="button" className="btn btn--primary" onClick={next}>
+            <button
+              key="next"
+              type="button"
+              className="btn btn--primary"
+              onClick={next}
+            >
               Lanjut
               <ArrowRight size={16} aria-hidden="true" />
             </button>
           ) : (
             <button
+              key="submit"
               type="submit"
               className="btn btn--primary"
               disabled={submitting}
