@@ -454,6 +454,7 @@ export function PlanWizard({
                   type="checkbox"
                   checked={hasDisability}
                   onChange={(event) => {
+                    setError("");
                     setHasDisability(event.target.checked);
                     if (!event.target.checked) setDisabilities([]);
                   }}
