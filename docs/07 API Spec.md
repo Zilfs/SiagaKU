@@ -63,36 +63,50 @@ Detail risiko satu kecamatan.
 ```
 Jika semua provider gagal: `200` dengan teks template dan `meta.provider = "template"`.
 
-## POST `/api/rencana`
-Rate limit: 5/10 menit per IP.
+## POST `/api/plans`
+Rate limit: 5/10 menit per IP. (Path plan lama `/api/rencana`; kode memakai bahasa Inggris sesuai `AGENTS.md`.)
 Request:
 ```json
 {
-  "kecamatan_id": 12,
-  "hunian": { "jenis": "rumah_1_lantai", "lantai": 1 },
-  "anggota": { "dewasa": 2, "anak": 0, "balita_bayi": 1, "lansia": 1, "ibu_hamil": 0,
-               "disabilitas": [ { "jenis": "pengguna_kursi_roda" } ], "obat_rutin": 1, "hewan": ["kucing"] },
-  "kondisi": { "kendaraan": "motor", "jarak_sungai": "dekat", "pernah_banjir": true }
+  "district_id": 12,
+  "housing": { "type": "single_story", "floor": 1 },
+  "members": { "adults": 2, "children": 0, "infants": 1, "elderly": 1, "pregnant": 0,
+               "disabilities": [ { "type": "wheelchair_user" } ], "routineMedicine": 1, "pets": ["kucing"] },
+  "conditions": { "vehicle": "motorcycle", "riverDistance": "close", "floodedBefore": true }
 }
 ```
 Enum:
-- `hunian.jenis`: `rumah_1_lantai | rumah_bertingkat | kos | apartemen`
-- `disabilitas[].jenis`: `pengguna_kursi_roda | tunanetra | tunarungu | intelektual | lainnya`
-- `kondisi.kendaraan`: `tidak_ada | motor | mobil | keduanya`
-- `kondisi.jarak_sungai`: `dekat | sedang | jauh | tidak_tahu`
+- `housing.type`: `single_story | multi_story | rented_room | apartment`
+- `members.disabilities[].type`: `wheelchair_user | blind | deaf | intellectual | other`
+- `conditions.vehicle`: `none | motorcycle | car | both`
+- `conditions.riverDistance`: `close | medium | far | unknown`
 
-Batas: setiap angka 0–10, kecuali `hunian.lantai` 0–60 (apartemen Jakarta bisa di atas lantai 10); total anggota 1–15.
+Batas: setiap angka 0–10, kecuali `housing.floor` 0–60 (apartemen Jakarta bisa di atas lantai 10); total anggota 1–15. Objek `.strict()`: field asing ditolak.
 
 Response `201`:
 ```json
-{ "slug": "k8f2ma9xq1", "url": "/rencana/k8f2ma9xq1", "meta": { "provider": "gemini", "fallback": false } }
+{ "slug": "k8f2ma9xq1", "url": "/rencana/k8f2ma9xq1", "meta": { "provider": "gemini", "model": "...", "fallback": false } }
 ```
+Jika semua provider gagal: `201` dengan rencana dasar dan `meta.provider = "template"`, `meta.model = null`.
 
-## GET `/api/rencana/{slug}`
+## GET `/api/plans/{slug}`
 ```json
-{ "slug": "...", "created_at": "...", "kecamatan": {...}, "profil": {...},
-  "rencana": { /* RencanaSiaga */ }, "titik_aman": [ ... ], "kontak_darurat": [ { "nama": "Jakarta Siaga", "nomor": "112" } ] }
+{ "slug": "...", "createdAt": "...", "district": { "id": 12, "slug": "jatinegara", "name": "...", "city": "..." },
+  "profile": { /* body POST */ }, "plan": { /* PreparednessPlan */ },
+  "safePoints": [ ... ], "emergencyContacts": [ { "name": "Jakarta Siaga", "phone": "112", "scope": "DKI" } ] }
 ```
+`plan` (disimpan di `preparedness_plans.plan`):
+```json
+{
+  "summary": "...",
+  "recommendedReadinessLevel": "advisory | watch | warning",
+  "goKit": [ { "item": "...", "quantity": "...", "audience": "semua | bayi | lansia | ...", "priority": "required | important | optional", "reason": "..." } ],
+  "before": ["..."], "during": ["..."], "after": ["..."],
+  "vulnerableGroups": [ { "group": "...", "notes": ["..."] } ],
+  "safePointIds": [31, 32], "safePointReason": "..."
+}
+```
+`safePointIds` selalu subset dari shelter kecamatan itu; ID asing dari model dibuang, dan jika kosong dipakai dua titik pertama.
 (Halaman `/rencana/[slug]` sebaiknya query DB langsung dari RSC; endpoint ini untuk kebutuhan klien/eval.)
 
 ## POST `/api/chat`
