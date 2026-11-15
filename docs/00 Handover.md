@@ -47,7 +47,7 @@ Web app kesiapsiagaan banjir untuk warga DKI Jakarta (44 kecamatan), tanpa login
 - Pembagian peran (13 Nov): W1 Frontend = Ukon, W2 Backend/Data = Rhein, W3 AI = Bagus,
   W4 Data/Konten/Dokumentasi = Syaki.
 
-## Status (14 Nov 2026)
+## Status (15 Nov 2026)
 SELESAI:
 - Brainstorming, design doc, PRD, dan dokumentasi teknis lengkap (13 file .md).
 - W4 Task 4 (Kurasi Data): 5 file CSV lengkap & terverifikasi (rename ke Inggris: `districts.csv`, `flood_events.csv`, `flood_prone_subdistricts.csv`, `shelters.csv`, `emergency_contacts.csv`).
@@ -73,6 +73,7 @@ SELESAI:
 - W1: landing + halaman wilayah + peta sudah di-merge ke `dev` (PR #22, 14 Nov).
 - W1 `/tentang` (15 Nov, branch `feature/about-ui`): halaman metodologi memakai sistem visual (index chip, kartu skor/level, tabel hujan, sumber, AI, privasi, kredit, tim), angkanya tetap dibaca dari `src/lib/risk/`, dan tautan footer ditambahkan.
 - Font diputuskan: Epilogue + JetBrains Mono (SIL OFL), sesuai implementasi PR #22. `docs/08` diselaraskan dari vault.
+- W2 Task 14 backend (15 Nov, branch `feature/early-warning`): migrasi `0004_early_warning.sql` (`subdistricts`, `push_subscriptions`, `early_warning_status`, RLS tanpa policy); `evaluateEarlyWarning`/`shouldSendPush`/`notificationText` murni di `src/features/early-warning/evaluate.ts` (aturan docs/06 §7; status `normal|advisory|watch|warning`; jendela berakhir di ujung slot hujan terakhir, +3 jam); `GET /api/subdistricts?q=`, `GET /api/early-warning/[code]` (status < 1 jam dipakai, selain itu evaluasi on-demand, BMKG gagal → status lama `stale: true`), `POST /api/push/{subscribe,unsubscribe,test}` (rate limit 10/jam dan 3/10 menit, VAPID kosong → 503), `POST /api/cron/early-warning` (Bearer `CRON_SECRET`; kelurahan berlangganan ∪ 10 paling rawan, maks 50, konkurensi 5; 404/410 → subscription dihapus) dipicu tiap jam oleh `.github/workflows/early-warning.yml`. `npm run db:seed-subdistricts` mencari kelurahan dengan probe BMKG (`region_code` + `.1001…`, berhenti setelah 2× 404). UI #43 diselaraskan: `subdistrictCode` di subscribe, `rainfall24hMm`/`rainfallCategory` dibaca dan kategori ditampilkan berlabel Indonesia. docs/07 diperbarui. Library baru `web-push`.
 - W1 T14 UI/PWA (15 Nov, branch `feature/alert-ui`): `/peringatan` (cari kelurahan, status, aktifkan/uji/hentikan notifikasi, panduan iOS), banner Siaga/Awas yang bisa ditutup 3 jam, manifest + ikon 192/512/maskable + badge, `sw.js` push-only, dan tombol **Pantau wilayah ini** di halaman kecamatan (`/peringatan?kecamatan=<slug>` menampilkan konteks kecamatan). API memakai path Inggris (`/api/subdistricts`, `/api/early-warning/[code]`, `/api/push/*`); status dan payload dibaca toleran (Indonesia/Inggris, snake_case/camelCase).
 
 - W3 Task 11 (backend Rencana Siaga): `POST /api/plans` (rate limit 5/10 menit) + `GET /api/plans/[slug]`; schema `.strict()` bahasa Inggris (`district_id`, `housing`, `members`, `conditions`), output `PreparednessPlan` (`summary`, `recommendedReadinessLevel`, `goKit`, `before`/`during`/`after`, `vulnerableGroups`, `safePointIds`, `safePointReason`) di `src/features/plan/`. Model `withFallback "plan"` + `Output.object`; `safePointIds` selalu disaring ke shelter kecamatan (maks 6 ditawarkan, maks 3 disimpan); semua provider gagal atau output tidak valid -> rencana dasar rule-based, `provider: "template"`, HTTP 201. Slug 10 karakter dari `node:crypto`. UI `/rencana` belum (Ukon); 30 tes.
@@ -80,7 +81,7 @@ SELESAI:
 - Korpus RAG (14 Nov): `npm run rag:ingest` memasukkan 5 dokumen, 447 chunk, semua ber-embedding. Kuota gratis embedding Gemini 100 teks/menit, jadi ingest dijeda 13 dtk per 20 teks; kalau ada chunk tanpa embedding, jalankan `npm run rag:backfill`.
 - W1 Task 15 UI (15 Nov, branch `feature/report-ui`): `/lapor` (foto + kompres canvas 1600 px/1 MB, EXIF hilang, pilih kecamatan atau lokasi, deskripsi opsional, status unggah → AI) dan `/laporan` (peta Leaflet dengan marker kamera + daftar kartu 72 jam, label **Contoh** untuk demo, empty/error state). Memakai kontrak docs/07 yang diterjemahkan sesuai AGENTS: `POST /api/reports/upload-url`, `POST /api/reports`, `GET /api/reports?hours=72`; belum ada di `dev`.
 
-BELUM: merge backend T10 chat (PR #37) dan T11 rencana; T13 eval AI; T10-UI (`/tanya`), T11-UI (`/rencana`), T14-UI/PWA (Ukon); Task 17 (README utama, proposal, video).
+BELUM: T11-UI `/rencana` (PR #42, menunggu perbaikan Ukon); backend T15 lapor banjir (`/api/reports*`, vision; PIC belum ditentukan); T13 eval AI; T17 (README utama, proposal, video, smoke test). T14: migrasi 0004 + seed kelurahan + VAPID/secret GitHub belum dijalankan di production.
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,
 05 Desain AI, 06 Data & Database, 07 API Spec, 08 UI-UX, 09 Timeline & Pembagian Tugas,
@@ -94,14 +95,13 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Supabase free bisa pause → cron keep-alive harian.
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
-- W1 landing/wilayah/peta masih memakai data contoh (`src/lib/demo/`); API Task 7 sudah ada di `dev`, wiring berikutnya.
-- API yang belum ada di `dev`: `/api/chat`, `/api/plans`, `/api/reports`, `/api/subdistricts`, `/api/early-warning/[code]`, `/api/push/*`. Halaman UI terkait sudah memakai empty/error state.
+- API yang belum ada di `dev`: `/api/reports`, `/api/reports/upload-url` (T15). `/lapor` dan menu "Lapor" sudah di `dev`; tahan rilis ke `main` sampai backend T15 ada atau sembunyikan menunya.
 
 ## Langkah berikutnya (urut)
-1. Rhein: tambah Groq (`GROQ_API_KEY` + `GROQ_MODEL`) sebagai cadangan kalau kuota Gemini gratis habis saat penjurian.
-2. Ukon: wiring landing/wilayah/peta ke `/api/districts` dan `/api/risk/[id]` (tipe di `src/features/risk/types.ts`), hapus `src/lib/demo/`, tambah tes `formatDistance`.
+1. Rhein: merge T14 backend, jalankan migrasi 0004 lewat MCP, `npm run db:seed-subdistricts`, buat VAPID (`npx web-push generate-vapid-keys`) → env Vercel, isi secret GitHub `CRON_SECRET` + `SITE_URL`, jalankan workflow Early warning sekali, lalu uji push di Chrome/Android/iPhone (plan T14 langkah 9).
+2. Rhein: tambah Groq (`GROQ_API_KEY` + `GROQ_MODEL`) sebagai cadangan kalau kuota Gemini gratis habis saat penjurian; tentukan PIC backend T15.
 3. Bagus: T10 dan T11 backend sudah di `dev` (PR #37, #41); uji manual dengan key asli, lalu tulis `scripts/eval.ts` + `docs/eval-hasil.md` (T13) memakai 40 soal dan 6 profil di `tests/eval/`.
 4. Syaki: Task 17 (README utama, proposal, video).
-5. W1: PR UI T10 (`/tanya`), T11 (`/rencana`), T14 (`/peringatan` + PWA), T15 (`/lapor`, `/laporan`) menunggu review/merge; verifikasi kontrak setelah API W3 mendarat.
+5. Ukon: perbaiki PR #42 (`/rencana/[slug]` memanggil `features/plan/server` langsung), lalu `git pull origin dev`.
 6. Ikuti 09 Timeline & Pembagian Tugas.
 ```
