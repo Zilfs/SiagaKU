@@ -4465,3 +4465,29 @@ html {
 .card > h3.sk-heading-icon .sk-card-index {
   margin-right: 0;
 }
+
+/* the #fitur loops' one pause control (WCAG 2.2.2), in the hero pause disc's colours, as a labelled pill */
+.sk-demo-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid color-mix(in oklab, var(--ink) 16%, transparent);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 500 var(--t-small) / 1 var(--font-text);
+  cursor: pointer;
+}
+.sk-demo-toggle svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk-demo-toggle {
+    display: none;
+  }
+}

@@ -1,6 +1,13 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { pointIn } from "./motion-math";
 import { gsap, MOTION_OK, useGSAP } from "./gsap";
 
@@ -120,6 +127,47 @@ export type FeatureDemoKind = "risk" | "plan" | "chat" | "report";
 const TIP = { x: 12, y: 2 };
 const RIPPLE = { x: 16, y: 16 };
 
+/** The section-wide pause (WCAG 2.2.2): one toggle holds every card's loop. */
+const PauseContext = createContext<{
+  paused: boolean;
+  setPaused: (paused: boolean) => void;
+}>({ paused: false, setPaused: () => {} });
+
+/** Wraps the #fitur cards and their pause toggle; renders no element of its own. */
+export function FeatureDemoGroup({ children }: { children: ReactNode }) {
+  const [paused, setPaused] = useState(false);
+  return (
+    <PauseContext.Provider value={{ paused, setPaused }}>
+      {children}
+    </PauseContext.Provider>
+  );
+}
+
+/** The visible pause/play button for all the feature loops (hidden under reduced motion). */
+export function FeatureDemoToggle() {
+  const { paused, setPaused } = useContext(PauseContext);
+  return (
+    <button
+      type="button"
+      className="sk-demo-toggle"
+      aria-pressed={paused}
+      onClick={() => setPaused(!paused)}
+    >
+      {paused ? (
+        <svg viewBox="0 0 14 14" aria-hidden="true">
+          <path d="M3 1.5 12 7l-9 5.5z" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 14 14" aria-hidden="true">
+          <rect x="2.5" y="2" width="3.2" height="10" rx="1" />
+          <rect x="8.3" y="2" width="3.2" height="10" rx="1" />
+        </svg>
+      )}
+      {paused ? "Putar animasi" : "Jeda animasi"}
+    </button>
+  );
+}
+
 /**
  * A feature card's panel that plays a short product-video loop: a hand cursor glides to the mock's
  * `[data-demo-target]`, presses it and the mock changes state, then everything resets. It runs only
@@ -128,12 +176,23 @@ const RIPPLE = { x: 16, y: 16 };
  */
 export function FeatureDemo({
   kind,
+  label,
   children,
 }: {
   kind: FeatureDemoKind;
+  /** What the demo shows, for screen readers (the animated mock itself is aria-hidden). */
+  label: string;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const { paused } = useContext(PauseContext);
+  const pausedRef = useRef(paused);
+  const syncRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+    syncRef.current?.();
+  }, [paused]);
 
   useGSAP(
     () => {
@@ -188,7 +247,8 @@ export function FeatureDemo({
               scale: 0.3,
               autoAlpha: 0.5,
             },
-            { scale: 1.8, autoAlpha: 0, duration: 0.5 },
+            // no immediate render: the ripple stays hidden until the press
+            { scale: 1.8, autoAlpha: 0, duration: 0.5, immediateRender: false },
             "<",
           )
           .addLabel("change", "<");
@@ -217,7 +277,9 @@ export function FeatureDemo({
 
         let inView = false;
         let held = false;
-        const sync = () => (inView && !held ? tl.play() : tl.pause());
+        const sync = () =>
+          inView && !held && !pausedRef.current ? tl.play() : tl.pause();
+        syncRef.current = sync;
         const observer = new IntersectionObserver(
           ([entry]) => {
             inView = entry.isIntersecting;
@@ -248,6 +310,7 @@ export function FeatureDemo({
         card.addEventListener("focusin", hold);
         card.addEventListener("focusout", release);
         return () => {
+          syncRef.current = null;
           observer.disconnect();
           card.removeEventListener("pointerenter", hold);
           card.removeEventListener("pointerleave", release);
@@ -261,6 +324,7 @@ export function FeatureDemo({
 
   return (
     <div ref={ref} className="panel sk-demo">
+      <p className="sr-only">{label}</p>
       {children}
       <span className="sk-demo__ripple" aria-hidden="true" />
       <svg

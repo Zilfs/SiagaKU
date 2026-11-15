@@ -86,8 +86,12 @@ export function Magnetic({ children }: { children: ReactNode }) {
           const xTo = gsap.quickTo(el, "x", { duration: 0.4, ease: "power3" });
           const yTo = gsap.quickTo(el, "y", { duration: 0.4, ease: "power3" });
           const pull = (delta: number) => gsap.utils.clamp(-6, 6, delta * 0.2);
+          // measured once per hover, before the lean moves the box
+          let box = el.getBoundingClientRect();
+          const onEnter = () => {
+            box = el.getBoundingClientRect();
+          };
           const onMove = (event: PointerEvent) => {
-            const box = el.getBoundingClientRect();
             xTo(pull(event.clientX - box.left - box.width / 2));
             yTo(pull(event.clientY - box.top - box.height / 2));
           };
@@ -95,9 +99,11 @@ export function Magnetic({ children }: { children: ReactNode }) {
             xTo(0);
             yTo(0);
           };
+          el.addEventListener("pointerenter", onEnter);
           el.addEventListener("pointermove", onMove);
           el.addEventListener("pointerleave", onLeave);
           return () => {
+            el.removeEventListener("pointerenter", onEnter);
             el.removeEventListener("pointermove", onMove);
             el.removeEventListener("pointerleave", onLeave);
           };

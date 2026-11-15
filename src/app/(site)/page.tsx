@@ -23,7 +23,11 @@ import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
-import { FeatureDemo } from "@/components/site/feature-demo";
+import {
+  FeatureDemo,
+  FeatureDemoGroup,
+  FeatureDemoToggle,
+} from "@/components/site/feature-demo";
 import { CountUp, Magnetic, Reveal } from "@/components/site/landing-motion";
 import { PlanPreview } from "@/components/site/plan-preview";
 
@@ -220,195 +224,212 @@ export default function HomePage() {
       </section>
 
       <section className="section g2" id="fitur" aria-labelledby="fitur-h">
-        <div className="wrap">
-          <div className="group">
-            <Reveal className="section-head">
-              <h2 id="fitur-h">Empat fitur di atas satu data risiko banjir.</h2>
-              <p>
-                Semua fitur memakai data yang sama, jadi tidak saling
-                bertentangan.
-              </p>
-            </Reveal>
-            <div className="grid">
-              <article className="card span-6">
-                <h3 className="sk-heading-icon">
-                  <span className="sk-card-index">01</span>
-                  <Gauge size={18} aria-hidden="true" />
-                  Risiko tiap kecamatan
-                </h3>
-                <p>Satu skor per kecamatan Jakarta.</p>
-                <FeatureDemo kind="risk">
-                  <div className="sk-feature" data-ui>
-                    <div className="sk-feature__head">
-                      <span className="sk-feature__title">
-                        <MapPin size={14} aria-hidden="true" />
-                        Jakarta hari ini
-                      </span>
-                      <span className="sk-feature__meta">14.00</span>
-                    </div>
-                    <div className="sk-feature__row">
-                      <b>Awas</b>
-                      <span>3 kecamatan</span>
-                    </div>
-                    <div
-                      className="sk-feature__row sk-demo__host"
-                      data-demo-target
-                    >
-                      <i className="sk-demo__hl" aria-hidden="true" />
-                      <b>Siaga</b>
-                      <em className="sk-demo__chip">
-                        <i aria-hidden="true" />
-                        Jatinegara · 68
-                      </em>
-                      <span>9 kecamatan</span>
-                    </div>
-                    <div className="sk-feature__row">
-                      <b>Waspada</b>
-                      <span>18 kecamatan</span>
-                    </div>
-                    <div className="sk-feature__row">
-                      <b>Normal</b>
-                      <span>14 kecamatan</span>
-                    </div>
-                  </div>
-                </FeatureDemo>
-              </article>
-
-              <article className="card span-6">
-                <h3 className="sk-heading-icon">
-                  <span className="sk-card-index">02</span>
-                  <ClipboardList size={18} aria-hidden="true" />
-                  Rencana siaga banjir
-                </h3>
-                <p>Daftar periksa per anggota keluarga.</p>
-                <FeatureDemo kind="plan">
-                  <div className="sk-feature" data-ui>
-                    <div className="sk-feature__head">
-                      <span className="sk-feature__title">
-                        <Backpack size={14} aria-hidden="true" />
-                        Tas siaga
-                      </span>
-                      <span className="sk-feature__meta sk-demo__count">
-                        <span className="sk-demo__from" aria-hidden="true">
-                          8/22
+        <FeatureDemoGroup>
+          <div className="wrap">
+            <div className="group">
+              <Reveal className="section-head">
+                <h2 id="fitur-h">
+                  Empat fitur di atas satu data risiko banjir.
+                </h2>
+                <p>
+                  Semua fitur memakai data yang sama, jadi tidak saling
+                  bertentangan.
+                </p>
+                <FeatureDemoToggle />
+              </Reveal>
+              <div className="grid">
+                <article className="card span-6">
+                  <h3 className="sk-heading-icon">
+                    <span className="sk-card-index">01</span>
+                    <Gauge size={18} aria-hidden="true" />
+                    Risiko tiap kecamatan
+                  </h3>
+                  <p>Satu skor per kecamatan Jakarta.</p>
+                  <FeatureDemo
+                    kind="risk"
+                    label="Contoh tampilan: jumlah kecamatan per status Awas, Siaga, Waspada, dan Normal; memilih Siaga menampilkan Jatinegara dengan skor 68."
+                  >
+                    <div className="sk-feature" data-ui aria-hidden="true">
+                      <div className="sk-feature__head">
+                        <span className="sk-feature__title">
+                          <MapPin size={14} aria-hidden="true" />
+                          Jakarta hari ini
                         </span>
-                        <span className="sk-demo__to">9/22</span>
-                      </span>
+                        <span className="sk-feature__meta">14.00</span>
+                      </div>
+                      <div className="sk-feature__row">
+                        <b>Awas</b>
+                        <span>3 kecamatan</span>
+                      </div>
+                      <div
+                        className="sk-feature__row sk-demo__host"
+                        data-demo-target
+                      >
+                        <i className="sk-demo__hl" aria-hidden="true" />
+                        <b>Siaga</b>
+                        <em className="sk-demo__chip">
+                          <i aria-hidden="true" />
+                          Jatinegara · 68
+                        </em>
+                        <span>9 kecamatan</span>
+                      </div>
+                      <div className="sk-feature__row">
+                        <b>Waspada</b>
+                        <span>18 kecamatan</span>
+                      </div>
+                      <div className="sk-feature__row">
+                        <b>Normal</b>
+                        <span>14 kecamatan</span>
+                      </div>
                     </div>
-                    <ul>
-                      <li className="is-done">
-                        <span className="sk-check" aria-hidden="true" />
-                        Air minum 3 L per orang
-                      </li>
-                      <li className="is-done">
-                        <span className="sk-check" aria-hidden="true" />
-                        Dokumen di kantong tahan air
-                      </li>
-                      <li>
+                  </FeatureDemo>
+                </article>
+
+                <article className="card span-6">
+                  <h3 className="sk-heading-icon">
+                    <span className="sk-card-index">02</span>
+                    <ClipboardList size={18} aria-hidden="true" />
+                    Rencana siaga banjir
+                  </h3>
+                  <p>Daftar periksa per anggota keluarga.</p>
+                  <FeatureDemo
+                    kind="plan"
+                    label="Contoh tampilan: daftar tas siaga; mencentang obat rutin untuk lansia menaikkan progres dari 8 menjadi 9 dari 22 barang."
+                  >
+                    <div className="sk-feature" data-ui aria-hidden="true">
+                      <div className="sk-feature__head">
+                        <span className="sk-feature__title">
+                          <Backpack size={14} aria-hidden="true" />
+                          Tas siaga
+                        </span>
+                        <span className="sk-feature__meta sk-demo__count">
+                          <span className="sk-demo__from" aria-hidden="true">
+                            8/22
+                          </span>
+                          <span className="sk-demo__to">9/22</span>
+                        </span>
+                      </div>
+                      <ul>
+                        <li className="is-done">
+                          <span className="sk-check" aria-hidden="true" />
+                          Air minum 3 L per orang
+                        </li>
+                        <li className="is-done">
+                          <span className="sk-check" aria-hidden="true" />
+                          Dokumen di kantong tahan air
+                        </li>
+                        <li>
+                          <span
+                            className="sk-check sk-demo__check"
+                            aria-hidden="true"
+                            data-demo-target
+                          >
+                            <i className="sk-demo__tick" />
+                          </span>
+                          Obat rutin 7 hari untuk lansia
+                        </li>
+                        <li>
+                          <span className="sk-check" aria-hidden="true" />
+                          Susu formula dan botol bayi
+                        </li>
+                      </ul>
+                    </div>
+                  </FeatureDemo>
+                </article>
+              </div>
+            </div>
+
+            <div className="group">
+              <div className="grid">
+                <article className="card span-6">
+                  <h3 className="sk-heading-icon">
+                    <span className="sk-card-index">03</span>
+                    <MessageCircle size={18} aria-hidden="true" />
+                    Tanya soal banjir
+                  </h3>
+                  <p>
+                    Jawaban bahasa sehari-hari dari pedoman BNPB, BPBD, dan
+                    Kementerian Kesehatan, dengan sumber di tiap jawaban.
+                  </p>
+                  <FeatureDemo
+                    kind="chat"
+                    label="Contoh tampilan: pertanyaan kapan harus mengungsi kalau ada lansia dijawab dengan saran bersiap saat air mulai naik di gang, bersumber dari Buku Saku BNPB halaman 23."
+                  >
+                    <div className="sk-feature" data-ui aria-hidden="true">
+                      <div className="sk-feature__head">
+                        <span className="sk-feature__title">
+                          <MessageCircle size={14} aria-hidden="true" />
+                          Tanya SiagaKU
+                        </span>
+                        <span className="sk-tag sk-tag--ai">AI · contoh</span>
+                      </div>
+                      <p className="sk-feature__q sk-demo__host">
+                        <span className="sk-feature__bubble">
+                          Kapan harus mengungsi kalau ada lansia?
+                        </span>
                         <span
-                          className="sk-check sk-demo__check"
+                          className="sk-demo__suggest"
                           aria-hidden="true"
                           data-demo-target
                         >
-                          <i className="sk-demo__tick" />
+                          Kapan harus mengungsi kalau ada lansia?
                         </span>
-                        Obat rutin 7 hari untuk lansia
-                      </li>
-                      <li>
-                        <span className="sk-check" aria-hidden="true" />
-                        Susu formula dan botol bayi
-                      </li>
-                    </ul>
-                  </div>
-                </FeatureDemo>
-              </article>
-            </div>
-          </div>
-
-          <div className="group">
-            <div className="grid">
-              <article className="card span-6">
-                <h3 className="sk-heading-icon">
-                  <span className="sk-card-index">03</span>
-                  <MessageCircle size={18} aria-hidden="true" />
-                  Tanya soal banjir
-                </h3>
-                <p>
-                  Jawaban bahasa sehari-hari dari pedoman BNPB, BPBD, dan
-                  Kementerian Kesehatan, dengan sumber di tiap jawaban.
-                </p>
-                <FeatureDemo kind="chat">
-                  <div className="sk-feature" data-ui>
-                    <div className="sk-feature__head">
-                      <span className="sk-feature__title">
-                        <MessageCircle size={14} aria-hidden="true" />
-                        Tanya SiagaKU
-                      </span>
-                      <span className="sk-tag sk-tag--ai">AI · contoh</span>
+                      </p>
+                      <div className="sk-feature__answer">
+                        <span className="sk-demo__type">
+                          Untuk keluarga dengan lansia, bersiap lebih awal: saat
+                          air mulai naik di gang, bukan saat masuk rumah.
+                        </span>
+                        <span className="sk-feature__src">
+                          <b className="sk-demo__ref">[1]</b>
+                          BNPB · Buku Saku, hlm. 23
+                        </span>
+                      </div>
                     </div>
-                    <p className="sk-feature__q sk-demo__host">
-                      <span className="sk-feature__bubble">
-                        Kapan harus mengungsi kalau ada lansia?
-                      </span>
-                      <span
-                        className="sk-demo__suggest"
-                        aria-hidden="true"
+                  </FeatureDemo>
+                </article>
+
+                <article className="card span-6">
+                  <h3 className="sk-heading-icon">
+                    <span className="sk-card-index">04</span>
+                    <Camera size={18} aria-hidden="true" />
+                    Lapor banjir
+                  </h3>
+                  <p>
+                    Kirim foto dan tinggi air. Laporan warga melengkapi data
+                    resmi, bukan menggantikannya.
+                  </p>
+                  <FeatureDemo
+                    kind="report"
+                    label="Contoh tampilan: warga mengunggah foto genangan, lalu laporan terkirim; ada 3 laporan di Jatinegara hari ini."
+                  >
+                    <div className="sk-feature" data-ui aria-hidden="true">
+                      <div className="sk-feature__head">
+                        <span className="sk-feature__title">
+                          <Camera size={14} aria-hidden="true" />
+                          Laporan warga
+                        </span>
+                        <span className="sk-feature__meta">12 menit lalu</span>
+                      </div>
+                      <div
+                        className="sk-feature__upload sk-demo__host"
                         data-demo-target
                       >
-                        Kapan harus mengungsi kalau ada lansia?
-                      </span>
-                    </p>
-                    <div className="sk-feature__answer">
-                      <span className="sk-demo__type">
-                        Untuk keluarga dengan lansia, bersiap lebih awal: saat
-                        air mulai naik di gang, bukan saat masuk rumah.
-                      </span>
-                      <span className="sk-feature__src">
-                        <b className="sk-demo__ref">[1]</b>
-                        BNPB · Buku Saku, hlm. 23
-                      </span>
+                        <i className="sk-demo__hl" aria-hidden="true" />
+                        <Camera size={20} aria-hidden="true" />
+                        Foto genangan, tinggi air, dan patokan jalan
+                      </div>
+                      <div className="sk-feature__status">
+                        <CloudRain size={14} aria-hidden="true" />
+                        Terkirim · 3 laporan di Jatinegara hari ini
+                      </div>
                     </div>
-                  </div>
-                </FeatureDemo>
-              </article>
-
-              <article className="card span-6">
-                <h3 className="sk-heading-icon">
-                  <span className="sk-card-index">04</span>
-                  <Camera size={18} aria-hidden="true" />
-                  Lapor banjir
-                </h3>
-                <p>
-                  Kirim foto dan tinggi air. Laporan warga melengkapi data
-                  resmi, bukan menggantikannya.
-                </p>
-                <FeatureDemo kind="report">
-                  <div className="sk-feature" data-ui>
-                    <div className="sk-feature__head">
-                      <span className="sk-feature__title">
-                        <Camera size={14} aria-hidden="true" />
-                        Laporan warga
-                      </span>
-                      <span className="sk-feature__meta">12 menit lalu</span>
-                    </div>
-                    <div
-                      className="sk-feature__upload sk-demo__host"
-                      data-demo-target
-                    >
-                      <i className="sk-demo__hl" aria-hidden="true" />
-                      <Camera size={20} aria-hidden="true" />
-                      Foto genangan, tinggi air, dan patokan jalan
-                    </div>
-                    <div className="sk-feature__status">
-                      <CloudRain size={14} aria-hidden="true" />
-                      Terkirim · 3 laporan di Jatinegara hari ini
-                    </div>
-                  </div>
-                </FeatureDemo>
-              </article>
+                  </FeatureDemo>
+                </article>
+              </div>
             </div>
           </div>
-        </div>
+        </FeatureDemoGroup>
       </section>
 
       <section className="section" id="cara" aria-labelledby="cara-h">
