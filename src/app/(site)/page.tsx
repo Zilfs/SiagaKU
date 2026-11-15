@@ -13,6 +13,8 @@ import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
 import type { DistrictSummary } from "@/features/risk/types";
 import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 import { connection } from "next/server";
+import { Suspense } from "react";
+import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
 
 const LEGEND: { level: RiskLevel; range: string; dot: string }[] = [
   { level: "low", range: "0–24", dot: "var(--risk-low)" },
@@ -78,8 +80,9 @@ const FAQ = [
   },
 ];
 
-export default async function HomePage() {
-  // live data: the request is rendered per visit (the service caches its own upstream calls)
+/** The #cek panel: the only part of the landing that waits for live data. */
+async function DistrictSearchPanel() {
+  // live data: rendered per visit (the service caches its own upstream calls)
   await connection();
   let districts: DistrictSummary[] = [];
   try {
@@ -88,6 +91,28 @@ export default async function HomePage() {
     console.error("GET districts for the landing failed", error);
     districts = [];
   }
+  return <DistrictSearch districts={districts} />;
+}
+
+/** Same frame as `.sk-app`, so the panel swaps in without moving the sections below. */
+function DistrictSearchSkeleton() {
+  return (
+    <div className="sk-app" aria-busy="true">
+      <LoadingStatus />
+      <div className="sk-app__side flex flex-col gap-3 p-5">
+        <Skeleton className="h-12 w-full" />
+        {Array.from({ length: 6 }, (_, index) => (
+          <Skeleton key={index} className="h-10 w-full" />
+        ))}
+      </div>
+      <div className="sk-app__main p-5">
+        <Skeleton className="h-full min-h-60 w-full" />
+      </div>
+    </div>
+  );
+}
+
+export default function HomePage() {
   return (
     <>
       <section
@@ -116,7 +141,10 @@ export default async function HomePage() {
                 <a className="btn btn--primary" href="#cek">
                   Cek risiko wilayah
                 </a>
-                <ul className="sk-hero__proof" aria-label="Cakupan dan sumber data">
+                <ul
+                  className="sk-hero__proof"
+                  aria-label="Cakupan dan sumber data"
+                >
                   <li>
                     <b>44</b> kecamatan
                   </li>
@@ -157,7 +185,9 @@ export default async function HomePage() {
             </ul>
           </div>
           <div className="sk-fill">
-            <DistrictSearch districts={districts} />
+            <Suspense fallback={<DistrictSearchSkeleton />}>
+              <DistrictSearchPanel />
+            </Suspense>
           </div>
         </div>
       </section>
@@ -506,6 +536,3 @@ export default async function HomePage() {
     </>
   );
 }
-
-// opts out of instant-navigation validation only; loading.tsx still streams a skeleton shell first
-export const instant = false;
