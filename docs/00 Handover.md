@@ -70,6 +70,7 @@ SELESAI:
 - `CREDITS.md` diperbarui dengan daftar PDF pedoman.
 - W1 Task 8 (UI dasar, irisan pertama): sistem visual + landing baru (token warna, header/footer/dialog Darurat, hero triptych, panel cek risiko, empat kartu fitur, langkah, sumber data, FAQ), `/wilayah/[slug]` + 404 ramah, dan `/peta` Leaflet dengan tombol "Gunakan lokasiku". Semua memakai data contoh (`src/lib/demo/`) sampai Task 7 siap; tes `tests/components/{risk-badge,emergency}.test.tsx` ditambahkan.
 - W1: landing + halaman wilayah + peta sudah di-merge ke `dev` (PR #22, 14 Nov).
+- W1 `/tentang` (15 Nov, branch `feature/about-ui`): halaman metodologi memakai sistem visual (index chip, kartu skor/level, tabel hujan, sumber, AI, privasi, kredit, tim), angkanya tetap dibaca dari `src/lib/risk/`, dan tautan footer ditambahkan.
 - Font diputuskan: Epilogue + JetBrains Mono (SIL OFL), sesuai implementasi PR #22. `docs/08` diselaraskan dari vault.
 
 - AI live (14 Nov): `GEMINI_MODEL=gemini-3.5-flash-lite` di `.env.local` dan Vercel Production (key sensitive). Dipilih karena menjawab ~2 dtk; `gemini-3.5-flash` ~14 dtk (mepet `AI_TIMEOUT_MS` 20 dtk), `gemini-3.8-flash`/`gemini-flash-latest` timeout, `gemini-2.5-flash` tidak tersedia untuk key baru. Hindari alias `-latest`. Penjelasan risiko di production sudah `provider: "gemini"`.

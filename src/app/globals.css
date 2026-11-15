@@ -2389,3 +2389,189 @@ html[data-ground="sky"] {
     font-size: clamp(56px, 16vw, 72px);
   }
 }
+
+/* ------------------------------------------------------------------ Tentang & metodologi
+   One page of prose: an index of chips, then cards. The formula and tables are the content, so
+   they stay in the data voice (mono numerals) and never borrow a risk colour. */
+.sk-about__index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: var(--s-7);
+}
+.sk-about__index a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: var(--t-small);
+  font-weight: 500;
+}
+.sk-about__index a:hover {
+  border-color: var(--p-action);
+  color: var(--p-action);
+}
+.sk-about__grid {
+  display: grid;
+  gap: var(--gutter);
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .sk-about__grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .sk-about__section {
+    grid-column: span 6;
+  }
+  .sk-about__wide {
+    grid-column: 1 / -1;
+  }
+  .sk-about__narrow {
+    grid-column: span 5;
+  }
+  .sk-about__broad {
+    grid-column: span 7;
+  }
+}
+.sk-about__section {
+  align-content: start;
+  scroll-margin-top: calc(var(--nav) + 16px);
+}
+.sk-about__section p {
+  margin: 0;
+  font-size: var(--t-small);
+  line-height: 1.6;
+}
+.sk-about__section a:not(.btn) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--line-strong);
+}
+.sk-about__section a:not(.btn):hover {
+  text-decoration-color: currentColor;
+}
+.sk-about__section h3 {
+  margin: 0;
+  font: 500 var(--t-small) / 1.3 var(--font-text);
+}
+.sk-about__formula {
+  margin: 0;
+  padding: 14px 16px;
+  border-left: 3px solid var(--p-action);
+  border-radius: var(--r-md);
+  background: var(--p-surface);
+  font: 500 var(--t-body) / 1.5 var(--font-mono);
+}
+.sk-about__split {
+  display: grid;
+  gap: var(--s-4);
+}
+@media (min-width: 760px) {
+  .sk-about__split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.sk-about__block {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.sk-about__bullets {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--p-ink);
+  font-size: var(--t-small);
+  line-height: 1.55;
+}
+.sk-about__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-small);
+}
+.sk-about__table th,
+.sk-about__table td {
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.sk-about__table thead th {
+  color: var(--muted);
+  font-size: var(--t-label);
+  font-weight: 500;
+}
+.sk-about__table th:last-child,
+.sk-about__table td:last-child {
+  padding-right: 0;
+  text-align: right;
+}
+.sk-about__levels {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-about__levels li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.sk-about__levels li:last-child {
+  border-bottom: 0;
+}
+.sk-about__levels .sk-mono {
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-about__list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-about__list li {
+  display: grid;
+  gap: 2px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.sk-about__list li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.sk-about__list a {
+  font-weight: 500;
+}
+.sk-about__list span {
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-about__chain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-about__chain li {
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font: 400 var(--t-label) / 1.4 var(--font-mono);
+}
+
+/* the equal side tracks overflow when the actions are wider than half the bar */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .nav--centre .nav__bar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+}
