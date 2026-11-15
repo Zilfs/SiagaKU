@@ -7,6 +7,7 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - [shadcn/ui](https://ui.shadcn.com) - komponen UI
 - [Base UI](https://base-ui.com) (@base-ui/react) - primitif komponen tanpa gaya
 - [lucide-react](https://lucide.dev) - ikon
+- [GSAP](https://gsap.com) (`gsap`, ScrollTrigger) dan [@gsap/react](https://github.com/greensock/react) (`useGSAP`), oleh GreenSock/Webflow, lisensi "Standard 'no charge' license" - animasi interaktif di halaman utama
 - [class-variance-authority](https://cva.style) dan tw-animate-css - varian kelas dan animasi
 - cn (paket npm `cn`) - pembantu penggabung nama kelas dari shadcn
 - Font Plus Jakarta Sans (via next/font, Google Fonts, lisensi SIL OFL) - tipografi display, teks, dan angka

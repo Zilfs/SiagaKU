@@ -1,10 +1,18 @@
 import {
   Backpack,
+  BookOpen,
   Camera,
+  CircleQuestionMark,
+  ClipboardList,
   CloudRain,
+  CloudSun,
+  Gauge,
+  Landmark,
   MapPin,
   MessageCircle,
   Phone,
+  Search,
+  type LucideIcon,
 } from "lucide-react";
 import { HeroCollage } from "@/components/site/hero-collage";
 import { DistrictSearch } from "@/features/risk/components/district-search";
@@ -15,6 +23,9 @@ import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
+import { FeatureDemo } from "@/components/site/feature-demo";
+import { CountUp, Magnetic, Reveal } from "@/components/site/landing-motion";
+import { PlanPreview } from "@/components/site/plan-preview";
 
 const LEGEND: { level: RiskLevel; range: string; dot: string }[] = [
   { level: "low", range: "0–24", dot: "var(--risk-low)" },
@@ -23,43 +34,51 @@ const LEGEND: { level: RiskLevel; range: string; dot: string }[] = [
   { level: "very_high", range: "75–100", dot: "var(--risk-very-high)" },
 ];
 
-const STEPS = [
+const STEPS: { title: string; body: string; icon: LucideIcon }[] = [
   {
+    icon: Search,
     title: "Pilih kecamatanmu",
     body: "Ketik nama kecamatan di kolom pencarian. Tidak perlu akun, dan tidak ada data pribadi yang diminta.",
   },
   {
+    icon: Gauge,
     title: "Baca skor dan sumbernya",
     body: "Setiap angka menyebut waktu pembaruan, prakiraan hujan tiga hari, dan komponen yang menyusunnya.",
   },
   {
+    icon: ClipboardList,
     title: "Susun rencana siaga",
     body: "Pilih anggota keluarga, lalu simpan daftar periksa yang sudah disesuaikan dengan kebutuhan mereka.",
   },
 ];
 
-const SOURCES = [
-  {
-    name: "BMKG",
-    note: "Prakiraan hujan dan peringatan dini cuaca.",
-    tag: "tiap jam",
-  },
-  {
-    name: "Open-Meteo",
-    note: "Curah hujan harian tiga hari ke depan per titik kecamatan.",
-    tag: "tiap jam",
-  },
-  {
-    name: "BPBD DKI Jakarta",
-    note: "Daftar kelurahan rawan dan riwayat kejadian banjir.",
-    tag: "saat seeding",
-  },
-  {
-    name: "BNPB",
-    note: "Buku saku kesiapsiagaan untuk tindakan utama yang ditampilkan.",
-    tag: "pedoman",
-  },
-];
+const SOURCES: { name: string; note: string; tag: string; icon: LucideIcon }[] =
+  [
+    {
+      icon: CloudSun,
+      name: "BMKG",
+      note: "Prakiraan hujan dan peringatan dini cuaca.",
+      tag: "tiap jam",
+    },
+    {
+      icon: CloudRain,
+      name: "Open-Meteo",
+      note: "Curah hujan harian tiga hari ke depan per titik kecamatan.",
+      tag: "tiap jam",
+    },
+    {
+      icon: Landmark,
+      name: "BPBD DKI Jakarta",
+      note: "Daftar kelurahan rawan dan riwayat kejadian banjir.",
+      tag: "saat seeding",
+    },
+    {
+      icon: BookOpen,
+      name: "BNPB",
+      note: "Buku saku kesiapsiagaan untuk tindakan utama yang ditampilkan.",
+      tag: "pedoman",
+    },
+  ];
 
 const FAQ = [
   {
@@ -138,18 +157,26 @@ export default function HomePage() {
 
             <div className="span-3 hero__cta">
               <div className="sk-hero__cta">
-                <a className="btn btn--primary" href="#cek">
-                  Cek risiko wilayah
-                </a>
+                <Magnetic>
+                  <a className="btn btn--primary" href="#cek">
+                    Cek risiko wilayah
+                  </a>
+                </Magnetic>
                 <ul
                   className="sk-hero__proof"
                   aria-label="Cakupan dan sumber data"
                 >
                   <li>
-                    <b>44</b> kecamatan
+                    <b>
+                      <CountUp value={44} />
+                    </b>{" "}
+                    kecamatan
                   </li>
                   <li>
-                    <b>3 hari</b> BMKG
+                    <b>
+                      <CountUp value={3} /> hari
+                    </b>{" "}
+                    BMKG
                   </li>
                   <li>
                     <b>112</b> darurat
@@ -163,7 +190,7 @@ export default function HomePage() {
 
       <section className="section" id="cek" aria-labelledby="cek-h">
         <div className="wrap">
-          <div className="section-head section-head--split">
+          <Reveal className="section-head section-head--split">
             <div>
               <h2 id="cek-h">Cari kecamatanmu, lihat risiko banjirnya.</h2>
               <p>
@@ -183,7 +210,7 @@ export default function HomePage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
           <div className="sk-fill">
             <Suspense fallback={<DistrictSearchSkeleton />}>
               <DistrictSearchPanel />
@@ -195,20 +222,22 @@ export default function HomePage() {
       <section className="section g2" id="fitur" aria-labelledby="fitur-h">
         <div className="wrap">
           <div className="group">
-            <div className="section-head">
+            <Reveal className="section-head">
               <h2 id="fitur-h">Empat fitur di atas satu data risiko banjir.</h2>
               <p>
                 Semua fitur memakai data yang sama, jadi tidak saling
                 bertentangan.
               </p>
-            </div>
+            </Reveal>
             <div className="grid">
               <article className="card span-6">
-                <h3>
-                  <span className="sk-card-index">01</span>Risiko tiap kecamatan
+                <h3 className="sk-heading-icon">
+                  <span className="sk-card-index">01</span>
+                  <Gauge size={18} aria-hidden="true" />
+                  Risiko tiap kecamatan
                 </h3>
                 <p>Satu skor per kecamatan Jakarta.</p>
-                <div className="panel">
+                <FeatureDemo kind="risk">
                   <div className="sk-feature" data-ui>
                     <div className="sk-feature__head">
                       <span className="sk-feature__title">
@@ -221,8 +250,16 @@ export default function HomePage() {
                       <b>Awas</b>
                       <span>3 kecamatan</span>
                     </div>
-                    <div className="sk-feature__row">
+                    <div
+                      className="sk-feature__row sk-demo__host"
+                      data-demo-target
+                    >
+                      <i className="sk-demo__hl" aria-hidden="true" />
                       <b>Siaga</b>
+                      <em className="sk-demo__chip">
+                        <i aria-hidden="true" />
+                        Jatinegara · 68
+                      </em>
                       <span>9 kecamatan</span>
                     </div>
                     <div className="sk-feature__row">
@@ -234,22 +271,29 @@ export default function HomePage() {
                       <span>14 kecamatan</span>
                     </div>
                   </div>
-                </div>
+                </FeatureDemo>
               </article>
 
               <article className="card span-6">
-                <h3>
-                  <span className="sk-card-index">02</span>Rencana siaga banjir
+                <h3 className="sk-heading-icon">
+                  <span className="sk-card-index">02</span>
+                  <ClipboardList size={18} aria-hidden="true" />
+                  Rencana siaga banjir
                 </h3>
                 <p>Daftar periksa per anggota keluarga.</p>
-                <div className="panel">
+                <FeatureDemo kind="plan">
                   <div className="sk-feature" data-ui>
                     <div className="sk-feature__head">
                       <span className="sk-feature__title">
                         <Backpack size={14} aria-hidden="true" />
                         Tas siaga
                       </span>
-                      <span className="sk-feature__meta">8/22</span>
+                      <span className="sk-feature__meta sk-demo__count">
+                        <span className="sk-demo__from" aria-hidden="true">
+                          8/22
+                        </span>
+                        <span className="sk-demo__to">9/22</span>
+                      </span>
                     </div>
                     <ul>
                       <li className="is-done">
@@ -261,7 +305,13 @@ export default function HomePage() {
                         Dokumen di kantong tahan air
                       </li>
                       <li>
-                        <span className="sk-check" aria-hidden="true" />
+                        <span
+                          className="sk-check sk-demo__check"
+                          aria-hidden="true"
+                          data-demo-target
+                        >
+                          <i className="sk-demo__tick" />
+                        </span>
                         Obat rutin 7 hari untuk lansia
                       </li>
                       <li>
@@ -270,7 +320,7 @@ export default function HomePage() {
                       </li>
                     </ul>
                   </div>
-                </div>
+                </FeatureDemo>
               </article>
             </div>
           </div>
@@ -278,14 +328,16 @@ export default function HomePage() {
           <div className="group">
             <div className="grid">
               <article className="card span-6">
-                <h3>
-                  <span className="sk-card-index">03</span>Tanya soal banjir
+                <h3 className="sk-heading-icon">
+                  <span className="sk-card-index">03</span>
+                  <MessageCircle size={18} aria-hidden="true" />
+                  Tanya soal banjir
                 </h3>
                 <p>
                   Jawaban bahasa sehari-hari dari pedoman BNPB, BPBD, dan
                   Kementerian Kesehatan, dengan sumber di tiap jawaban.
                 </p>
-                <div className="panel">
+                <FeatureDemo kind="chat">
                   <div className="sk-feature" data-ui>
                     <div className="sk-feature__head">
                       <span className="sk-feature__title">
@@ -294,31 +346,43 @@ export default function HomePage() {
                       </span>
                       <span className="sk-tag sk-tag--ai">AI · contoh</span>
                     </div>
-                    <p className="sk-feature__q">
+                    <p className="sk-feature__q sk-demo__host">
                       <span className="sk-feature__bubble">
+                        Kapan harus mengungsi kalau ada lansia?
+                      </span>
+                      <span
+                        className="sk-demo__suggest"
+                        aria-hidden="true"
+                        data-demo-target
+                      >
                         Kapan harus mengungsi kalau ada lansia?
                       </span>
                     </p>
                     <div className="sk-feature__answer">
-                      Untuk keluarga dengan lansia, bersiap lebih awal: saat air
-                      mulai naik di gang, bukan saat masuk rumah.
+                      <span className="sk-demo__type">
+                        Untuk keluarga dengan lansia, bersiap lebih awal: saat
+                        air mulai naik di gang, bukan saat masuk rumah.
+                      </span>
                       <span className="sk-feature__src">
+                        <b className="sk-demo__ref">[1]</b>
                         BNPB · Buku Saku, hlm. 23
                       </span>
                     </div>
                   </div>
-                </div>
+                </FeatureDemo>
               </article>
 
               <article className="card span-6">
-                <h3>
-                  <span className="sk-card-index">04</span>Lapor banjir
+                <h3 className="sk-heading-icon">
+                  <span className="sk-card-index">04</span>
+                  <Camera size={18} aria-hidden="true" />
+                  Lapor banjir
                 </h3>
                 <p>
                   Kirim foto dan tinggi air. Laporan warga melengkapi data
                   resmi, bukan menggantikannya.
                 </p>
-                <div className="panel">
+                <FeatureDemo kind="report">
                   <div className="sk-feature" data-ui>
                     <div className="sk-feature__head">
                       <span className="sk-feature__title">
@@ -327,7 +391,11 @@ export default function HomePage() {
                       </span>
                       <span className="sk-feature__meta">12 menit lalu</span>
                     </div>
-                    <div className="sk-feature__upload">
+                    <div
+                      className="sk-feature__upload sk-demo__host"
+                      data-demo-target
+                    >
+                      <i className="sk-demo__hl" aria-hidden="true" />
                       <Camera size={20} aria-hidden="true" />
                       Foto genangan, tinggi air, dan patokan jalan
                     </div>
@@ -336,7 +404,7 @@ export default function HomePage() {
                       Terkirim · 3 laporan di Jatinegara hari ini
                     </div>
                   </div>
-                </div>
+                </FeatureDemo>
               </article>
             </div>
           </div>
@@ -347,7 +415,7 @@ export default function HomePage() {
         <div className="wrap">
           <div className="sk-split">
             <div className="sk-split__copy">
-              <div className="section-head">
+              <Reveal className="section-head">
                 <h2 id="cara-h">
                   Dari risiko ke rencana siaga, dalam tiga langkah.
                 </h2>
@@ -355,12 +423,15 @@ export default function HomePage() {
                   Kamu tidak perlu membaca semua data. Tiga langkah ini cukup
                   untuk tahu apa yang harus disiapkan malam ini.
                 </p>
-              </div>
+              </Reveal>
               <ol className="sk-steps">
                 {STEPS.map((step) => (
                   <li key={step.title}>
                     <div>
-                      <b>{step.title}</b>
+                      <b className="sk-heading-icon">
+                        <step.icon size={18} aria-hidden="true" />
+                        {step.title}
+                      </b>
                       <p>{step.body}</p>
                     </div>
                   </li>
@@ -373,44 +444,9 @@ export default function HomePage() {
                 <b>Rencana siaga · Jatinegara</b>
                 <span>8 dari 22 selesai</span>
               </div>
-              <div className="sk-plan__progress">
-                <span className="sk-track" aria-hidden="true">
-                  <i />
-                </span>
-                <p>
-                  <span>36% selesai</span>
-                  <span>Data contoh</span>
-                </p>
-              </div>
-              <ul>
-                <li className="is-done">
-                  <span className="sk-check" aria-hidden="true" />
-                  Air minum 3 L per orang, 3 hari
-                  <em>6 botol</em>
-                </li>
-                <li className="is-done">
-                  <span className="sk-check" aria-hidden="true" />
-                  Dokumen di kantong tahan air
-                  <em>KK, KTP</em>
-                </li>
-                <li>
-                  <span className="sk-check" aria-hidden="true" />
-                  Obat rutin 7 hari untuk lansia
-                  <em>7 hari</em>
-                </li>
-                <li>
-                  <span className="sk-check" aria-hidden="true" />
-                  Lampu senter dan baterai cadangan
-                  <em>2 buah</em>
-                </li>
-                <li>
-                  <span className="sk-check" aria-hidden="true" />
-                  Jalur keluar dan titik aman keluarga
-                  <em>1 titik</em>
-                </li>
-              </ul>
+              <PlanPreview />
               <div className="sk-plan__foot">
-                <span>Diperbarui 14.00 WIB</span>
+                <span>Data contoh · diperbarui 14.00 WIB</span>
                 <a className="link" href="#cek">
                   Buat rencana
                 </a>
@@ -424,18 +460,21 @@ export default function HomePage() {
         <div className="wrap">
           <div className="sk-split">
             <div className="sk-split__copy">
-              <div className="section-head">
+              <Reveal className="section-head">
                 <h2 id="data-h">Sumber data risiko banjir Jakarta.</h2>
                 <p>
                   SiagaKU tidak menebak. Setiap skor memakai prakiraan hujan
                   resmi dan riwayat kejadian, dan setiap baris menyebut kapan
                   terakhir diperbarui.
                 </p>
-              </div>
+              </Reveal>
               <ul className="sk-source-list">
                 {SOURCES.map((source) => (
                   <li key={source.name}>
-                    <b>{source.name}</b>
+                    <b className="sk-heading-icon">
+                      <source.icon size={18} aria-hidden="true" />
+                      {source.name}
+                    </b>
                     <p>{source.note}</p>
                     <span>{source.tag}</span>
                   </li>
@@ -495,17 +534,20 @@ export default function HomePage() {
         <div className="wrap">
           <div className="sk-ask">
             <div>
-              <div className="section-head">
+              <Reveal className="section-head">
                 <h2 id="tanya-h">Pertanyaan warga soal risiko banjir.</h2>
                 <p>
                   Empat hal yang paling sering ditanyakan warga sebelum memakai
                   SiagaKU.
                 </p>
-              </div>
+              </Reveal>
               <div className="faq">
                 {FAQ.map((item) => (
                   <details key={item.q} open>
-                    <summary>{item.q}</summary>
+                    <summary className="sk-heading-icon">
+                      <CircleQuestionMark size={18} aria-hidden="true" />
+                      {item.q}
+                    </summary>
                     <p>{item.a}</p>
                   </details>
                 ))}
@@ -525,9 +567,11 @@ export default function HomePage() {
                 Gratis 24 jam dari telepon dan ponsel. Untuk air yang sudah
                 masuk rumah atau ada orang terjebak.
               </p>
-              <a className="btn btn--primary" href="tel:112">
-                Telepon 112
-              </a>
+              <Magnetic>
+                <a className="btn btn--primary" href="tel:112">
+                  Telepon 112
+                </a>
+              </Magnetic>
               <span className="sk-mono">Jakarta Siaga · 24 jam</span>
             </div>
           </div>
