@@ -9,7 +9,7 @@ import { EmergencyButton } from "./emergency-button";
 const LINKS = [
   { href: "/#cek", label: "Cek risiko" },
   { href: "/peta", label: "Peta" },
-  { href: "/#cara", label: "Cara kerja" },
+  { href: "/rencana", label: "Rencana" },
   { href: "/#fitur", label: "Fitur" },
   { href: "/#tanya", label: "Tanya" },
 ];

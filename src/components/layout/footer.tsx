@@ -5,7 +5,7 @@ import { EmergencyButton } from "./emergency-button";
 const PAGES = [
   { href: "/#cek", label: "Cek risiko wilayah" },
   { href: "/peta", label: "Peta risiko" },
-  { href: "/#cara", label: "Cara kerja" },
+  { href: "/rencana", label: "Rencana siaga" },
   { href: "/#data", label: "Sumber data" },
 ];
 

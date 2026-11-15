@@ -2389,3 +2389,634 @@ html[data-ground="sky"] {
     font-size: clamp(56px, 16vw, 72px);
   }
 }
+
+/* ------------------------------------------------------------------ Rencana siaga
+   The three-step wizard and the shareable plan page. Print turns the checklist into two columns
+   and drops the navigation, actions and chat widget. */
+.sk-wizard {
+  display: grid;
+  gap: var(--s-6);
+  max-width: 920px;
+}
+.sk-wizard__steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-wizard__step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--p-bg);
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-wizard__step b {
+  display: block;
+  color: inherit;
+  font-weight: 500;
+}
+.sk-wizard__step small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+.sk-wizard__step.is-current {
+  border-color: var(--p-action);
+  background: var(--p-surface);
+  color: var(--p-ink);
+}
+.sk-wizard__step.is-done {
+  color: var(--p-ink);
+}
+.sk-wizard__num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font: 500 var(--t-small) / 1 var(--font-mono);
+}
+.sk-wizard__step.is-current .sk-wizard__num {
+  border-color: transparent;
+  background: var(--p-action);
+  color: var(--p-action-ink);
+}
+.sk-wizard__step.is-done .sk-wizard__num {
+  background: var(--p-surface);
+}
+.sk-wizard__panel {
+  display: grid;
+  gap: var(--s-5);
+  padding: clamp(18px, 2.4vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--p-bg);
+}
+.sk-fieldset {
+  display: grid;
+  gap: var(--s-5);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.sk-fieldset > legend {
+  margin-bottom: var(--s-2);
+  padding: 0;
+  font: var(--display-weight) var(--t-card) / 1.2 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.sk-fieldset--nested {
+  gap: var(--s-3);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
+}
+.sk-fieldset--nested > legend {
+  font: 500 var(--t-body) / 1.3 var(--font-text);
+  color: var(--p-ink);
+}
+.sk-field {
+  display: grid;
+  gap: 6px;
+}
+.sk-field > label {
+  font-weight: 500;
+}
+.sk-field select,
+.sk-field input,
+.sk-inline-add input {
+  height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--p-ink);
+  font: inherit;
+}
+.sk-field--narrow {
+  max-width: 220px;
+}
+.sk-field__hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-field__error {
+  margin: 0;
+  color: var(--risk-very-high);
+  font-size: var(--t-small);
+  font-weight: 500;
+}
+.sk-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.sk-choice {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--p-bg);
+  color: var(--p-ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.sk-choice svg {
+  color: var(--p-action);
+}
+.sk-choice b {
+  font-weight: 500;
+  font-size: var(--t-body);
+}
+.sk-choice span {
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-choice.is-on {
+  border-color: var(--p-action);
+  background: var(--p-surface);
+  box-shadow: inset 0 0 0 1px var(--p-action);
+}
+.sk-choice-grid--chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sk-chip.is-on {
+  border-color: transparent;
+  background: var(--p-action);
+  color: var(--p-action-ink);
+}
+.sk-step-list {
+  display: grid;
+}
+.sk-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-stepper:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.sk-stepper__text {
+  display: grid;
+  gap: 2px;
+}
+.sk-stepper__label {
+  font-weight: 500;
+}
+.sk-stepper__note {
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-stepper__controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sk-stepper__btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--p-bg);
+  color: var(--p-ink);
+  cursor: pointer;
+}
+.sk-stepper__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.sk-stepper__value {
+  min-width: 28px;
+  text-align: center;
+  font: 500 var(--t-body) / 1 var(--font-mono);
+}
+.sk-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.sk-check input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--p-action);
+}
+.sk-inline-add {
+  display: flex;
+  gap: 8px;
+}
+.sk-inline-add input {
+  flex: 1;
+  min-width: 0;
+}
+.sk-pet-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-pet-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--p-surface);
+  font-size: var(--t-small);
+}
+.sk-pet-list button {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.sk-wizard__summary {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--p-surface);
+}
+.sk-wizard__summary h3 {
+  margin: 0 0 10px;
+  font: 500 var(--t-body) / 1.3 var(--font-text);
+}
+.sk-wizard__summary ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-wizard__summary li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: var(--t-small);
+}
+.sk-wizard__summary span {
+  color: var(--muted);
+}
+.sk-wizard__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.sk-wizard__note {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-spin {
+  animation: sk-spin 900ms linear infinite;
+}
+@keyframes sk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* the plan result */
+.sk-plan-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--s-5);
+  margin-bottom: var(--s-6);
+}
+.sk-plan-head h1 {
+  margin: 8px 0;
+  font-size: clamp(34px, 4vw, 52px);
+  letter-spacing: var(--display-tracking);
+  line-height: 1.05;
+}
+.sk-plan-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-plan-meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sk-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.sk-share .btn {
+  height: 44px;
+}
+.sk-plan-summary {
+  margin-bottom: var(--s-5);
+}
+.sk-plan-summary p {
+  margin: 0;
+  max-width: 72ch;
+}
+.sk-plan-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--gutter);
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .sk-plan-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .sk-plan-grid > .sk-checklist-card {
+    grid-column: 1 / span 7;
+  }
+  .sk-plan-grid > .sk-plan-tabs {
+    grid-column: 8 / span 5;
+  }
+  .sk-plan-grid > .sk-plan-vuln {
+    grid-column: 1 / span 6;
+  }
+  .sk-plan-grid > .sk-plan-safe {
+    grid-column: 7 / span 6;
+  }
+  .sk-plan-grid > .sk-plan-contacts {
+    grid-column: 1 / -1;
+  }
+}
+.sk-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sk-tabs button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--p-bg);
+  color: var(--muted);
+  font: 500 var(--t-small) / 1 var(--font-text);
+  cursor: pointer;
+}
+.sk-tabs button.is-on {
+  border-color: transparent;
+  background: var(--p-ink);
+  color: var(--p-inv-ink);
+}
+.sk-checklist {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-checklist li {
+  border-top: 1px solid var(--line);
+}
+.sk-checklist li:first-child {
+  border-top: 0;
+}
+.sk-checklist label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+.sk-checklist input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--p-action);
+}
+.sk-checklist b {
+  display: block;
+  font-weight: 500;
+}
+.sk-checklist small {
+  display: block;
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-checklist__reason {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: var(--t-small);
+  line-height: 1.4;
+}
+.sk-progress {
+  height: 8px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--p-surface);
+}
+.sk-progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--p-action);
+}
+.sk-plan-steps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-plan-steps li {
+  display: flex;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+.sk-plan-steps li:first-child {
+  border-top: 0;
+}
+.sk-plan-steps__num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--p-surface);
+  font: 500 var(--t-label) / 1 var(--font-mono);
+}
+.sk-plan-vuln > ul,
+.sk-plan-safe > ul,
+.sk-plan-contacts > ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-plan-vuln > ul > li {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-plan-vuln > ul > li:first-child {
+  border-top: 0;
+}
+.sk-plan-vuln b {
+  font-weight: 500;
+}
+.sk-plan-vuln ul {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-plan-safe li,
+.sk-plan-contacts li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-plan-safe li:first-child,
+.sk-plan-contacts li:first-child {
+  border-top: 0;
+}
+.sk-plan-safe li.is-on {
+  margin-inline: -8px;
+  padding-inline: 8px;
+  border-radius: 8px;
+  background: var(--p-surface);
+}
+.sk-plan-safe li div,
+.sk-plan-contacts li div {
+  display: grid;
+  gap: 2px;
+}
+.sk-plan-safe li span,
+.sk-plan-contacts li span {
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-plan-safe__reason {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-plan-contacts a:not(.btn) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--p-action);
+  font-weight: 500;
+  text-decoration: none;
+}
+.sk-plan-contacts .btn {
+  margin-top: 12px;
+}
+
+@media print {
+  .nav,
+  footer.closing,
+  .sk-actionbar,
+  .sk-chat-fab,
+  .sk-share,
+  .sk-crumbs,
+  .sk-print-hide,
+  .sk-detail-actions {
+    display: none !important;
+  }
+  .sk-page {
+    padding: 0 !important;
+  }
+  .sk-plan-head {
+    margin-bottom: 16px;
+  }
+  .sk-plan-grid {
+    display: block;
+  }
+  .sk-plan-grid > * {
+    margin-bottom: 16px;
+  }
+  .sk-card {
+    border: 1px solid #000 !important;
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+  .sk-checklist {
+    columns: 2;
+    column-gap: 24px;
+  }
+  .sk-checklist li {
+    break-inside: avoid;
+  }
+  .sk-tabs {
+    display: none;
+  }
+  .sk-plan-steps {
+    display: block;
+  }
+  .sk-plan-steps li {
+    break-inside: avoid;
+  }
+  .sk-tag {
+    border: 1px solid #000;
+    color: #000;
+  }
+}
+@media (max-width: 767px) {
+  .sk-wizard__steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sk-wizard__step small {
+    display: none;
+  }
+  .sk-choice-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sk-wizard__actions .btn {
+    flex: 1;
+  }
+  .sk-plan-head {
+    align-items: flex-start;
+  }
+  .sk-share {
+    width: 100%;
+  }
+}
