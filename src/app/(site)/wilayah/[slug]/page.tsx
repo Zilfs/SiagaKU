@@ -18,7 +18,7 @@ import { getRiskDetail } from "@/features/risk/server/risk-service";
 import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
 
 // the page reads live risk data; `connection()` keeps it out of the static build
-// the page reads `params` for its title and cards, so the navigation waits for it (no instant shell)
+// opts out of instant-navigation validation only; loading.tsx still streams a skeleton shell first
 export const instant = false;
 
 function timeLabel(iso: string | null) {

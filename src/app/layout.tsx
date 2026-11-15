@@ -41,6 +41,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-ground="sky"
       data-buttons="solid"
       data-motion=""
+      // Next switches smooth scrolling off for route changes, so a new page starts at the top at once
+      data-scroll-behavior="smooth"
       className={`${jakarta.variable}`}
     >
       <body>

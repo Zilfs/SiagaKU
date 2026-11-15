@@ -507,5 +507,5 @@ export default async function HomePage() {
   );
 }
 
-// live data: the route waits for the request (no instant shell)
+// opts out of instant-navigation validation only; loading.tsx still streams a skeleton shell first
 export const instant = false;

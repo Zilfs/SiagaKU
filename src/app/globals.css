@@ -4075,3 +4075,48 @@ html[data-ground="sky"] {
     width: 100%;
   }
 }
+
+/* ------------------------------------------------------------------ scrolling + skeletons
+   Section links glide only when motion is welcome (the taste system keeps `auto` otherwise), and
+   land below the fixed header. */
+html {
+  scroll-padding-top: var(--nav);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+/* Skeletons share one translucent block, so they read on any surface; the shimmer is a transform on
+   a pseudo-element and stays off under reduced motion. In the components layer, so size and radius
+   utilities on a <Skeleton> win. */
+@layer components {
+  .sk-skeleton {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    min-height: 1em;
+    border-radius: 8px;
+    background: color-mix(in oklab, var(--ink) 8%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sk-skeleton::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in oklab, white 55%, transparent),
+        transparent
+      );
+      animation: sk-shimmer 1.6s ease-in-out infinite;
+    }
+  }
+}
+@keyframes sk-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
