@@ -11,6 +11,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "rag:ingest": "tsx --conditions=react-server scripts/ingest-documents.ts",
     "format": "prettier --write .",
+    "smoke": "tsx scripts/smoke.ts",
+    "check:bundle": "tsx scripts/check-bundle.ts",
     "db:seed": "tsx scripts/seed.ts",
     "db:seed-subdistricts": "tsx scripts/seed-subdistricts.ts",
     "rag:backfill": "tsx --conditions=react-server scripts/ingest-documents.ts --backfill"
