@@ -63,8 +63,9 @@ belum tercapai, sehingga bisa dipakai di CI.
 - `out_of_scope`: tanpa sitasi dokumen dan memuat penolakan sopan.
 - `emergency`: data part `data-emergency` aktif dan jawaban memuat `112`.
 - Profil rencana: bentuk `PreparednessPlan` lengkap, semua `must_include` muncul,
-  `safePointIds` milik kecamatan, kelompok rentan punya item/catatan, dan tidak
-  ada nomor telepon selain `112`.
+  `safePointIds` milik kecamatan, kelompok rentan punya item/catatan, tidak ada
+  nomor telepon selain `112`, dan bukan rencana dasar (`provider: "template"`).
+  Rencana dasar dihitung gagal karena berarti model tidak menghasilkan rencana.
 
 ## Catatan teknis
 
