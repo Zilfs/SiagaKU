@@ -28,9 +28,9 @@
   --p-inv-action: #f2f7fa;
   --p-inv-action-ink: #0a2233;
 
-  --font-display: var(--font-epilogue), "Epilogue", system-ui, sans-serif;
-  --font-text: var(--font-epilogue), "Epilogue", system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+  --font-display: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-text: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --display-weight: 500;
   --display-tracking: -0.035em;
   --display-tracking-xl: -0.045em;
@@ -84,9 +84,9 @@ html[data-ground="sky"] {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-epilogue);
-  --font-mono: var(--font-jetbrains);
-  --font-heading: var(--font-epilogue);
+  --font-sans: var(--font-jakarta);
+  --font-mono: var(--font-jakarta);
+  --font-heading: var(--font-jakarta);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

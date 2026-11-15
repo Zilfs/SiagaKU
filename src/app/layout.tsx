@@ -1,17 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Epilogue, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { Moments } from "@/components/taste/moments";
 import "./globals.css";
 
-const epilogue = Epilogue({
-  variable: "--font-epilogue",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const jetbrains = JetBrains_Mono({
-  variable: "--font-jetbrains",
+// The whole interface, display sizes, body copy and numerals use Jakarta Sans (Hirzi, 15 Nov).
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
   display: "swap",
 });
@@ -46,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-ground="sky"
       data-buttons="solid"
       data-motion=""
-      className={`${epilogue.variable} ${jetbrains.variable}`}
+      className={`${jakarta.variable}`}
     >
       <body>
         <link rel="stylesheet" href="/taste/motion.css" precedence="default" />

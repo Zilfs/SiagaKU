@@ -9,7 +9,7 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - [lucide-react](https://lucide.dev) - ikon
 - [class-variance-authority](https://cva.style) dan tw-animate-css - varian kelas dan animasi
 - cn (paket npm `cn`) - pembantu penggabung nama kelas dari shadcn
-- Font Epilogue dan JetBrains Mono (via next/font, Google Fonts, lisensi SIL OFL) - tipografi display dan angka
+- Font Plus Jakarta Sans (via next/font, Google Fonts, lisensi SIL OFL) - tipografi display, teks, dan angka
 - [taste-skill](https://github.com/Leonxlnx/taste-skill) (design-taste-frontend 2.5.1, MIT License, © 2026 Leonxlnx) - sistem layout, kartu, dan motion yang diadaptasi di `src/styles/taste/` dan `public/taste/moments/`; lisensi lengkap di `THIRD_PARTY_NOTICES.md`
 - [zod](https://zod.dev) - validasi data dan env
 - [Supabase](https://supabase.com) (@supabase/supabase-js) - klien basis data Postgres dan penyimpanan
