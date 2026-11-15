@@ -2389,3 +2389,287 @@ html[data-ground="sky"] {
     font-size: clamp(56px, 16vw, 72px);
   }
 }
+
+/* ------------------------------------------------------------------ Lapor genangan + laporan warga (F4)
+   One photo field, one location, one optional note. The preview is the control; the map's camera
+   pins keep the brand action colour, so a report never borrows a risk colour. */
+.sk-lapor-grid {
+  display: grid;
+  gap: var(--gutter);
+}
+@media (min-width: 1024px) {
+  .sk-lapor-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+  }
+}
+.sk-report {
+  max-width: 760px;
+}
+.sk-report-form {
+  display: grid;
+  gap: var(--s-5);
+}
+.sk-field {
+  display: grid;
+  gap: 8px;
+}
+.sk-field > label {
+  font: 500 var(--t-small) / 1.3 var(--font-text);
+}
+.sk-field select,
+.sk-field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-btn);
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--t-body) / 1.5 var(--font-text);
+}
+.sk-field textarea {
+  resize: vertical;
+}
+.sk-field__hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+  line-height: 1.5;
+}
+.sk-field__error {
+  margin: 0;
+  color: #9b1c1c;
+  font-size: var(--t-small);
+  font-weight: 500;
+  line-height: 1.5;
+}
+.sk-photo {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  overflow: hidden;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--p-surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+.sk-photo span {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  font-size: var(--t-small);
+  font-weight: 500;
+}
+.sk-photo img {
+  display: block;
+  width: 100%;
+  max-height: 380px;
+  object-fit: cover;
+}
+.sk-photo:hover {
+  border-color: var(--p-action);
+}
+.sk-photo:focus-within {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+.sk-report-locate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.sk-report-locate .sk-mono {
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+.sk-report-result {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 16px;
+  border: 1px solid color-mix(in oklab, var(--p-action) 30%, transparent);
+  border-radius: var(--r-md);
+  background: color-mix(in oklab, var(--p-action) 8%, var(--p-bg));
+}
+.sk-report-result b {
+  font: 500 var(--t-body) / 1.3 var(--font-display);
+}
+.sk-report-result p {
+  margin: 0;
+  color: var(--p-ink);
+  font-size: var(--t-small);
+  line-height: 1.5;
+}
+.sk-report-result--rejected {
+  border-color: #f2c9c9;
+  background: #fdecec;
+}
+.sk-report-result--rejected b {
+  color: #5a1414;
+}
+.sk-report-result__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sk-spin {
+  animation: sk-spin 900ms linear infinite;
+}
+@keyframes sk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk-spin {
+    animation: none;
+  }
+}
+.sk-lapor-aside ol {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--p-ink);
+  font-size: var(--t-small);
+  line-height: 1.55;
+}
+
+/* the report layer on the shared map */
+.sk-map__camera {
+  background: transparent;
+  border: 0;
+}
+.sk-map__camera-pin {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: var(--p-action);
+  color: #fff;
+  box-shadow: 0 2px 8px rgb(11 27 38 / 35%);
+}
+.sk-map-shell--reports {
+  margin-bottom: var(--s-8);
+}
+
+/* the report list: photo first, then what the AI saw */
+.sk-report-feed {
+  display: grid;
+  gap: var(--s-4);
+}
+.sk-report-empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 32px 16px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-lg);
+  color: var(--muted);
+  text-align: center;
+}
+.sk-report-empty p {
+  margin: 0;
+  font-size: var(--t-small);
+}
+.sk-report-list {
+  display: grid;
+  gap: var(--gutter);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 640px) {
+  .sk-report-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .sk-report-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.sk-report-card {
+  display: grid;
+  align-content: start;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--p-bg);
+}
+.sk-report-card img,
+.sk-report-card__no-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--p-surface);
+}
+.sk-report-card__no-photo {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+.sk-report-card__body {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px 16px;
+}
+.sk-report-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sk-report-card__body > b {
+  font: 500 var(--t-body) / 1.3 var(--font-display);
+}
+.sk-report-card__body > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+  line-height: 1.5;
+}
+.sk-report-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-top: 2px;
+}
+.sk-report-card__meta .sk-mono {
+  font-size: var(--t-label);
+}
+
+/* disabled actions keep the label readable but stop reading as available */
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.btn:disabled:hover {
+  transform: none;
+}
+.btn--primary:disabled:hover {
+  background: var(--action);
+}
+
+/* the map's zoom control is a real target on touch screens (>= 44px) */
+@media (pointer: coarse) {
+  .leaflet-touch .leaflet-control-zoom a {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    font-size: 22px;
+  }
+}
+
+/* 1024–1199: five links and the two actions do not fit; drop the optional one, keep the sheet
+   untouched below 1024 so every link is still there on a phone */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .nav__item--optional {
+    display: none;
+  }
+}
