@@ -78,6 +78,7 @@ SELESAI:
 - W3 Task 11 (backend Rencana Siaga): `POST /api/plans` (rate limit 5/10 menit) + `GET /api/plans/[slug]`; schema `.strict()` bahasa Inggris (`district_id`, `housing`, `members`, `conditions`), output `PreparednessPlan` (`summary`, `recommendedReadinessLevel`, `goKit`, `before`/`during`/`after`, `vulnerableGroups`, `safePointIds`, `safePointReason`) di `src/features/plan/`. Model `withFallback "plan"` + `Output.object`; `safePointIds` selalu disaring ke shelter kecamatan (maks 6 ditawarkan, maks 3 disimpan); semua provider gagal atau output tidak valid -> rencana dasar rule-based, `provider: "template"`, HTTP 201. Slug 10 karakter dari `node:crypto`. UI `/rencana` belum (Ukon); 30 tes.
 - AI live (14 Nov): `GEMINI_MODEL=gemini-3.5-flash-lite` di `.env.local` dan Vercel Production (key sensitive). Dipilih karena menjawab ~2 dtk; `gemini-3.5-flash` ~14 dtk (mepet `AI_TIMEOUT_MS` 20 dtk), `gemini-3.8-flash`/`gemini-flash-latest` timeout, `gemini-2.5-flash` tidak tersedia untuk key baru. Hindari alias `-latest`. Penjelasan risiko di production sudah `provider: "gemini"`.
 - Korpus RAG (14 Nov): `npm run rag:ingest` memasukkan 5 dokumen, 447 chunk, semua ber-embedding. Kuota gratis embedding Gemini 100 teks/menit, jadi ingest dijeda 13 dtk per 20 teks; kalau ada chunk tanpa embedding, jalankan `npm run rag:backfill`.
+- W1 Task 15 UI (15 Nov, branch `feature/report-ui`): `/lapor` (foto + kompres canvas 1600 px/1 MB, EXIF hilang, pilih kecamatan atau lokasi, deskripsi opsional, status unggah → AI) dan `/laporan` (peta Leaflet dengan marker kamera + daftar kartu 72 jam, label **Contoh** untuk demo, empty/error state). Memakai kontrak docs/07 yang diterjemahkan sesuai AGENTS: `POST /api/reports/upload-url`, `POST /api/reports`, `GET /api/reports?hours=72`; belum ada di `dev`.
 
 BELUM: merge backend T10 chat (PR #37) dan T11 rencana; T13 eval AI; T10-UI (`/tanya`), T11-UI (`/rencana`), T14-UI/PWA (Ukon); Task 17 (README utama, proposal, video).
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
@@ -94,12 +95,13 @@ File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\
 - Template proposal & surat pernyataan belum diunduh (link bit.ly di guidebook).
 - PIC: W1 Ukon, W2 Rhein (integrator), W3 Bagus, W4 Syaki. Nama tim resmi & provider alternatif: belum diputuskan.
 - W1 landing/wilayah/peta masih memakai data contoh (`src/lib/demo/`); API Task 7 sudah ada di `dev`, wiring berikutnya.
+- API yang belum ada di `dev`: `/api/chat`, `/api/plans`, `/api/reports`, `/api/subdistricts`, `/api/early-warning/[code]`, `/api/push/*`. Halaman UI terkait sudah memakai empty/error state.
 
 ## Langkah berikutnya (urut)
 1. Rhein: tambah Groq (`GROQ_API_KEY` + `GROQ_MODEL`) sebagai cadangan kalau kuota Gemini gratis habis saat penjurian.
 2. Ukon: wiring landing/wilayah/peta ke `/api/districts` dan `/api/risk/[id]` (tipe di `src/features/risk/types.ts`), hapus `src/lib/demo/`, tambah tes `formatDistance`.
 3. Bagus: T10 dan T11 backend sudah di `dev` (PR #37, #41); uji manual dengan key asli, lalu tulis `scripts/eval.ts` + `docs/eval-hasil.md` (T13) memakai 40 soal dan 6 profil di `tests/eval/`.
 4. Syaki: Task 17 (README utama, proposal, video).
-5. Ukon: T10-UI (`/tanya`), T11-UI (`/rencana`), T14-UI/PWA (`/peringatan`).
+5. W1: PR UI T10 (`/tanya`), T11 (`/rencana`), T14 (`/peringatan` + PWA), T15 (`/lapor`, `/laporan`) menunggu review/merge; verifikasi kontrak setelah API W3 mendarat.
 6. Ikuti 09 Timeline & Pembagian Tugas.
 ```
