@@ -6,12 +6,14 @@ import { Menu, X } from "lucide-react";
 import { Mark } from "@/components/site/mark";
 import { EmergencyButton } from "./emergency-button";
 
-const LINKS = [
+const LINKS: { href: string; label: string; optional?: boolean }[] = [
   { href: "/#cek", label: "Cek risiko" },
   { href: "/peta", label: "Peta" },
   { href: "/rencana", label: "Rencana" },
-  { href: "/#fitur", label: "Fitur" },
-  { href: "/#tanya", label: "Tanya" },
+  { href: "/#cara", label: "Cara kerja", optional: true },
+  { href: "/#fitur", label: "Fitur", optional: true },
+  { href: "/tanya", label: "Tanya" },
+  { href: "/lapor", label: "Lapor" },
 ];
 
 /**
@@ -38,7 +40,7 @@ export function Header() {
         </Link>
         <nav className="nav__links" id="menu-utama" aria-label="Utama">
           {LINKS.map((link) => (
-            <div className="nav__item" key={link.href}>
+            <div className={link.optional ? "nav__item nav__item--optional" : "nav__item"} key={link.href}>
               <Link
                 className="nav__link"
                 href={link.href}

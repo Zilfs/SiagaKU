@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { RiskBadge } from "@/components/risk-badge";
+import { WatchButton } from "@/features/early-warning/components/watch-button";
 import { AiExplanation } from "@/features/risk/components/ai-explanation";
+import { ChatWidget } from "@/features/chat/components/chat-widget";
 import { ClimateCard } from "@/features/risk/components/climate-card";
 import { FloodHistory } from "@/features/risk/components/flood-history";
 import { RiskGauge } from "@/features/risk/components/risk-gauge";
@@ -94,6 +96,10 @@ export default async function DistrictPage({
               >
                 Buat rencana siaga
               </Link>
+              <WatchButton
+                districtSlug={district.slug}
+                districtName={district.name}
+              />
               <Link className="link" href={`/tanya?kecamatan=${district.slug}`}>
                 Tanya soal {district.name}
               </Link>
@@ -135,6 +141,8 @@ export default async function DistrictPage({
           adalah perkiraan berbasis data terbuka, bukan jaminan kondisi lapangan.
           Untuk darurat, hubungi 112.
         </p>
+
+        <ChatWidget kecamatanId={district.id} kecamatanName={district.name} />
       </div>
     </article>
   );
