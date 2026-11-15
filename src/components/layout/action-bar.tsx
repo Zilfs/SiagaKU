@@ -20,7 +20,7 @@ export function ActionBar() {
   }, []);
 
   useEffect(() => {
-    const close = document.querySelector<HTMLElement>("footer.closing");
+    const close = document.querySelector<HTMLElement>("footer.sk-footer");
     if (!close) return;
     const observer = new IntersectionObserver(
       ([entry]) => setAtClose(entry.isIntersecting),

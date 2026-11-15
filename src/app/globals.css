@@ -1618,37 +1618,6 @@ html[data-ground="sky"] {
   .sk-feature__upload {
     min-height: 72px;
   }
-  /* the footer's two link lists share a row on a phone: the close and the links still end on the fold */
-  .closing__links > .grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--s-4) var(--gutter);
-  }
-  .closing__links > .grid > :first-child {
-    grid-column: 1 / -1;
-  }
-  .closing__links .footer__col {
-    grid-column: auto / span 1;
-  }
-  /* its links run as a vertical list again: the two columns are side by side */
-  .closing__links .footer__col ul {
-    display: grid;
-    gap: 0;
-  }
-  .closing__cta {
-    gap: var(--s-4);
-  }
-  /* the close and the links keep their air, but the screen ends on the fold */
-  footer.closing > .wrap {
-    row-gap: 28px;
-  }
-  .closing__links {
-    gap: var(--s-3);
-    row-gap: var(--s-3);
-  }
-  .footer__legal {
-    padding-top: var(--s-2);
-    row-gap: var(--s-3);
-  }
   .sk-split,
   .sk-ask {
     gap: var(--s-5);
@@ -1669,8 +1638,7 @@ html[data-ground="sky"] {
 /* a short landscape screen (1024x768): the close needs two screens, and the four cards' panels give
    back the 38px that put #fitur past its two */
 @media (min-width: 640px) and (max-height: 820px) {
-  main > section#tanya,
-  footer.closing {
+  main > section#tanya {
     --h: 2;
   }
   /* the plan card's 594px leaves 18 over a 768 screen: the section keeps its screen, the air goes */
@@ -2341,56 +2309,167 @@ html[data-ground="sky"] {
   white-space: nowrap;
 }
 
-/* the footer's close word: capped so it never runs into the links under it */
-.close__word {
-  font-size: clamp(56px, 19vw, 132px);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  padding-bottom: 0.05em;
+/* ------------------------------------------------------------------ footer
+   One deep-blue band: the close, the brand and the link columns on the plain sky, then the legal
+   line, over the Jakarta illustration. The band colour is the image's own top colour, and the
+   picture fades in from it, so there is no seam. All text uses the inverse tokens (AA on #012a4a). */
+.sk-footer {
+  --band: #012a4a;
+  --bg: var(--band);
+  --ink: var(--p-inv-ink);
+  --muted: var(--p-inv-muted);
+  --action: var(--p-inv-action);
+  --action-ink: var(--p-inv-action-ink);
+  --line: color-mix(in oklab, var(--p-inv-ink) 16%, transparent);
+  position: relative;
+  overflow: clip;
+  background: var(--band);
+  color: var(--ink);
+  padding-top: var(--s-9);
 }
-/* the emergency control inside the footer list reads as one more footer link */
-.footer__button {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  padding: 0;
-  text-align: left;
+.sk-footer__inner {
+  display: grid;
+  gap: var(--s-7);
+}
+.sk-footer__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+  padding-bottom: var(--s-7);
+  border-bottom: 1px solid var(--line);
+}
+.sk-footer__cta h2 {
+  max-width: 20ch;
+  color: var(--ink);
+}
+.sk-footer__cta p {
+  max-width: 52ch;
+  color: var(--muted);
+}
+.sk-footer__main {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--s-7) var(--gutter);
+  align-items: start;
+}
+.sk-footer__brand {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-4);
+}
+.sk-footer__lede {
+  max-width: 30ch;
+  font: var(--display-weight) var(--t-lead) / 1.35 var(--font-display);
+  letter-spacing: var(--display-tracking);
+}
+.sk-footer__sos {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: 500 var(--t-small) / 1 var(--font-text);
   cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
 }
-.footer__button:hover {
-  color: var(--action);
+.sk-footer__sos:hover {
+  background: color-mix(in oklab, var(--ink) 10%, transparent);
+  border-color: color-mix(in oklab, var(--ink) 40%, transparent);
 }
-
-/* the close button keeps its height in the flex column (the wordmark must not shrink it) */
-.closing__cta > .btn--xl {
-  flex: 0 0 auto;
+.sk-footer__cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-6) var(--gutter);
 }
-
-/* the close: a calmer wordmark and a tighter stack, so the name never runs into the links */
-@media (min-width: 640px) {
-  .closing__cta {
-    gap: var(--s-5);
+.sk-footer__col h3 {
+  margin: 0 0 var(--s-3);
+  font: 600 var(--t-label) / 1.4 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sk-footer__col ul {
+  display: grid;
+  gap: 2px;
+  font-size: var(--t-small);
+}
+.sk-footer__col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  color: var(--ink);
+}
+.sk-footer__col a > svg {
+  flex: none;
+  color: var(--muted);
+  transition: color 180ms ease;
+}
+.sk-footer__col a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.sk-footer__col a:hover > svg {
+  color: var(--ink);
+}
+.sk-footer :is(a, button):focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.sk-footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line);
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+/* the illustration: the band's own colour fades into the sky, the landscape sits on the bottom edge */
+.sk-footer__art {
+  display: block;
+  margin-top: var(--s-6);
+  height: clamp(200px, 30vw, 460px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 40%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 40%);
+}
+.sk-footer__art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center bottom;
+}
+@media (max-width: 1023px) {
+  .sk-footer__main {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
-.close__word {
-  font-size: clamp(52px, 6.4vw, 92px);
-}
-/* a phone footer keeps the two link lists and the legal line; the brand block is already in the header */
 @media (max-width: 639px) {
-  .closing__links > .grid > :first-child {
-    display: none;
+  .sk-footer {
+    padding-top: var(--s-8);
   }
-}
-
-/* phone close: the name sits between the button and the links with even air around the block */
-@media (max-width: 639px) {
-  .closing__cta {
-    justify-content: space-between;
+  .sk-footer__inner {
+    gap: var(--s-6);
   }
-  .close__word {
-    margin-top: 0;
-    font-size: clamp(56px, 16vw, 72px);
+  .sk-footer__cta {
+    padding-bottom: var(--s-6);
+  }
+  .sk-footer__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sk-footer__legal {
+    flex-direction: column;
   }
 }
 
@@ -4011,7 +4090,7 @@ html[data-ground="sky"] {
 
 @media print {
   .nav,
-  footer.closing,
+  .sk-footer,
   .sk-actionbar,
   .sk-chat-fab,
   .sk-share,

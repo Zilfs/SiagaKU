@@ -43,3 +43,4 @@ kontak darurat) beserta tautan verifikasi per baris ada di `data/README.md`.
 AI coding assistant: Claude Code (Anthropic) — digunakan untuk scaffolding dan implementasi.
 AI coding assistant: opencode — digunakan untuk implementasi router AI dan RAG (Task 5, Task 9).
 AI coding assistant: opencode (DeepSeek V4.1 Flash) — redesain UI/UX landing, halaman wilayah, dan peta (Task 8).
+Ilustrasi footer (`public/images/footer-jakarta.webp`): dibuat dengan ChatGPT image generation (OpenAI), prompt oleh tim, menggambarkan lanskap Jakarta (Sungai Ciliwung, Monas).
