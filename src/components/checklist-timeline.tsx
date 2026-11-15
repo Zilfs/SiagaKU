@@ -56,9 +56,12 @@ function TimelineRow({
   const [open, setOpen] = useState(false);
   const detailsId = useId();
 
+  // a label node: its 44px touch halo (globals.css) toggles the checkbox too
+  const Node = onToggle ? "label" : "span";
+
   return (
     <li className={`sk-timeline__item${checked ? " is-done" : ""}`}>
-      <span className="sk-timeline__node">
+      <Node className="sk-timeline__node">
         {onToggle ? (
           <input
             type="checkbox"
@@ -73,7 +76,7 @@ function TimelineRow({
           </span>
         )}
         <Check size={14} strokeWidth={3} aria-hidden="true" />
-      </span>
+      </Node>
       <div className="sk-timeline__body">
         <button
           type="button"

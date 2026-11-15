@@ -1025,70 +1025,6 @@ html[data-ground="sky"] {
   font-size: var(--t-label);
   color: var(--muted);
 }
-.sk-plan__progress {
-  display: grid;
-  gap: 6px;
-}
-.sk-plan__progress .sk-track {
-  height: 8px;
-  border-radius: 999px;
-  background: var(--risk-track);
-  overflow: hidden;
-}
-.sk-plan__progress .sk-track > i {
-  display: block;
-  height: 100%;
-  width: 36%;
-  border-radius: inherit;
-  background: var(--p-action);
-}
-.sk-plan__progress p {
-  display: flex;
-  justify-content: space-between;
-  margin: 0;
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-.sk-plan ul {
-  display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sk-plan li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 40px;
-  border-top: 1px solid var(--line);
-  font-size: var(--t-small);
-  line-height: 1.35;
-}
-.sk-plan li:first-child {
-  border-top: 0;
-}
-.sk-plan li .sk-check {
-  width: 17px;
-  height: 17px;
-  border-radius: 4px;
-  border: 1px solid var(--line-strong);
-  flex: 0 0 auto;
-}
-.sk-plan li.is-done .sk-check {
-  background: var(--p-action);
-  border-color: var(--p-action);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size: 78%;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.sk-plan li em {
-  margin-left: auto;
-  font-style: normal;
-  font-size: var(--t-label);
-  color: var(--muted);
-  white-space: nowrap;
-}
 .sk-plan__foot {
   display: flex;
   align-items: center;
@@ -2305,6 +2241,10 @@ html[data-ground="sky"] {
 :where(a, button, input, summary, [tabindex]):focus-visible {
   scroll-margin-block: calc(var(--nav) + 16px) calc(var(--bar) + 16px);
 }
+/* a section focused by a landing link (hash-scroll.tsx) is a Tab start point, not a control */
+section[tabindex="-1"]:focus {
+  outline: none;
+}
 .sk-risk,
 .sk-tag {
   white-space: nowrap;
@@ -2423,6 +2363,9 @@ html[data-ground="sky"] {
 .sk-footer :is(a, button):focus-visible {
   outline: 3px solid var(--ink);
   outline-offset: 3px;
+}
+/* pills keep their own radius; only the text links get a soft ring */
+.sk-footer :is(.sk-footer__col a, .nav__logo):focus-visible {
   border-radius: 4px;
 }
 .sk-footer__legal {
@@ -3515,6 +3458,15 @@ html[data-ground="sky"] {
     height: 44px;
     line-height: 44px;
     font-size: 22px;
+  }
+  .sk-footer__col a {
+    min-height: 44px;
+  }
+  /* a 44px hit area around the 26px node (a label, so a tap on it toggles the checkbox) */
+  .sk-timeline__node::before {
+    content: "";
+    position: absolute;
+    inset: calc((var(--sk-node) - 44px) / 2);
   }
 }
 

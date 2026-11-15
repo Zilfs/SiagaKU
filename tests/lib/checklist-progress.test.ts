@@ -30,4 +30,10 @@ describe("visibleItems", () => {
   it("keeps every item under the all filter", () => {
     expect(visibleItems(items, "all")).toBe(items);
   });
+
+  it("fills the rail over the visible items: all required ticked is a full rail", () => {
+    const required = (i: { priority: string }) => i.priority === "required";
+    expect(progressShare(visibleItems(items, "required"), required)).toBe(1);
+    expect(progressShare(items, required)).toBe(0.5);
+  });
 });

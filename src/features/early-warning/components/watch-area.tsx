@@ -120,7 +120,7 @@ export function WatchArea({ districtName }: { districtName?: string }) {
             <b>{watched.nama}</b>
             {(watched.kecamatan ?? watched.kecamatanSlug) ? (
               <span>{watched.kecamatan ?? watched.kecamatanSlug}</span>
-            ) : null}{" "}
+            ) : null}
           </div>
 
           <div className="sk-watch__status" aria-live="polite">

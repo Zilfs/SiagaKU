@@ -51,6 +51,7 @@ export function Checklist({
 
   const isChecked = (item: { item: string }) => checked.includes(item.item);
   const ready = items.filter(isChecked).length;
+  const shown = visibleItems(items, filter);
 
   return (
     <section className="sk-card sk-checklist-card" aria-labelledby="tas-h">
@@ -82,9 +83,10 @@ export function Checklist({
         </button>
       </div>
       <ChecklistTimeline
-        items={visibleItems(items, filter)}
+        items={shown}
         isChecked={isChecked}
-        progress={progressShare(items, isChecked)}
+        // the rail tracks the rows on screen; the counter above counts every item
+        progress={progressShare(shown, isChecked)}
         onToggle={(item) => toggle(item.item)}
       />
     </section>

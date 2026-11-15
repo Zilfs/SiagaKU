@@ -4,12 +4,19 @@ import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { getHashTarget } from "./hash-target";
 
+/** Scrolls to the section, then focuses it without a second scroll so the next Tab starts there. */
+function goTo(target: HTMLElement) {
+  target.scrollIntoView();
+  if (target.tabIndex < 0) target.setAttribute("tabindex", "-1");
+  target.focus({ preventScroll: true });
+}
+
 /** Scrolls to `#id` once it is in the DOM (the landing streams in behind its skeleton). */
 function scrollWhenReady(id: string) {
   // scrollIntoView() follows the CSS scroll-behavior, so reduced motion jumps instead of gliding
   const scroll = () => {
     const target = document.getElementById(id);
-    target?.scrollIntoView();
+    if (target) goTo(target);
     return target !== null;
   };
   if (scroll()) return;
@@ -74,7 +81,8 @@ export function HashScroll() {
         if (window.location.hash !== target.href.slice(1)) {
           window.history.pushState(null, "", target.href);
         }
-        document.getElementById(target.id)?.scrollIntoView();
+        const section = document.getElementById(target.id);
+        if (section) goTo(section);
       } else {
         pending.current = target.id;
         router.push(target.href, { scroll: false });

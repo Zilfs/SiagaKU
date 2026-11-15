@@ -1,4 +1,4 @@
-/** Share (0..1) of checked items among all items; drives the checklist rail. */
+/** Share (0..1) of checked items among the given items; the checklist passes the visible rows. */
 export function progressShare<T>(items: T[], isChecked: (item: T) => boolean) {
   return items.length ? items.filter(isChecked).length / items.length : 0;
 }
