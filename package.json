@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "db:seed": "tsx scripts/seed.ts",
     "db:seed-subdistricts": "tsx scripts/seed-subdistricts.ts",
+    "eval": "tsx scripts/eval.ts",
     "rag:backfill": "tsx --conditions=react-server scripts/ingest-documents.ts --backfill"
   },
   "dependencies": {
