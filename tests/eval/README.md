@@ -118,19 +118,18 @@ Script memanggil `POST /api/chat` dan `POST /api/plans`, lalu menulis tabel
 lulus/gagal ke `docs/eval-hasil.md`. Target: `doc` ≥ 90%, `group` lain 100%,
 dan semua profil rencana lolos. Exit code 1 bila target belum tercapai.
 
+Rencana yang jatuh ke template penghubung dihitung **gagal**, karena berarti
+model tidak menghasilkan rencana. Script membaca `meta.provider` dari respons
+`POST /api/plans` dan menandai `template` sebagai kegagalan.
+
 Variabel opsional:
 
-| Variabel           | Default                 | Arti                                                                         |
-| ------------------ | ----------------------- | ---------------------------------------------------------------------------- |
-| `EVAL_BASE_URL`    | `http://localhost:3000` | Server lokal atau URL preview.                                               |
-| `EVAL_TIMEOUT_MS`  | `45000`                 | Batas waktu satu request.                                                    |
-| `EVAL_DELAY_MS`    | `300`                   | Jeda antar soal.                                                             |
-| `EVAL_RETRIES`     | `2`                     | Ulangan untuk 429/5xx.                                                       |
-| `EVAL_UNIQUE_IP`   | `1`                     | Kirim `x-forwarded-for` berbeda per request agar rate limit tidak tercampur. |
-| `EVAL_MAX_WAIT_MS` | `900000`                | Batas tunggu `Retry-After`.                                                  |
+| Variabel        | Default                 | Arti                           |
+| --------------- | ----------------------- | ------------------------------ |
+| `EVAL_BASE_URL` | `http://localhost:3000` | Server lokal atau URL preview. |
 
-Flag: `--limit 10` (subset chat, untuk uji fallback), `--chat-only`,
-`--plan-only`, `--out <path>`.
+Flag: `--limit 10` (subset chat, untuk uji cepat; grup yang tidak tersentuh
+dilewati dari gate), `--chat-only`, `--plan-only`, `--out <path>`.
 
 Contoh subset ke preview:
 

@@ -8,9 +8,9 @@
  * every answer against `tests/eval/questions.json` and `tests/eval/profiles.json`,
  * and writes `docs/eval-hasil.md`.
  *
- * Every request gets its own `x-forwarded-for` value by default, because the
- * chat limit is 20 and the plan limit is 5 per 10 minutes per IP. A preview
- * deployment overwrites that header, so a 429 is retried after `Retry-After`.
+ * Every request gets its own `x-forwarded-for` value, because the chat limit is
+ * 20 and the plan limit is 5 per 10 minutes per IP. A preview deployment
+ * overwrites that header, so a 429 is retried after `Retry-After`.
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -22,6 +22,7 @@ import {
   type ChatAnswer,
   type ChatGroup,
   type ChatQuestion,
+  type GroupScore,
   type PlanPayload,
   type PlanProfile,
 } from "./lib/eval-checks";
@@ -33,7 +34,6 @@ type ChatRow = {
   reason: string;
   provider: string | null;
   model: string | null;
-  fallback: boolean;
   cached: boolean;
   sources: number;
   ms: number;
@@ -45,17 +45,11 @@ type PlanRow = {
   pass: boolean;
   reason: string;
   provider: string | null;
-  fallback: boolean;
   ms: number;
 };
 
 type Options = {
   baseUrl: string;
-  timeoutMs: number;
-  delayMs: number;
-  retries: number;
-  uniqueIp: boolean;
-  maxWaitMs: number;
   outPath: string;
   chatOnly: boolean;
   planOnly: boolean;
@@ -63,30 +57,19 @@ type Options = {
 };
 
 const DEFAULT_OUT = path.join("docs", "eval-hasil.md");
+const TIMEOUT_MS = 45_000;
+const DELAY_MS = 300;
+const RETRIES = 2;
+const MAX_WAIT_MS = 900_000;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function intFromEnv(name: string, fallback: number): number {
-  const raw = process.env[name];
-  if (!raw) return fallback;
-  const value = Number(raw);
-  if (!Number.isFinite(value) || value < 0) {
-    throw new Error(`${name} must be a non-negative number, got "${raw}"`);
-  }
-  return value;
-}
-
-function parseArgs(argv: string[]): { options: Options } {
+function parseArgs(argv: string[]): Options {
   const options: Options = {
     baseUrl: (process.env.EVAL_BASE_URL ?? "http://localhost:3000").replace(
       /\/$/,
       "",
     ),
-    timeoutMs: intFromEnv("EVAL_TIMEOUT_MS", 45_000),
-    delayMs: intFromEnv("EVAL_DELAY_MS", 300),
-    retries: intFromEnv("EVAL_RETRIES", 2),
-    uniqueIp: (process.env.EVAL_UNIQUE_IP ?? "1") !== "0",
-    maxWaitMs: intFromEnv("EVAL_MAX_WAIT_MS", 900_000),
     outPath: DEFAULT_OUT,
     chatOnly: false,
     planOnly: false,
@@ -120,7 +103,7 @@ function parseArgs(argv: string[]): { options: Options } {
     throw new Error("--chat-only and --plan-only cannot be combined");
   }
 
-  return { options };
+  return options;
 }
 
 function clientIp(counter: number): string {
@@ -132,72 +115,32 @@ function clientIp(counter: number): string {
 async function requestWithRetry(
   url: string,
   init: RequestInit,
-  options: Options,
   ipIndex: number,
   label: string,
 ): Promise<Response> {
   const headers = new Headers(init.headers);
-  if (options.uniqueIp) {
-    headers.set("x-forwarded-for", clientIp(ipIndex));
-  }
+  headers.set("x-forwarded-for", clientIp(ipIndex));
 
   for (let attempt = 0; ; attempt += 1) {
     const response = await fetch(url, {
       ...init,
       headers,
-      signal: AbortSignal.timeout(options.timeoutMs),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
     });
     const retryable = response.status === 429 || response.status >= 500;
-    if (!retryable || attempt >= options.retries) return response;
+    if (!retryable || attempt >= RETRIES) return response;
 
     const retryAfter = Number(response.headers.get("retry-after"));
     const waitMs =
       response.status === 429 && Number.isFinite(retryAfter) && retryAfter > 0
         ? retryAfter * 1000
         : Math.min(2 ** attempt * 1000, 10_000);
-    const capped = Math.min(waitMs, options.maxWaitMs);
+    const capped = Math.min(waitMs, MAX_WAIT_MS);
     console.warn(
       `${label}: HTTP ${response.status}, retry in ${Math.round(capped / 1000)}s`,
     );
     await sleep(capped);
   }
-}
-
-async function readSse(answer: Response): Promise<ChatAnswer> {
-  const result: ChatAnswer = {
-    text: "",
-    sources: 0,
-    emergency: false,
-    provider: null,
-    model: null,
-    fallback: false,
-    cached: false,
-  };
-
-  if (!answer.body) {
-    throw new Error("response has no body");
-  }
-
-  const decoder = new TextDecoder();
-  let buffer = "";
-  const reader = answer.body.getReader();
-
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, "\n");
-
-    let boundary = buffer.indexOf("\n\n");
-    while (boundary >= 0) {
-      const event = buffer.slice(0, boundary);
-      buffer = buffer.slice(boundary + 2);
-      applySseEvent(event, result);
-      boundary = buffer.indexOf("\n\n");
-    }
-  }
-
-  if (buffer.trim().length > 0) applySseEvent(buffer, result);
-  return result;
 }
 
 function applySseEvent(event: string, result: ChatAnswer): void {
@@ -246,6 +189,40 @@ function applySseEvent(event: string, result: ChatAnswer): void {
   }
 }
 
+async function readSse(answer: Response): Promise<ChatAnswer> {
+  const result: ChatAnswer = {
+    text: "",
+    sources: 0,
+    emergency: false,
+    provider: null,
+    model: null,
+    fallback: false,
+    cached: false,
+  };
+
+  if (!answer.body) throw new Error("response has no body");
+
+  const decoder = new TextDecoder();
+  let buffer = "";
+  const reader = answer.body.getReader();
+
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, "\n");
+
+    let boundary = buffer.indexOf("\n\n");
+    while (boundary >= 0) {
+      applySseEvent(buffer.slice(0, boundary), result);
+      buffer = buffer.slice(boundary + 2);
+      boundary = buffer.indexOf("\n\n");
+    }
+  }
+
+  if (buffer.trim().length > 0) applySseEvent(buffer, result);
+  return result;
+}
+
 async function errorMessage(response: Response): Promise<string> {
   try {
     const body = (await response.json()) as {
@@ -259,14 +236,39 @@ async function errorMessage(response: Response): Promise<string> {
   }
 }
 
+function failedChat(item: ChatQuestion, reason: string): ChatRow {
+  return {
+    id: item.id,
+    group: item.group,
+    pass: false,
+    reason,
+    provider: null,
+    model: null,
+    cached: false,
+    sources: 0,
+    ms: 0,
+  };
+}
+
+function failedPlan(profile: PlanProfile, reason: string): PlanRow {
+  return {
+    id: profile.id,
+    name: profile.name,
+    pass: false,
+    reason,
+    provider: null,
+    ms: 0,
+  };
+}
+
 async function runChatQuestion(
   item: ChatQuestion,
   index: number,
-  options: Options,
+  baseUrl: string,
 ): Promise<ChatRow> {
   const started = Date.now();
   const response = await requestWithRetry(
-    `${options.baseUrl}/api/chat`,
+    `${baseUrl}/api/chat`,
     {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -274,24 +276,12 @@ async function runChatQuestion(
         messages: [{ role: "user", content: item.question }],
       }),
     },
-    options,
     index,
     item.id,
   );
 
   if (!response.ok) {
-    return {
-      id: item.id,
-      group: item.group,
-      pass: false,
-      reason: await errorMessage(response),
-      provider: null,
-      model: null,
-      fallback: false,
-      cached: false,
-      sources: 0,
-      ms: Date.now() - started,
-    };
+    return failedChat(item, await errorMessage(response));
   }
 
   const answer = await readSse(response);
@@ -303,7 +293,6 @@ async function runChatQuestion(
     reason: check.reason,
     provider: answer.provider,
     model: answer.model,
-    fallback: answer.fallback,
     cached: answer.cached,
     sources: answer.sources,
     ms: Date.now() - started,
@@ -313,68 +302,47 @@ async function runChatQuestion(
 async function runProfile(
   profile: PlanProfile,
   index: number,
-  options: Options,
+  baseUrl: string,
 ): Promise<PlanRow> {
   const started = Date.now();
   const created = await requestWithRetry(
-    `${options.baseUrl}/api/plans`,
+    `${baseUrl}/api/plans`,
     {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(profile.request),
     },
-    options,
     index,
     profile.id,
   );
 
   if (!created.ok) {
-    return {
-      id: profile.id,
-      name: profile.name,
-      pass: false,
-      reason: `POST: ${await errorMessage(created)}`,
-      provider: null,
-      fallback: false,
-      ms: Date.now() - started,
-    };
+    return failedPlan(profile, `POST: ${await errorMessage(created)}`);
   }
 
   const body = (await created.json()) as {
     slug?: unknown;
-    meta?: { provider?: unknown; fallback?: unknown };
+    meta?: { provider?: unknown };
   };
   if (typeof body.slug !== "string") {
-    return {
-      id: profile.id,
-      name: profile.name,
-      pass: false,
-      reason: "POST tidak mengembalikan slug",
-      provider: null,
-      fallback: false,
-      ms: Date.now() - started,
-    };
+    return failedPlan(profile, "POST tidak mengembalikan slug");
+  }
+
+  const provider =
+    typeof body.meta?.provider === "string" ? body.meta.provider : null;
+  if (provider === "template") {
+    return failedPlan(profile, "rencana dasar (model gagal)");
   }
 
   const detail = await requestWithRetry(
-    `${options.baseUrl}/api/plans/${body.slug}`,
+    `${baseUrl}/api/plans/${body.slug}`,
     { method: "GET" },
-    options,
     index + 1_000,
     `${profile.id} detail`,
   );
 
   if (!detail.ok) {
-    return {
-      id: profile.id,
-      name: profile.name,
-      pass: false,
-      reason: `GET: ${await errorMessage(detail)}`,
-      provider:
-        typeof body.meta?.provider === "string" ? body.meta.provider : null,
-      fallback: body.meta?.fallback === true,
-      ms: Date.now() - started,
-    };
+    return failedPlan(profile, `GET: ${await errorMessage(detail)}`);
   }
 
   const payload = (await detail.json()) as PlanPayload;
@@ -384,9 +352,7 @@ async function runProfile(
     name: profile.name,
     pass: check.pass,
     reason: check.reason,
-    provider:
-      typeof body.meta?.provider === "string" ? body.meta.provider : null,
-    fallback: body.meta?.fallback === true,
+    provider,
     ms: Date.now() - started,
   };
 }
@@ -407,14 +373,13 @@ function status(pass: boolean): string {
   return pass ? "lolos" : "gagal";
 }
 
-function providerLabel(provider: string | null, fallback: boolean): string {
-  if (fallback) return "template";
+function providerLabel(provider: string | null): string {
   return provider ?? "-";
 }
 
 function gateReached(
   options: Options,
-  scores: ReturnType<typeof scoreChatGroups>,
+  scores: GroupScore[],
   planPassed: number,
   planTotal: number,
 ): boolean {
@@ -430,11 +395,11 @@ function buildReport(
   chatRows: ChatRow[],
   planRows: PlanRow[],
   startedAt: Date,
+  gate: boolean,
 ): string {
   const scores = scoreChatGroups(chatRows);
   const chatPassed = chatRows.filter((row) => row.pass).length;
   const planPassed = planRows.filter((row) => row.pass).length;
-  const gate = gateReached(options, scores, planPassed, planRows.length);
   const time = new Intl.DateTimeFormat("id-ID", {
     timeZone: "Asia/Jakarta",
     dateStyle: "long",
@@ -490,7 +455,7 @@ function buildReport(
     );
     for (const row of chatRows) {
       lines.push(
-        `| ${row.id} | ${row.group} | ${status(row.pass)} | ${providerLabel(row.provider, row.fallback)}${row.cached ? " (cache)" : ""} | ${row.sources} | ${formatDuration(row.ms)} | ${row.reason} |`,
+        `| ${row.id} | ${row.group} | ${status(row.pass)} | ${providerLabel(row.provider)}${row.cached ? " (cache)" : ""} | ${row.sources} | ${formatDuration(row.ms)} | ${row.reason} |`,
       );
     }
     lines.push("");
@@ -505,7 +470,7 @@ function buildReport(
     );
     for (const row of planRows) {
       lines.push(
-        `| ${row.id} | ${row.name} | ${status(row.pass)} | ${providerLabel(row.provider, row.fallback)} | ${formatDuration(row.ms)} | ${row.reason} |`,
+        `| ${row.id} | ${row.name} | ${status(row.pass)} | ${providerLabel(row.provider)} | ${formatDuration(row.ms)} | ${row.reason} |`,
       );
     }
     lines.push("");
@@ -514,10 +479,10 @@ function buildReport(
   lines.push(
     "## Catatan",
     "",
-    `- Setiap request memakai \`x-forwarded-for\` sendiri (${options.uniqueIp ? "aktif" : "nonaktif"}) agar rate limit chat 20/10 menit dan plan 5/10 menit tidak tercampur. Deployment Vercel menimpa header itu, jadi 429 diulang setelah \`Retry-After\`.`,
+    "- Setiap request memakai `x-forwarded-for` sendiri agar rate limit chat 20/10 menit dan plan 5/10 menit tidak tercampur. Deployment Vercel menimpa header itu, jadi 429 diulang setelah `Retry-After`.",
     "- Jawaban chat yang sudah ada di cache 24 jam bisa tampil dengan tanda `cache`; isinya jawaban model yang sama.",
-    '- `doc` lulus bila ada >= 1 sumber, ada sitasi `[n]`, dan semua `must_include` muncul. `general` wajib berlabel "Jawaban umum" tanpa sitasi. `out_of_scope` wajib tanpa sumber dan memuat penolakan sopan. `emergency` wajib mengirim `data-emergency` dan memuat `112`.',
-    "- Profil rencana lulus bila lolos bentuk `PreparednessPlan`, semua `must_include` muncul, `safePointIds` milik kecamatan itu, kelompok rentan punya item, dan tidak ada nomor telepon selain `112`.",
+    '- `doc` lulus bila ada >= 1 sumber, ada sitasi `[n]`, dan semua `must_include` muncul. `general` wajib berlabel "Jawaban umum" tanpa sitasi. `out_of_scope` wajib tanpa sitasi dan memuat penolakan sopan. `emergency` wajib mengirim `data-emergency` dan memuat `112`.',
+    '- Profil rencana lulus bila lolos bentuk `PreparednessPlan`, semua `must_include` muncul, `safePointIds` milik kecamatan itu, kelompok rentan punya item, dan tidak ada nomor telepon selain `112`. Rencana dasar (`provider: "template"`) dihitung gagal.',
     "- Cara mengulang: `EVAL_BASE_URL=http://localhost:3000 npm run eval`. Subset cepat: `npm run eval -- --limit 10`.",
     "",
   );
@@ -549,7 +514,7 @@ async function readFixtures(): Promise<{
 }
 
 async function main(): Promise<void> {
-  const { options } = parseArgs(process.argv.slice(2));
+  const options = parseArgs(process.argv.slice(2));
   const { questions, profiles } = await readFixtures();
   const startedAt = new Date();
 
@@ -564,26 +529,13 @@ async function main(): Promise<void> {
     for (const [index, item] of selected.entries()) {
       let row: ChatRow;
       try {
-        row = await runChatQuestion(item, index, options);
+        row = await runChatQuestion(item, index, options.baseUrl);
       } catch (error) {
-        row = {
-          id: item.id,
-          group: item.group,
-          pass: false,
-          reason: failureReason(error),
-          provider: null,
-          model: null,
-          fallback: false,
-          cached: false,
-          sources: 0,
-          ms: 0,
-        };
+        row = failedChat(item, failureReason(error));
       }
       chatRows.push(row);
       console.log(`${item.id} ${row.pass ? "pass" : "FAIL"} ${row.reason}`);
-      if (options.delayMs > 0 && index < selected.length - 1) {
-        await sleep(options.delayMs);
-      }
+      if (index < selected.length - 1) await sleep(DELAY_MS);
     }
   }
 
@@ -592,32 +544,22 @@ async function main(): Promise<void> {
     for (const [index, profile] of profiles.entries()) {
       let row: PlanRow;
       try {
-        row = await runProfile(profile, index, options);
+        row = await runProfile(profile, index, options.baseUrl);
       } catch (error) {
-        row = {
-          id: profile.id,
-          name: profile.name,
-          pass: false,
-          reason: failureReason(error),
-          provider: null,
-          fallback: false,
-          ms: 0,
-        };
+        row = failedPlan(profile, failureReason(error));
       }
       planRows.push(row);
       console.log(`${profile.id} ${row.pass ? "pass" : "FAIL"} ${row.reason}`);
-      if (options.delayMs > 0 && index < profiles.length - 1) {
-        await sleep(options.delayMs);
-      }
+      if (index < profiles.length - 1) await sleep(DELAY_MS);
     }
   }
-
-  const report = buildReport(options, chatRows, planRows, startedAt);
-  await writeFile(options.outPath, report, "utf8");
 
   const scores = scoreChatGroups(chatRows);
   const planPassed = planRows.filter((row) => row.pass).length;
   const gate = gateReached(options, scores, planPassed, planRows.length);
+  const report = buildReport(options, chatRows, planRows, startedAt, gate);
+  await writeFile(options.outPath, report, "utf8");
+
   console.log(`Report written to ${options.outPath}`);
   for (const score of scores) {
     if (score.total > 0) {

@@ -67,7 +67,6 @@ const REFUSAL_MARKERS = [
   "hanya bisa membantu",
   "tidak relevan",
   "bukan topik",
-  "maaf",
 ];
 
 export function isPoliteRefusal(text: string): boolean {
@@ -262,9 +261,10 @@ export function disallowedPhones(texts: string[]): string[] {
     }
   }
   for (const number of OTHER_EMERGENCY_NUMBERS) {
-    if (new RegExp(`(^|[^0-9])${number}([^0-9]|$)`).test(joined)) {
-      found.add(number);
-    }
+    const pattern = new RegExp(
+      `(^|[^0-9])${number}(?![0-9])(?!\\s*(?:cm|mm|m|%))`,
+    );
+    if (pattern.test(joined)) found.add(number);
   }
   return [...found];
 }
@@ -363,15 +363,9 @@ export function scoreChatGroups(
 }
 
 export function chatMeetsTargets(scores: GroupScore[]): boolean {
-  return scores.every((score) =>
-    score.group === "doc" ? score.percent >= 90 : score.percent === 100,
-  );
-}
-
-export function meetsTargets(
-  scores: GroupScore[],
-  planPassed: number,
-  planTotal: number,
-): boolean {
-  return chatMeetsTargets(scores) && planTotal > 0 && planPassed === planTotal;
+  return scores
+    .filter((score) => score.total > 0)
+    .every((score) =>
+      score.group === "doc" ? score.percent >= 90 : score.percent === 100,
+    );
 }

@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  chatMeetsTargets,
   checkChat,
   checkPlan,
   disallowedPhones,
   expectedAudiences,
   hasCitation,
   includesPhrase,
-  meetsTargets,
   normalizeText,
   planShapeError,
   scoreChatGroups,
@@ -148,6 +148,14 @@ describe("checkChat", () => {
       answer({ text: "Berikut resep bolu pisang." }),
     );
     expect(result.reason).toBe("tidak menolak dengan sopan");
+  });
+
+  it('does not treat a bare "Maaf" as a refusal', () => {
+    const result = checkChat(
+      question("out_of_scope"),
+      answer({ text: "Maaf, berikut resep bolu pisang." }),
+    );
+    expect(result.pass).toBe(false);
   });
 
   it("passes an emergency answer with the card and 112", () => {
@@ -311,6 +319,13 @@ describe("disallowedPhones", () => {
     expect(found).toContain("021-555-1234");
     expect(found).toContain("119");
   });
+
+  it("does not treat a flood depth as an emergency number", () => {
+    expect(
+      disallowedPhones(["Banjir hingga 110 cm di Kampung Melayu."]),
+    ).toEqual([]);
+    expect(disallowedPhones(["Genangan 115 m dan 119%."])).toEqual([]);
+  });
 });
 
 describe("scoreChatGroups", () => {
@@ -327,33 +342,42 @@ describe("scoreChatGroups", () => {
 
   it("requires 90% for doc and 100% for the other groups", () => {
     const scores = scoreChatGroups([
-      { group: "doc", pass: true },
-      { group: "doc", pass: true },
-      { group: "doc", pass: true },
-      { group: "doc", pass: true },
-      { group: "doc", pass: true },
-      { group: "doc", pass: true },
-      { group: "doc", pass: true },
-      { group: "doc", pass: true },
-      { group: "doc", pass: true },
+      ...Array.from({ length: 9 }, () => ({
+        group: "doc" as const,
+        pass: true,
+      })),
       { group: "doc", pass: false },
-      { group: "general", pass: true },
-      { group: "general", pass: true },
-      { group: "general", pass: true },
-      { group: "general", pass: true },
-      { group: "general", pass: true },
-      { group: "out_of_scope", pass: true },
-      { group: "out_of_scope", pass: true },
-      { group: "out_of_scope", pass: true },
-      { group: "out_of_scope", pass: true },
-      { group: "out_of_scope", pass: true },
-      { group: "emergency", pass: true },
-      { group: "emergency", pass: true },
-      { group: "emergency", pass: true },
-      { group: "emergency", pass: true },
-      { group: "emergency", pass: true },
+      ...Array.from({ length: 5 }, () => ({
+        group: "general" as const,
+        pass: true,
+      })),
+      ...Array.from({ length: 5 }, () => ({
+        group: "out_of_scope" as const,
+        pass: true,
+      })),
+      ...Array.from({ length: 5 }, () => ({
+        group: "emergency" as const,
+        pass: true,
+      })),
     ]);
-    expect(meetsTargets(scores, 6, 6)).toBe(true);
-    expect(meetsTargets(scores, 5, 6)).toBe(false);
+    expect(chatMeetsTargets(scores)).toBe(true);
+  });
+
+  it("skips groups a --limit subset never reached", () => {
+    const scores = scoreChatGroups(
+      Array.from({ length: 10 }, () => ({ group: "doc" as const, pass: true })),
+    );
+    expect(scores.filter((score) => score.total === 0)).toHaveLength(3);
+    expect(chatMeetsTargets(scores)).toBe(true);
+  });
+
+  it("still fails doc below 90%", () => {
+    const scores = scoreChatGroups(
+      Array.from({ length: 10 }, (_, index) => ({
+        group: "doc" as const,
+        pass: index >= 2,
+      })),
+    );
+    expect(chatMeetsTargets(scores)).toBe(false);
   });
 });
