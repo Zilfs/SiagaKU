@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, Sparkles, TriangleExclamationPoint } from "lucide-react";
 import { RiskBadge } from "@/components/risk-badge";
+import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
 import type {
   AiMeta,
   DistrictSummary,
@@ -38,7 +39,11 @@ type DetailState = {
   loading: boolean;
 };
 
-export function DistrictSearch({ districts }: { districts: DistrictSummary[] }) {
+export function DistrictSearch({
+  districts,
+}: {
+  districts: DistrictSummary[];
+}) {
   const [query, setQuery] = useState("");
   const [slug, setSlug] = useState(districts[0]?.slug ?? "");
   const [visibleRows, setVisibleRows] = useState(VISIBLE_ROWS);
@@ -68,7 +73,9 @@ export function DistrictSearch({ districts }: { districts: DistrictSummary[] }) 
   }, [query, districts]);
 
   const selected =
-    districts.find((district) => district.slug === slug) ?? districts[0] ?? null;
+    districts.find((district) => district.slug === slug) ??
+    districts[0] ??
+    null;
   const visible = rows.slice(0, visibleRows);
 
   useEffect(() => {
@@ -83,7 +90,9 @@ export function DistrictSearch({ districts }: { districts: DistrictSummary[] }) 
           fetch(`/api/risk/${selected.slug}/explanation`).catch(() => null),
         ]);
         nextDetail = detailRes?.ok ? await detailRes.json() : null;
-        nextExplanation = explanationRes?.ok ? await explanationRes.json() : null;
+        nextExplanation = explanationRes?.ok
+          ? await explanationRes.json()
+          : null;
       } catch {
         nextDetail = null;
         nextExplanation = null;
@@ -120,14 +129,14 @@ export function DistrictSearch({ districts }: { districts: DistrictSummary[] }) 
             </div>
           </div>
           <p className="sk-list__empty">
-            Data risiko belum tersedia. Coba muat ulang halaman ini beberapa saat
-            lagi.
+            Data risiko belum tersedia. Coba muat ulang halaman ini beberapa
+            saat lagi.
           </p>
         </div>
         <div className="sk-app__main">
           <p className="sk-list__empty">
-            Skor risiko per kecamatan sedang tidak bisa dimuat. Sumber data sedang
-            tidak merespons.
+            Skor risiko per kecamatan sedang tidak bisa dimuat. Sumber data
+            sedang tidak merespons.
           </p>
         </div>
       </div>
@@ -230,12 +239,18 @@ export function DistrictSearch({ districts }: { districts: DistrictSummary[] }) 
               "Penjelasan"
             )}
           </span>
-          <p>
-            {explanation?.explanation ??
-              (loading
-                ? "Memuat penjelasan…"
-                : "Penjelasan sedang tidak tersedia. Baca rincian skor di bawahnya.")}
-          </p>
+          {loading && !explanation ? (
+            <div className="flex flex-col gap-2">
+              <LoadingStatus />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/5" />
+            </div>
+          ) : (
+            <p>
+              {explanation?.explanation ??
+                "Penjelasan sedang tidak tersedia. Baca rincian skor di bawahnya."}
+            </p>
+          )}
           <div className="sk-ai__action">
             <TriangleExclamationPoint size={16} aria-hidden="true" />
             <span>
@@ -248,16 +263,18 @@ export function DistrictSearch({ districts }: { districts: DistrictSummary[] }) 
         <ul className="sk-bars">
           <li className="sk-bar">
             <span>Kerawanan dasar</span>
-            <span className="sk-mono">{base != null ? `${base} / 100` : "—"}</span>
+            <span className="sk-mono">
+              {base != null ? `${base} / 100` : "—"}
+            </span>
             <span className="sk-bar__track" aria-hidden="true">
               <i style={{ width: `${base ?? 0}%` }} />
             </span>
           </li>
           <li className="sk-bar">
-            <span>
-              Faktor hujan{rainMm != null ? ` · ${rainMm} mm` : ""}
+            <span>Faktor hujan{rainMm != null ? ` · ${rainMm} mm` : ""}</span>
+            <span className="sk-mono">
+              {rain != null ? `${rain} / 100` : "—"}
             </span>
-            <span className="sk-mono">{rain != null ? `${rain} / 100` : "—"}</span>
             <span className="sk-bar__track" aria-hidden="true">
               <i style={{ width: `${rain ?? 0}%` }} />
             </span>

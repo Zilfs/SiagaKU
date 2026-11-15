@@ -1,3 +1,4 @@
+import { Gauge } from "lucide-react";
 import type { RiskDetail } from "@/features/risk/types";
 import { RAINFALL_CATEGORY_LABELS } from "@/lib/risk/score";
 
@@ -14,7 +15,10 @@ export function ScoreBreakdown({
   return (
     <section className="sk-card sk-breakdown" aria-labelledby="skor-h">
       <div className="sk-card__head">
-        <h2 id="skor-h">Dari mana skornya</h2>
+        <h2 id="skor-h" className="sk-heading-icon">
+          <Gauge size={18} aria-hidden="true" />
+          Dari mana skornya
+        </h2>
         <span className="sk-mono">0–100</span>
       </div>
       <ul className="sk-bars">

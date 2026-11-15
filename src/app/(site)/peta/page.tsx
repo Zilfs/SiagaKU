@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
+import { List } from "lucide-react";
 import { RiskMap } from "@/components/map/risk-map";
 import { UseLocation } from "@/components/map/use-location";
 import { RiskBadge } from "@/components/risk-badge";
@@ -44,9 +45,9 @@ export default async function MapPage() {
           <p className="sk-eyebrow">Peta risiko · DKI Jakarta</p>
           <h1>Peta risiko banjir Jakarta</h1>
           <p>
-            Satu lingkaran untuk tiap kecamatan, diwarnai sesuai level risikonya.
-            Klik untuk membuka skor, prakiraan hujan, riwayat genangan, dan titik
-            aman.
+            Satu lingkaran untuk tiap kecamatan, diwarnai sesuai level
+            risikonya. Klik untuk membuka skor, prakiraan hujan, riwayat
+            genangan, dan titik aman.
           </p>
           <ul className="sk-legend" aria-label="Arti level risiko">
             {LEGEND.map((item) => (
@@ -56,7 +57,8 @@ export default async function MapPage() {
                   style={{ background: DOT[item.level] }}
                   aria-hidden="true"
                 />
-                {RISK_LEVEL_LABELS[item.level]} <span className="sk-mono">{item.range}</span>
+                {RISK_LEVEL_LABELS[item.level]}{" "}
+                <span className="sk-mono">{item.range}</span>
               </li>
             ))}
           </ul>
@@ -69,7 +71,10 @@ export default async function MapPage() {
 
         <section className="sk-peta__list" aria-labelledby="daftar-h">
           <div className="sk-card__head">
-            <h2 id="daftar-h">Semua kecamatan</h2>
+            <h2 id="daftar-h" className="sk-heading-icon">
+              <List size={18} aria-hidden="true" />
+              Semua kecamatan
+            </h2>
             <span className="sk-mono">{districts.length} kecamatan</span>
           </div>
           <ul className="sk-district-list">

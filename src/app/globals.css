@@ -28,7 +28,8 @@
   --p-inv-action: #f2f7fa;
   --p-inv-action-ink: #0a2233;
 
-  --font-display: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-display:
+    var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --font-text: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --display-weight: 500;
@@ -564,7 +565,8 @@ html[data-ground="sky"] {
   outline: 2px solid var(--p-action);
   outline-offset: 1px;
   border-radius: 4px;
-}.sk-search svg {
+}
+.sk-search svg {
   flex: 0 0 auto;
   color: var(--muted);
 }
@@ -1713,8 +1715,6 @@ html[data-ground="sky"] {
   }
 }
 
-
-
 /* a phone: the hero's words start 35 under the header (not 40), so its last line ends 24 above the fold */
 @media (max-width: 639px) {
   main > .hero {
@@ -1901,6 +1901,16 @@ html[data-ground="sky"] {
   font: var(--display-weight) var(--t-card) / 1.25 var(--font-display);
   letter-spacing: -0.01em;
 }
+/* A card heading with a leading decorative icon, in the muted action colour. */
+.sk-heading-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.sk-heading-icon > svg {
+  flex: none;
+  color: var(--p-action);
+}
 .sk-card__head > .sk-mono {
   font-size: var(--t-label);
   color: var(--muted);
@@ -2058,12 +2068,6 @@ html[data-ground="sky"] {
   width: 100%;
   height: clamp(380px, 54vh, 560px);
   background: var(--p-surface);
-}
-.sk-map--loading {
-  display: grid;
-  place-items: center;
-  color: var(--muted);
-  font-size: var(--t-small);
 }
 .sk-map__popup {
   display: grid;
@@ -2552,8 +2556,9 @@ html[data-ground="sky"] {
   color: inherit;
 }
 .sk-chat__typing {
-  font: 400 var(--t-small) / 1.3 var(--font-mono);
-  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  width: min(220px, 80%);
 }
 .sk-chat__form {
   display: flex;

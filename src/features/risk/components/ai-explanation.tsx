@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Sparkles } from "lucide-react";
+import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
 
 type ExplanationResponse = {
   explanation?: string;
@@ -55,7 +56,9 @@ export function AiExplanation({
 
   const data = state.id === districtId ? state.data : null;
   const loading = state.id !== districtId || state.loading;
-  const isAi = Boolean(data?.meta?.provider && data.meta.provider !== "template");
+  const isAi = Boolean(
+    data?.meta?.provider && data.meta.provider !== "template",
+  );
 
   return (
     <section
@@ -74,9 +77,16 @@ export function AiExplanation({
           <span className="sk-mono">Penjelasan</span>
         )}
       </div>
-      <p aria-live="polite">
-        {data?.explanation ?? (loading ? "Menyusun penjelasan…" : fallback)}
-      </p>
+      {loading ? (
+        <div className="flex flex-col gap-2">
+          <LoadingStatus />
+          <Skeleton className="h-4 w-full max-w-[70ch]" />
+          <Skeleton className="h-4 w-11/12 max-w-[70ch]" />
+          <Skeleton className="h-4 w-3/5" />
+        </div>
+      ) : (
+        <p aria-live="polite">{data?.explanation ?? fallback}</p>
+      )}
     </section>
   );
 }

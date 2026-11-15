@@ -1,10 +1,12 @@
 import Link from "next/link";
 import {
   CalendarDays,
+  ClipboardList,
   MapPin,
   Phone,
   ShieldCheck,
   TriangleExclamationPoint,
+  Users,
 } from "lucide-react";
 import type { PlanResponse, ReadinessLevel } from "@/features/plan/ui-types";
 import { safePointTypeLabel } from "@/lib/safe-point-label";
@@ -32,7 +34,13 @@ function dateLabel(iso: string) {
 
 /** The shareable plan page: summary, go-kit, the three phases, safe points and contacts. */
 export function PlanView({ plan }: { plan: PlanResponse }) {
-  const { district, profile, plan: content, safePoints, emergencyContacts } = plan;
+  const {
+    district,
+    profile,
+    plan: content,
+    safePoints,
+    emergencyContacts,
+  } = plan;
   const members =
     profile.members.adults +
     profile.members.children +
@@ -77,9 +85,15 @@ export function PlanView({ plan }: { plan: PlanResponse }) {
           />
         </header>
 
-        <section className="sk-card sk-plan-summary" aria-labelledby="ringkasan-h">
+        <section
+          className="sk-card sk-plan-summary"
+          aria-labelledby="ringkasan-h"
+        >
           <div className="sk-card__head">
-            <h2 id="ringkasan-h">Ringkasan</h2>
+            <h2 id="ringkasan-h" className="sk-heading-icon">
+              <ClipboardList size={18} aria-hidden="true" />
+              Ringkasan
+            </h2>
             <span className="sk-mono">{members} anggota</span>
           </div>
           <p>{content.summary}</p>
@@ -94,9 +108,15 @@ export function PlanView({ plan }: { plan: PlanResponse }) {
           />
 
           {content.vulnerableGroups.length > 0 ? (
-            <section className="sk-card sk-plan-vuln" aria-labelledby="rentan-h">
+            <section
+              className="sk-card sk-plan-vuln"
+              aria-labelledby="rentan-h"
+            >
               <div className="sk-card__head">
-                <h2 id="rentan-h">Catatan kelompok rentan</h2>
+                <h2 id="rentan-h" className="sk-heading-icon">
+                  <Users size={18} aria-hidden="true" />
+                  Catatan kelompok rentan
+                </h2>
               </div>
               <ul>
                 {content.vulnerableGroups.map((group) => (
@@ -116,11 +136,16 @@ export function PlanView({ plan }: { plan: PlanResponse }) {
           <section className="sk-card sk-plan-safe" aria-labelledby="aman-h">
             <div className="sk-card__head">
               <h2 id="aman-h">Titik aman</h2>
-              <span className="sk-mono">{content.safePointIds.length} disarankan</span>
+              <span className="sk-mono">
+                {content.safePointIds.length} disarankan
+              </span>
             </div>
             <ul>
               {safePoints.map((point) => (
-                <li key={point.id} className={selected.has(point.id) ? "is-on" : ""}>
+                <li
+                  key={point.id}
+                  className={selected.has(point.id) ? "is-on" : ""}
+                >
                   <div>
                     <b>{point.name}</b>
                     <span>
@@ -137,9 +162,15 @@ export function PlanView({ plan }: { plan: PlanResponse }) {
             <p className="sk-plan-safe__reason">{content.safePointReason}</p>
           </section>
 
-          <section className="sk-card sk-plan-contacts" aria-labelledby="kontak-h">
+          <section
+            className="sk-card sk-plan-contacts"
+            aria-labelledby="kontak-h"
+          >
             <div className="sk-card__head">
-              <h2 id="kontak-h">Kontak darurat</h2>
+              <h2 id="kontak-h" className="sk-heading-icon">
+                <Phone size={18} aria-hidden="true" />
+                Kontak darurat
+              </h2>
             </div>
             <ul>
               {emergencyContacts.map((contact) => (

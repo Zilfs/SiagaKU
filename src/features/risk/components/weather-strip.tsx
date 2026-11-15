@@ -27,8 +27,13 @@ export function WeatherStrip({
   return (
     <section className="sk-card sk-weather" aria-labelledby="cuaca-h">
       <div className="sk-card__head">
-        <h2 id="cuaca-h">Prakiraan hujan</h2>
-        <span className="sk-mono">BMKG · {stale ? "data terakhir" : "terbaru"}</span>
+        <h2 id="cuaca-h" className="sk-heading-icon">
+          <CloudRain size={18} aria-hidden="true" />
+          Prakiraan hujan
+        </h2>
+        <span className="sk-mono">
+          BMKG · {stale ? "data terakhir" : "terbaru"}
+        </span>
       </div>
       {slots.length === 0 ? (
         <p className="sk-list__empty">Data prakiraan hujan belum tersedia.</p>

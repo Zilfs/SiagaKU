@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ListOrdered } from "lucide-react";
 
 const TABS = {
   before: "Sebelum",
@@ -26,7 +27,10 @@ export function PlanTabs({
   return (
     <section className="sk-card sk-plan-tabs" aria-labelledby="langkah-h">
       <div className="sk-card__head">
-        <h2 id="langkah-h">Langkah saat banjir</h2>
+        <h2 id="langkah-h" className="sk-heading-icon">
+          <ListOrdered size={18} aria-hidden="true" />
+          Langkah saat banjir
+        </h2>
       </div>
       <div className="sk-tabs" role="tablist" aria-label="Waktu langkah">
         {(Object.keys(TABS) as TabKey[]).map((key) => (
@@ -51,7 +55,9 @@ export function PlanTabs({
         className="sk-plan-steps"
       >
         {items.length === 0 ? (
-          <li className="sk-list__empty">Belum ada langkah untuk bagian ini.</li>
+          <li className="sk-list__empty">
+            Belum ada langkah untuk bagian ini.
+          </li>
         ) : (
           items.map((item, index) => (
             <li key={`${item}-${index}`}>
