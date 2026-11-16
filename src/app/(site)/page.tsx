@@ -15,14 +15,11 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { HeroSky } from "@/components/site/hero-sky";
-import {
-  DistrictSearch,
-  HeroDistrictSearch,
-} from "@/features/risk/components/district-search";
+import { HeroDistrictSearch } from "@/features/risk/components/district-search";
 import { RiskBadge } from "@/components/risk-badge";
 import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
 import type { DistrictSummary } from "@/features/risk/types";
-import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
+import type { RiskLevel } from "@/lib/risk/level";
 import { connection } from "next/server";
 import { cache, Suspense } from "react";
 import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
@@ -134,25 +131,55 @@ function HeroSearchSkeleton() {
   );
 }
 
-/** The #cek panel. */
-async function DistrictSearchPanel() {
-  return <DistrictSearch districts={await loadDistricts()} />;
+/** #cek ranks this many districts; the full list is on /peta. */
+const RANKED = 10;
+
+/** #cek: the districts with the highest score today, each linking to its page. */
+async function DistrictRanking() {
+  const ranked = [...(await loadDistricts())]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, RANKED);
+  if (ranked.length === 0) {
+    return (
+      <p className="sk-list__empty sk-rank">
+        Data risiko belum tersedia. Coba muat ulang halaman ini beberapa saat
+        lagi.
+      </p>
+    );
+  }
+  return (
+    <ol className="sk-district-list sk-rank">
+      {ranked.map((district, index) => (
+        <li key={district.slug}>
+          <Link href={`/wilayah/${district.slug}`}>
+            <span className="sk-mono sk-rank__n">{index + 1}</span>
+            <span className="sk-district-list__name">
+              <b>{district.name}</b>
+              <span>{district.city}</span>
+            </span>
+            <RiskBadge level={district.level} size="sm" />
+            <span className="sk-mono sk-district-list__score">
+              {district.score}
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ol>
+  );
 }
 
-/** Same frame as `.sk-app`, so the panel swaps in without moving the sections below. */
-function DistrictSearchSkeleton() {
+/** Same rows as `.sk-rank`, so the ranking swaps in without moving the sections below. */
+function DistrictRankingSkeleton() {
   return (
-    <div className="sk-app" aria-busy="true">
+    <div aria-busy="true">
       <LoadingStatus />
-      <div className="sk-app__side flex flex-col gap-3 p-5">
-        <Skeleton className="h-12 w-full" />
-        {Array.from({ length: 6 }, (_, index) => (
-          <Skeleton key={index} className="h-10 w-full" />
+      <ol className="sk-district-list sk-rank">
+        {Array.from({ length: RANKED }, (_, index) => (
+          <li key={index} className="sk-rank__ghost">
+            <Skeleton className="h-11 w-full" />
+          </li>
         ))}
-      </div>
-      <div className="sk-app__main p-5">
-        <Skeleton className="h-full min-h-60 w-full" />
-      </div>
+      </ol>
     </div>
   );
 }
@@ -197,38 +224,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section" id="cek" aria-labelledby="cek-h">
+      <section
+        className="section ground-surface"
+        id="cek"
+        aria-labelledby="cek-h"
+      >
         <div className="wrap">
           <Reveal className="section-head section-head--split">
             <div>
-              <h2 id="cek-h">Cari kecamatanmu, lihat risiko banjirnya.</h2>
+              <h2 id="cek-h">Kecamatan paling rawan banjir hari ini.</h2>
               <p>
                 Skor 0–100 dari kerawanan dasar dan prakiraan hujan tiga hari.
-                Jawabannya di atas, rinciannya tepat di bawahnya.
+                Pilih kecamatan untuk melihat rinciannya.
               </p>
             </div>
-            <ul className="sk-legend" aria-label="Arti level risiko">
-              {LEGEND.map((item) => (
-                <li key={item.level}>
-                  <span
-                    className="sk-dot"
-                    style={{ background: item.dot }}
-                    aria-hidden="true"
-                  />
-                  {RISK_LEVEL_LABELS[item.level]} {item.range}
-                </li>
-              ))}
-            </ul>
+            <Link className="btn btn--secondary" href="/peta">
+              <MapPin size={16} aria-hidden="true" />
+              Lihat semua di peta
+            </Link>
           </Reveal>
-          <div className="sk-fill">
-            <Suspense fallback={<DistrictSearchSkeleton />}>
-              <DistrictSearchPanel />
-            </Suspense>
-          </div>
+          <Suspense fallback={<DistrictRankingSkeleton />}>
+            <DistrictRanking />
+          </Suspense>
         </div>
       </section>
 
-      <section className="section g2" id="fitur" aria-labelledby="fitur-h">
+      <section
+        className="section g2 ground-base"
+        id="fitur"
+        aria-labelledby="fitur-h"
+      >
         <FeatureDemoGroup>
           <div className="wrap">
             <div className="group">
@@ -437,7 +462,11 @@ export default function HomePage() {
         </FeatureDemoGroup>
       </section>
 
-      <section className="section" id="cara" aria-labelledby="cara-h">
+      <section
+        className="section ground-inverse"
+        id="cara"
+        aria-labelledby="cara-h"
+      >
         <div className="wrap">
           <div className="sk-split">
             <div className="sk-split__copy">
@@ -465,7 +494,7 @@ export default function HomePage() {
               </ol>
             </div>
 
-            <div className="sk-plan" data-ui>
+            <div className="sk-plan sk-depth ground-base" data-ui>
               <div className="sk-plan__head">
                 <b>Rencana siaga · Jatinegara</b>
                 <span>8 dari 22 selesai</span>
@@ -473,16 +502,20 @@ export default function HomePage() {
               <PlanPreview />
               <div className="sk-plan__foot">
                 <span>Data contoh · diperbarui 14.00 WIB</span>
-                <a className="link" href="#cek">
+                <Link className="link" href="/rencana">
                   Buat rencana
-                </a>
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section" id="data" aria-labelledby="data-h">
+      <section
+        className="section ground-surface"
+        id="data"
+        aria-labelledby="data-h"
+      >
         <div className="wrap">
           <div className="sk-split">
             <div className="sk-split__copy">
@@ -508,7 +541,7 @@ export default function HomePage() {
               </ul>
             </div>
 
-            <div className="sk-formula" data-ui>
+            <div className="sk-formula sk-depth" data-ui>
               <div className="sk-formula__head">
                 <b>Cara skor dihitung</b>
                 <span>0–100</span>
@@ -556,7 +589,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section" id="tanya" aria-labelledby="tanya-h">
+      <section
+        className="section ground-base"
+        id="tanya"
+        aria-labelledby="tanya-h"
+      >
         <div className="wrap">
           <div className="sk-ask">
             <div>

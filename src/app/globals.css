@@ -451,46 +451,7 @@ main > .hero.sk-sky {
 .sk-hero-search__results .sk-list__empty {
   padding: 12px 10px;
 }
-/* ------------------------------------------------------------------ the app frame
-   #cek: search + district list + the selected district's score. The section shows the
-   product itself, not a picture of it. */
-.sk-app {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--gutter);
-  align-items: stretch;
-  min-height: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  background: var(--p-bg);
-}
-.sk-app__side {
-  grid-column: 1 / span 5;
-}
-.sk-app__main {
-  grid-column: 6 / span 7;
-  border-left: 1px solid var(--line);
-}
-.sk-app__side,
-.sk-app__main {
-  min-width: 0;
-  min-height: 0;
-}
-.sk-app__side {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.sk-app__search {
-  display: grid;
-  gap: 8px;
-  padding: 16px;
-}
-.sk-app__search label {
-  font-size: var(--t-label);
-  font-weight: 500;
-  color: var(--muted);
-}
+/* the search field (the hero's district search) */
 .sk-search {
   display: flex;
   align-items: center;
@@ -528,59 +489,21 @@ main > .hero.sk-sky {
   flex: 0 0 auto;
   color: var(--muted);
 }
-.sk-list {
-  display: grid;
-  align-content: start;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  overflow: visible;
-  flex: 0 0 auto;
-  min-height: 0;
-}
-.sk-list__foot {
-  margin: 0;
-  padding: 2px 10px 0;
-  font: 400 var(--t-label) / 1.3 var(--font-mono);
-  color: var(--muted);
-}
-.sk-list button {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 48px;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  font: inherit;
-}
-.sk-list button:hover {
-  background: var(--p-surface);
-}
-.sk-list button[aria-current="true"] {
-  background: var(--p-surface-2);
-}
-:is(.sk-list, .sk-hero-search__results) .sk-list__name {
+.sk-hero-search__results .sk-list__name {
   display: grid;
   gap: 1px;
   min-width: 0;
 }
-:is(.sk-list, .sk-hero-search__results) .sk-list__name b {
+.sk-hero-search__results .sk-list__name b {
   font-weight: 500;
   font-size: var(--t-body);
   line-height: 1.3;
 }
-:is(.sk-list, .sk-hero-search__results) .sk-list__name span {
+.sk-hero-search__results .sk-list__name span {
   font-size: var(--t-small);
   color: var(--muted);
 }
-:is(.sk-list, .sk-hero-search__results) .sk-list__score {
+.sk-hero-search__results .sk-list__score {
   font: 500 var(--t-small)/1 var(--font-mono);
   color: var(--muted);
 }
@@ -589,99 +512,6 @@ main > .hero.sk-sky {
   color: var(--muted);
   font-size: var(--t-small);
 }
-.sk-app__main {
-  display: grid;
-  align-content: start;
-  gap: var(--s-5);
-  padding: clamp(16px, 2.2vw, 28px);
-  overflow: auto;
-}
-.sk-app__top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--s-4);
-}
-.sk-app__place {
-  display: grid;
-  gap: 2px;
-}
-.sk-app__place b {
-  font: var(--display-weight) clamp(22px, 2vw, 30px) / 1.1 var(--font-display);
-  letter-spacing: var(--display-tracking);
-}
-.sk-app__place span {
-  font-size: var(--t-small);
-  color: var(--muted);
-}
-.sk-app__updated {
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-.sk-score {
-  display: flex;
-  align-items: center;
-  gap: var(--s-5);
-  padding: var(--s-2) 0;
-}
-.sk-score__num {
-  font: 500 clamp(32px, 2.8vw, 44px) / 0.95 var(--font-mono);
-  letter-spacing: -0.05em;
-}
-.sk-score__meta {
-  display: grid;
-  gap: 8px;
-  justify-items: start;
-}
-.sk-score__meta p {
-  margin: 0;
-  color: var(--muted);
-  font-size: var(--t-small);
-}
-.sk-ai {
-  display: grid;
-  gap: 8px;
-}
-.sk-ai p {
-  margin: 0;
-  max-width: 62ch;
-}
-.sk-ai__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: var(--t-label);
-  font-weight: 500;
-  color: var(--p-ai-ink);
-}
-.sk-ai__action {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  padding: 12px 14px;
-  border-radius: var(--r-sm);
-  background: var(--p-ai-bg);
-  color: var(--p-ai-ink-2);
-  font-size: var(--t-small);
-  line-height: 1.45;
-}
-.sk-ai__action b {
-  font-weight: 500;
-}
-.sk-app__foot {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-4);
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 4px;
-}
-.sk-app__foot .sk-mono {
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-
 /* the score's components */
 .sk-bars {
   display: grid;
@@ -709,44 +539,6 @@ main > .hero.sk-sky {
   height: 100%;
   border-radius: inherit;
   background: var(--p-action);
-}
-
-/* 640-1023 keeps the two panes: the section still fits one screen */
-@media (max-width: 1023px) {
-  .sk-app {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-  .sk-list {
-    max-height: none;
-  }
-}
-/* a phone stacks them: two screens hold the search, the list and the detail, with air, not overlap */
-@media (max-width: 639px) {
-  section#cek {
-    --hm: 2;
-  }
-  .sk-app {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-  .sk-app__side,
-  .sk-app__main {
-    grid-column: 1 / -1;
-  }
-  .sk-app__side {
-    max-height: none;
-    border-bottom: 1px solid var(--line);
-  }
-  .sk-app__main {
-    border-left: 0;
-  }
-  .sk-app__main {
-    gap: 16px;
-    overflow: auto;
-  }
-  .sk-score {
-    gap: 16px;
-  }
 }
 
 /* ------------------------------------------------------------------ feature cards
@@ -940,10 +732,10 @@ main > .hero.sk-sky {
   place-items: center;
   width: 32px;
   height: 32px;
-  border: 1px solid var(--line-strong);
   border-radius: 999px;
-  font: 500 var(--t-small) / 1 var(--font-mono);
-  color: var(--p-link);
+  background: var(--p-jade);
+  font: 600 var(--t-small) / 1 var(--font-mono);
+  color: var(--p-ink);
 }
 .sk-steps b {
   display: block;
@@ -1066,15 +858,6 @@ main > .hero.sk-sky {
   border-radius: var(--r-sm);
   border: 1px solid color-mix(in srgb, var(--p-ink) 6%, transparent);
   box-shadow: 0 1px 2px color-mix(in srgb, var(--p-ink) 6%, transparent);
-}
-
-/* #cek's frame takes what the heading leaves of the screen */
-.sk-fill {
-  flex: 1 1 0;
-  min-height: 0;
-}
-.sk-fill > .sk-app {
-  height: 100%;
 }
 
 /* ------------------------------------------------------------------ section furniture */
@@ -1216,7 +999,8 @@ main > .hero.sk-sky {
   border-radius: var(--r-lg);
   background: var(--p-bg);
   color: var(--p-ink);
-  box-shadow: 0 32px 80px -28px color-mix(in srgb, var(--p-ink) 55%, transparent);
+  box-shadow: 0 32px 80px -28px
+    color-mix(in srgb, var(--p-ink) 55%, transparent);
 }
 .sk-dialog::backdrop {
   background: color-mix(in srgb, var(--p-inv-bg) 62%, transparent);
@@ -1378,6 +1162,7 @@ main > .hero.sk-sky {
     --display-tracking: -0.03em;
   }
   /* stacking needs the second screen: nothing overlaps, the air goes under the last row */
+  section#cek,
   section#cara,
   section#data,
   section#tanya {
@@ -1393,9 +1178,6 @@ main > .hero.sk-sky {
     width: 28px;
     height: 28px;
   }
-  .sk-app__foot {
-    justify-content: flex-start;
-  }
   .sk-steps b {
     font-size: var(--t-body);
   }
@@ -1407,9 +1189,6 @@ main > .hero.sk-sky {
   }
   .section-head {
     margin-bottom: 24px;
-  }
-  .sk-list__foot {
-    padding-bottom: 2px;
   }
   .card > .panel > .sk-feature {
     inset: 10px;
@@ -1478,13 +1257,6 @@ main > .hero.sk-sky {
 @media (max-width: 639px) {
   main > .hero {
     --hgap: 35px;
-  }
-}
-
-/* a short landscape screen: the product panel gets a tighter head, so its list still ends on the floor */
-@media (min-width: 640px) and (max-height: 820px) {
-  main > section#cek .section-head {
-    margin-bottom: 24px;
   }
 }
 
@@ -1668,7 +1440,7 @@ main > .hero.sk-sky {
 }
 .sk-heading-icon > svg {
   flex: none;
-  color: var(--p-link);
+  color: var(--link);
 }
 .sk-card__head > .sk-mono {
   font-size: var(--t-label);
@@ -2305,31 +2077,6 @@ main > .hero.sk-sky {
   }
 }
 
-/* a 1024x768 screen: the product panel keeps one screen by taking the air out of its own rows
-   (the list shows three districts, the AI answer and the bars lose their redundant spacing) */
-@media (min-width: 640px) and (max-height: 820px) {
-  .sk-app__main {
-    gap: 8px;
-    padding: 14px;
-  }
-  .sk-app__main .sk-ai {
-    gap: 6px;
-  }
-  .sk-app__main .sk-ai__action {
-    display: none;
-  }
-  .sk-app__main .sk-score {
-    gap: 12px;
-    padding: 0;
-  }
-  .sk-app__main .sk-score__num {
-    font-size: 46px;
-  }
-  .sk-app__main .sk-app__foot {
-    display: none;
-  }
-}
-
 /* the location button under the map's legend */
 .sk-geo {
   display: flex;
@@ -2361,13 +2108,6 @@ main > .hero.sk-sky {
   background: var(--p-bg);
 }
 
-/* phone: the district rows keep their 48px target but give back 24px so the foot stays inside the panel */
-@media (max-width: 639px) {
-  .sk-list button {
-    padding: 6px 10px;
-  }
-}
-
 /* the source line inside the dark answer bubble reads as light, not as body grey */
 .sk-feature__answer .sk-feature__src {
   color: var(--p-inv-muted);
@@ -2387,8 +2127,7 @@ main > .hero.sk-sky {
   outline-width: 3px;
 }
 .btn,
-.link,
-.sk-list button {
+.link {
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
@@ -2865,7 +2604,8 @@ section[tabindex="-1"]:focus {
   border-radius: 999px;
   background: var(--p-action);
   color: var(--p-action-ink);
-  box-shadow: 0 12px 28px -16px color-mix(in srgb, var(--p-ink) 50%, transparent);
+  box-shadow: 0 12px 28px -16px
+    color-mix(in srgb, var(--p-ink) 50%, transparent);
   font: 500 var(--t-small) / 1 var(--font-text);
   cursor: pointer;
 }
@@ -2892,7 +2632,8 @@ section[tabindex="-1"]:focus {
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   background: var(--p-bg);
-  box-shadow: 0 24px 64px -24px color-mix(in srgb, var(--p-ink) 55%, transparent);
+  box-shadow: 0 24px 64px -24px
+    color-mix(in srgb, var(--p-ink) 55%, transparent);
 }
 .sk-chat-widget__close {
   position: absolute;
@@ -4466,7 +4207,9 @@ html {
 }
 .sk-demo__cursor {
   color: var(--p-ink);
-  filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--p-ink) 25%, transparent));
+  filter: drop-shadow(
+    0 2px 3px color-mix(in srgb, var(--p-ink) 25%, transparent)
+  );
   transform-origin: 43% 8%;
 }
 .sk-demo__ripple {
@@ -4675,7 +4418,9 @@ html {
   -webkit-backdrop-filter: saturate(1.6) blur(14px);
   backdrop-filter: saturate(1.6) blur(14px);
 }
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
   .nav::before {
     background: var(--p-bg);
   }
@@ -4733,5 +4478,49 @@ html {
     width: 100%;
     min-height: 48px;
     font-size: var(--t-body);
+  }
+}
+
+/* ------------------------------------------------------------------ redesign: landing sections
+   Bands under the hero: #cek and #data on the sky tint (.ground-surface), #fitur and #tanya on
+   Cloudy White (.ground-base), #cara the one navy band (.ground-inverse). */
+/* a light card inside the navy band takes the light ground's link and focus colours back */
+.ground-inverse .ground-base {
+  --link: var(--p-link);
+  --p-focus: var(--p-sky-ink);
+}
+/* #cek's map link keeps its own width beside (or under) the heading */
+.section-head--split > .btn {
+  justify-self: start;
+}
+/* #cek: today's highest scores, two columns of the /peta list; skeleton rows keep the same height */
+.sk-rank > li {
+  display: grid;
+  min-height: 76px;
+}
+.sk-rank__n {
+  min-width: 2ch;
+  color: var(--muted);
+}
+.sk-rank__ghost {
+  display: grid;
+  align-items: center;
+  border-top: 1px solid var(--line);
+}
+/* the #cara and #data cards drift a little against the scroll; static without motion */
+@keyframes sk-depth {
+  from {
+    transform: translate3d(0, 24px, 0);
+  }
+  to {
+    transform: translate3d(0, -24px, 0);
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="off"]) .sk-depth {
+      animation: sk-depth linear both;
+      animation-timeline: view();
+    }
   }
 }
