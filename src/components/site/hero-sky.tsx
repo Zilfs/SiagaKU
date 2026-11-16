@@ -10,9 +10,12 @@ const FAR_TOWERS =
 const NEAR_TOWERS =
   "M0 300V240h50v60zM60 300V210h60v90zM140 300V150h50v150zM163 150v-32h4v32zM205 300V190h55v110zM275 300V135h10v-15h35v15h10v165zM350 300V175h60v125zM425 300V140q25-22 50 0v160zM490 300V200h70v100zM580 300V250h50v50zM810 300V245h50v55zM880 300V180h60v120zM955 300V110l30-15 30 15v190zM983 95V70h4v25zM1030 300V160h60v140zM1105 300V200h45v100zM1165 300V130h65v170zM1245 300V185h55v115zM1315 300V215h65v85zM1390 300V240h50v60z";
 
-/** Monas: the stepped base, the tapering shaft, the cup and the flame. */
+/** Monas: the wide cawan platform on its plinth, the slender tapering obelisk, the small top lantern. */
 const MONAS =
-  "M650 300V272h26v-14h88v14h26v28zM706 258l8-166h12l8 166zM694 92h52l-8-12h-36zM712 80c-2-14 4-22 8-36c4 14 10 22 8 36z";
+  "M640 300v-14h160v14zM676 286l-24-24h136l-24 24zM708 262l7-166h10l7 166zM712 96l-2-10h20l-2 10z";
+
+/** Monas's flame: a teardrop on the lantern, gold rather than a crossbar. */
+const FLAME = "M713 86c-2-12 3-20 7-36c4 16 9 24 7 36z";
 
 /** The water's surface: a gentle wave across the band. */
 const WAVE =
@@ -48,6 +51,7 @@ export function HeroSky() {
         <path className="sk-sky__far" d={FAR_TOWERS} />
         <path className="sk-sky__near" d={NEAR_TOWERS} />
         <path className="sk-sky__near" d={MONAS} />
+        <path className="sk-sky__flame" d={FLAME} />
       </svg>
       <div className="sk-sky__layer sk-sky__water">
         <svg viewBox="0 0 1440 60" preserveAspectRatio="none" focusable="false">

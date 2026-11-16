@@ -39,6 +39,7 @@
   --p-city-far: #b3dcfb;
   --p-city: #8cc8f3;
   --p-water: #5cb3ee;
+  --p-flame: #f6c445; /* Monas's gold flame; decorative, never under text */
 
   /* roles */
   --p-link: var(--p-sky-ink);
@@ -305,11 +306,14 @@ main > .hero.sk-sky {
 .sk-sky__near {
   fill: var(--p-city);
 }
+.sk-sky__flame {
+  fill: var(--p-flame);
+}
 /* runs 12vh under the hero, so rising on scroll never opens a gap at its foot */
 .sk-sky__water {
   bottom: -12vh;
   height: calc(var(--sky-water) + 12vh);
-  background: linear-gradient(to bottom, transparent 24px, var(--p-water) 24px);
+  background: linear-gradient(to bottom, transparent 47px, var(--p-water) 47px);
 }
 .sk-sky__water svg {
   display: block;
@@ -366,6 +370,10 @@ main > .hero.sk-sky {
   margin: 0;
   color: var(--p-ink);
 }
+/* ink, not sky-ink: sky-ink on the sky's top is only 4.40:1 */
+.sk-sky__copy > .link {
+  color: var(--p-ink);
+}
 .sk-sky__stats {
   display: flex;
   flex-wrap: wrap;
@@ -392,7 +400,8 @@ main > .hero.sk-sky {
   margin-block: var(--s-2);
   text-align: left;
 }
-.sk-hero-search__field {
+/* scoped so it beats .sk-search's 48px: the skeleton and the streamed field share one height */
+.sk-hero-search .sk-hero-search__field {
   height: 56px;
   border-radius: var(--r-btn);
 }
@@ -419,6 +428,9 @@ main > .hero.sk-sky {
   border-radius: var(--r-md);
   background: var(--p-card);
   box-shadow: var(--p-shadow-lg);
+  /* a short screen scrolls the list instead of the hero clipping it */
+  max-height: min(312px, 45svh);
+  overflow-y: auto;
 }
 .sk-hero-search__results a {
   display: flex;
@@ -1462,7 +1474,7 @@ main > .hero.sk-sky {
   }
 }
 
-/* a phone: the hero's words start 35 under the header (not 40), so its last line ends 24 above the fold */
+/* a phone: the hero's words start 35 under the header (not 40) */
 @media (max-width: 639px) {
   main > .hero {
     --hgap: 35px;
