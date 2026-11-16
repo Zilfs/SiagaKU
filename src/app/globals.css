@@ -4530,3 +4530,85 @@ html {
     }
   }
 }
+
+/* ------------------------------------------------------------------ redesign: inner pages
+   Every (site) page opens on a full-bleed sky-tint band behind the crumbs, eyebrow, title and lede
+   (.sk-page-head, or the district and plan heads); the content follows on Cloudy White. The band is
+   a border-image painted outside the head (up to the page top, out to both edges): ink overflow, so
+   it never adds a horizontal scroll and needs no extra markup. Skeletons reuse the same classes. */
+.sk-page-head,
+.sk-detail-head,
+.sk-plan-head {
+  padding-bottom: var(--s-7);
+  margin-bottom: var(--s-7);
+  border-image: linear-gradient(
+      var(--p-surface) calc(100% - 1px),
+      var(--p-line) 0
+    )
+    fill 0 / / 100vh 100vmax 0;
+}
+.sk-page-head .sk-eyebrow,
+.sk-detail-head .sk-eyebrow,
+.sk-plan-head .sk-eyebrow {
+  color: var(--p-link);
+}
+.sk-crumbs {
+  margin-bottom: var(--s-5);
+}
+/* cards on these pages: white on the page and on tinted panels, lifted by the soft sky shadow */
+:is(.sk-peta, .sk-detail, .sk-rencana, .sk-plan-page) .sk-card,
+.sk-detail-score,
+.sk-wizard__panel {
+  background: var(--p-card);
+  box-shadow: var(--p-shadow);
+}
+.sk-detail-score {
+  border: 1px solid var(--line);
+}
+/* /peta: the district picker gets a 3:1 boundary like every other input */
+.sk-dash__chip {
+  border-color: var(--p-input-line);
+}
+/* /wilayah: the card grid sits on a tinted panel like the /peta dashboard */
+.sk-detail-grid {
+  padding: clamp(12px, 1.6vw, 20px);
+  border-radius: var(--r-lg);
+  background: var(--p-surface);
+}
+/* the floating "Tanya" button never hides the page's last lines */
+.sk-page.sk-detail {
+  padding-bottom: calc(var(--s-9) + 64px);
+}
+@media (max-width: 639px) {
+  .sk-page.sk-detail {
+    padding-bottom: calc(var(--bar, 0px) + 160px);
+  }
+}
+/* /rencana: the current step is the active state (jade number, ink), done steps keep a sky tick */
+.sk-wizard__step {
+  background: var(--p-card);
+}
+.sk-wizard__step.is-current {
+  border-color: var(--p-sky-ink);
+  box-shadow: var(--p-shadow-sm);
+}
+.sk-wizard__step.is-current .sk-wizard__num {
+  background: var(--p-jade);
+  color: var(--p-ink);
+}
+.sk-wizard__step.is-done .sk-wizard__num {
+  border-color: transparent;
+  background: var(--p-surface-2);
+}
+/* skeleton titles take the real heading's line height, so the band does not jump when the page lands */
+.sk-page-head > .sk-skel-title {
+  height: calc(var(--t-h1) * 1.04);
+}
+.sk-detail-head__copy > .sk-skel-title {
+  height: clamp(38px, 5vw, 72px);
+}
+/* /rencana/[slug]: step numbers are jade badges with ink, like the landing's how-it-works steps */
+.sk-plan-steps__num {
+  background: var(--p-jade);
+  color: var(--p-ink);
+}

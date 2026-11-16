@@ -6,12 +6,15 @@ import "leaflet/dist/leaflet.css";
 import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
 import type { MapDistrict, MapReport } from "./map-types";
 
-const COLOR: Record<MapDistrict["level"], string> = {
-  low: "#2e9e5b",
-  moderate: "#e2b007",
-  high: "#e8771e",
-  very_high: "#c62828",
+// Leaflet needs real colour strings, so the risk and palette tokens are read from globals.css
+const TOKEN: Record<MapDistrict["level"], string> = {
+  low: "--risk-low",
+  moderate: "--risk-moderate",
+  high: "--risk-high",
+  very_high: "--risk-very-high",
 };
+const token = (node: Element, name: string) =>
+  getComputedStyle(node).getPropertyValue(name).trim();
 
 // stable default: a fresh [] per render would rebuild the map on every parent render
 const NO_REPORTS: MapReport[] = [];
@@ -68,12 +71,13 @@ export default function RiskMapInner({
     }).addTo(map);
 
     const markers = circles.current;
+    const rim = token(node, "--p-card");
     for (const district of items) {
       const circle = L.circleMarker([district.lat, district.lng], {
         radius: 14,
-        color: "#ffffff",
+        color: rim,
         weight: 2,
-        fillColor: COLOR[district.level],
+        fillColor: token(node, TOKEN[district.level]),
         fillOpacity: 0.92,
       })
         .addTo(map)
@@ -123,10 +127,14 @@ export default function RiskMapInner({
 
   // selection only restyles the circles; the map itself stays
   useEffect(() => {
+    const node = container.current;
+    if (!node) return;
+    const ink = token(node, "--p-ink");
+    const rim = token(node, "--p-card");
     for (const [slug, circle] of circles.current) {
       const selected = slug === selectedSlug;
       circle.setStyle({
-        color: selected ? "#0b1b26" : "#ffffff",
+        color: selected ? ink : rim,
         weight: selected ? 4 : 2,
       });
       if (selected) circle.bringToFront();

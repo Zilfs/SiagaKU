@@ -7,8 +7,8 @@ export default function Loading() {
       <Skeleton className="mb-6 h-4 w-56" />
       <div className="sk-detail-head">
         <div className="sk-detail-head__copy">
-          <Skeleton className="h-3 w-44" />
-          <Skeleton className="h-16 w-3/5" />
+          <Skeleton className="h-4 w-44" />
+          <Skeleton className="sk-skel-title w-3/5" />
           <div className="flex flex-col gap-2">
             <Skeleton className="h-5 w-full max-w-[58ch]" />
             <Skeleton className="h-5 w-4/5" />

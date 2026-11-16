@@ -15,9 +15,9 @@ export default function Loading() {
       </div>
       <CardSkeleton className="sk-plan-summary" />
       <div className="sk-plan-grid">
-        <CardSkeleton />
-        <CardSkeleton />
-        <CardSkeleton />
+        <CardSkeleton className="sk-checklist-card" />
+        <CardSkeleton className="sk-plan-tabs" />
+        <CardSkeleton className="sk-plan-contacts" />
       </div>
     </PageSkeleton>
   );
