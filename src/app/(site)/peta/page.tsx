@@ -37,20 +37,16 @@ const LEGEND: { level: RiskLevel; range: string }[] = [
 
 export default async function MapPage() {
   await connection();
-  let districts: DistrictSummary[] = [];
-  try {
-    districts = await listDistrictsWithScore();
-  } catch (error) {
-    console.error("GET districts for the map failed", error);
-    districts = [];
-  }
-  let trend: MonthlyFloodCount[] = [];
-  try {
-    trend = await getFloodTrend();
-  } catch (error) {
-    console.error("GET flood trend for the map failed", error);
-    trend = [];
-  }
+  const [districts, trend] = await Promise.all([
+    listDistrictsWithScore().catch((error): DistrictSummary[] => {
+      console.error("GET districts for the map failed", error);
+      return [];
+    }),
+    getFloodTrend().catch((error): MonthlyFloodCount[] => {
+      console.error("GET flood trend for the map failed", error);
+      return [];
+    }),
+  ]);
   const top = districts.reduce<DistrictSummary | null>(
     (best, d) => (best && best.score >= d.score ? best : d),
     null,

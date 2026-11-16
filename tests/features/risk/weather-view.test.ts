@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { WeatherSlot } from "@/lib/data/bmkg";
+import type { RainOutlook } from "@/lib/data/open-meteo";
 import {
   jakartaHour,
   kindFromCode,
   kindFromDescription,
   pickCurrentSlot,
+  freshOutlook,
   pickNextRainSlot,
   rainHeadline,
 } from "@/features/risk/weather-view";
@@ -85,9 +87,14 @@ describe("pickNextRainSlot", () => {
     ];
     expect(pickNextRainSlot(slots, now)?.localTime).toBe("2026-11-16 18:00:00");
   });
-  it("counts rainfall above zero even with a dry description", () => {
-    const slots = [slot("2026-11-17 03:00:00", "Berawan", 0.4)];
+  it("counts rainfall of 1 mm or more even with a dry description", () => {
+    const slots = [slot("2026-11-17 03:00:00", "Berawan", 1)];
     expect(pickNextRainSlot(slots, now)?.localTime).toBe("2026-11-17 03:00:00");
+  });
+  it("ignores drizzle under 1 mm with a dry description", () => {
+    expect(
+      pickNextRainSlot([slot("2026-11-17 03:00:00", "Berawan", 0.4)], now),
+    ).toBeNull();
   });
   it("ignores rain more than 24 hours ahead", () => {
     const slots = [slot("2026-11-17 18:00:00", "Hujan Lebat", 20)];
@@ -116,5 +123,32 @@ describe("jakartaHour", () => {
   it("returns the hour in Asia/Jakarta", () => {
     expect(jakartaHour(now)).toBe(13);
     expect(jakartaHour(new Date("2026-11-16T20:00:00Z"))).toBe(3);
+  });
+});
+
+describe("freshOutlook", () => {
+  const day = (date: string) => ({
+    date,
+    weatherCode: 0,
+    tempMax: 30,
+    rainMm: 0,
+  });
+  const outlook = (dates: string[]) =>
+    ({
+      daily: dates.map(day),
+      hourlyToday: [{ hour: 1, rainMm: 2 }],
+    }) as unknown as RainOutlook;
+  it("keeps a current outlook", () => {
+    const r = freshOutlook(outlook(["2026-11-16", "2026-11-17"]), now);
+    expect(r?.daily).toHaveLength(2);
+    expect(r?.hourlyToday).toHaveLength(1);
+  });
+  it("drops yesterday and the hourly bars when day 0 is not today", () => {
+    const r = freshOutlook(outlook(["2026-11-15", "2026-11-16"]), now);
+    expect(r?.daily.map((d) => d.date)).toEqual(["2026-11-16"]);
+    expect(r?.hourlyToday).toEqual([]);
+  });
+  it("passes null through", () => {
+    expect(freshOutlook(null, now)).toBeNull();
   });
 });

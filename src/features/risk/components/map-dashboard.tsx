@@ -25,6 +25,7 @@ import type { RainOutlook } from "@/lib/data/open-meteo";
 import type { DistrictSummary, RiskDetail } from "../types";
 import {
   WEATHER_KIND_LABELS,
+  freshOutlook,
   jakartaHour,
   kindFromCode,
   kindFromDescription,
@@ -181,7 +182,7 @@ export function MapDashboard({
           ) : (
             <>
               <CurrentWeather detail={data.detail} now={data.now} />
-              <SevenDay outlook={data.outlook} slug={slug} />
+              <SevenDay outlook={data.outlook} slug={slug} now={data.now} />
               <HourlyRain outlook={data.outlook} now={data.now} />
             </>
           )}
@@ -236,7 +237,7 @@ function EmptyCards() {
   return (
     <>
       <CurrentWeather detail={null} now={new Date(0)} />
-      <SevenDay outlook={null} slug={null} />
+      <SevenDay outlook={null} slug={null} now={new Date(0)} />
       <HourlyRain outlook={null} now={new Date(0)} />
     </>
   );
@@ -332,11 +333,13 @@ const weekday = (date: string, index: number) => {
 function SevenDay({
   outlook,
   slug,
+  now,
 }: {
   outlook: RainOutlook | null;
   slug: string | null;
+  now: Date;
 }) {
-  const days = outlook?.daily.slice(0, 7) ?? [];
+  const days = freshOutlook(outlook, now)?.daily.slice(0, 7) ?? [];
   return (
     <section className="sk-card sk-dash__card" aria-labelledby="dash-week-h">
       <div className="sk-card__head">
@@ -388,7 +391,7 @@ function HourlyRain({
   outlook: RainOutlook | null;
   now: Date;
 }) {
-  const hours = outlook?.hourlyToday ?? [];
+  const hours = freshOutlook(outlook, now)?.hourlyToday ?? [];
   const hasData = hours.some((h) => h.rainMm !== null);
   const total = hours.reduce((sum, h) => sum + (h.rainMm ?? 0), 0);
   const max = Math.max(1, ...hours.map((h) => h.rainMm ?? 0));

@@ -116,23 +116,25 @@ export function FloodTrendChart({ trend }: { trend: MonthlyFloodCount[] }) {
               </span>
             ))}
           </div>
-          <table className="sr-only">
-            <caption>Kejadian genangan per bulan di Jakarta</caption>
-            <thead>
-              <tr>
-                <th scope="col">Bulan</th>
-                <th scope="col">Kejadian</th>
-              </tr>
-            </thead>
-            <tbody>
-              {trend.map((m) => (
-                <tr key={m.month}>
-                  <th scope="row">{monthLabel(m.month, true)}</th>
-                  <td>{m.count}</td>
+          <div className="sr-only">
+            <table>
+              <caption>Kejadian genangan per bulan di Jakarta</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Bulan</th>
+                  <th scope="col">Kejadian</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {trend.map((m) => (
+                  <tr key={m.month}>
+                    <th scope="row">{monthLabel(m.month, true)}</th>
+                    <td>{m.count}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </figure>
       )}
     </section>
