@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Info } from "lucide-react";
 import { connection } from "next/server";
 import { ReportForm } from "@/features/report/components/report-form";
 import type { ReportDistrict } from "@/features/report/types";
@@ -41,29 +42,36 @@ export default async function LaporPage() {
         <div className="sk-lapor-grid">
           <ReportForm districts={districts} />
 
-          <aside className="sk-card sk-lapor-aside" aria-labelledby="lapor-cara-h">
+          <aside
+            className="sk-card sk-lapor-aside"
+            aria-labelledby="lapor-cara-h"
+          >
             <div className="sk-card__head">
-              <h2 id="lapor-cara-h">Cara kerja</h2>
+              <h2 id="lapor-cara-h" className="sk-heading-icon">
+                <Info size={18} aria-hidden="true" />
+                Cara kerja
+              </h2>
               <span className="sk-mono">AI · warga</span>
             </div>
             <ol>
               <li>
-                <b>Foto.</b> Foto genangan dengan patokan jalan, misalnya ban motor
-                atau lutut orang dewasa. Foto dikompres di perangkatmu dan EXIF
-                (termasuk lokasi GPS) dihapus.
+                <b>Foto.</b> Foto genangan dengan patokan jalan, misalnya ban
+                motor atau lutut orang dewasa. Foto dikompres di perangkatmu dan
+                EXIF (termasuk lokasi GPS) dihapus.
               </li>
               <li>
-                <b>Lokasi.</b> Pilih kecamatan atau gunakan lokasimu. Yang dipakai
-                hanya titik koordinat, bukan alamat.
+                <b>Lokasi.</b> Pilih kecamatan atau gunakan lokasimu. Yang
+                dipakai hanya titik koordinat, bukan alamat.
               </li>
               <li>
                 <b>AI memeriksa.</b> Foto dinilai: apakah ada genangan, seberapa
-                parah, dan perkiraan tinggi air. Laporan yang bukan genangan tidak
-                ditampilkan.
+                parah, dan perkiraan tinggi air. Laporan yang bukan genangan
+                tidak ditampilkan.
               </li>
             </ol>
             <p className="sk-field__hint">
-              Laporan warga belum diverifikasi petugas. Untuk darurat, hubungi 112.
+              Laporan warga belum diverifikasi petugas. Untuk darurat, hubungi
+              112.
             </p>
             <p className="sk-field__hint">
               Laporan tampil di{" "}

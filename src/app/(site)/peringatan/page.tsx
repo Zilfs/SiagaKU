@@ -1,3 +1,4 @@
+import { Info } from "lucide-react";
 import type { Metadata } from "next";
 import { districtNameFromSlug } from "@/features/early-warning/alert-data";
 import { WatchArea } from "@/features/early-warning/components/watch-area";
@@ -39,7 +40,10 @@ export default async function PeringatanPage({
 
           <section className="sk-card sk-alert-how" aria-labelledby="cara-h">
             <div className="sk-card__head">
-              <h2 id="cara-h">Cara kerja</h2>
+              <h2 id="cara-h" className="sk-heading-icon">
+                <Info size={18} aria-hidden="true" />
+                Cara kerja
+              </h2>
             </div>
             <ol>
               <li>

@@ -21,6 +21,13 @@ describe("parseBmkgForecast", () => {
     expect(r.slots[0].localTime).toBe("2026-11-14 00:00:00");
     expect(r.updatedAt).toBe("2026-11-13T12:00:00");
   });
+  it("maps ws to windSpeedKmh", () => {
+    expect(parseBmkgForecast(bmkgFixture).slots[0].windSpeedKmh).toBe(2.9);
+    expect(
+      parseBmkgForecast({ data: [{ cuaca: [[{ ws: "x" }]] }] }).slots[0]
+        .windSpeedKmh,
+    ).toBeNull();
+  });
   it("empty object -> no throw", () => {
     expect(parseBmkgForecast({})).toEqual({ updatedAt: null, slots: [] });
   });

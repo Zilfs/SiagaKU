@@ -4,6 +4,7 @@ import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { ArrowUp, Square } from "lucide-react";
+import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
 import { EmergencyCard } from "./emergency-card";
 import { MessageBubble } from "./message-bubble";
 import { SourceList, normaliseSources, type ChatSource } from "./source-list";
@@ -18,7 +19,10 @@ function textOf(message: UIMessage) {
     .join("");
 }
 
-function dataOf<T>(message: UIMessage | undefined, name: string): T | undefined {
+function dataOf<T>(
+  message: UIMessage | undefined,
+  name: string,
+): T | undefined {
   if (!message) return undefined;
   for (const part of message.parts) {
     if (part.type === `data-${name}`) {
@@ -32,7 +36,11 @@ function sourcesOf(value: unknown): ChatSource[] {
   if (Array.isArray(value)) {
     return normaliseSources(value as Array<Record<string, unknown>>);
   }
-  if (value && typeof value === "object" && Array.isArray((value as { items?: unknown }).items)) {
+  if (
+    value &&
+    typeof value === "object" &&
+    Array.isArray((value as { items?: unknown }).items)
+  ) {
     return normaliseSources(
       (value as { items: Array<Record<string, unknown>> }).items,
     );
@@ -160,8 +168,10 @@ export function ChatPanel({
         ) : null}
 
         {busy ? (
-          <div className="sk-chat__typing" role="status">
-            Mengetik…
+          <div className="sk-msg sk-msg--assistant sk-chat__typing">
+            <LoadingStatus />
+            <Skeleton className="h-3.5 w-44 max-w-full" />
+            <Skeleton className="h-3.5 w-28" />
           </div>
         ) : null}
       </div>

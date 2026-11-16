@@ -118,9 +118,13 @@ export default function AboutPage() {
               <div className="sk-about__block">
                 <h3>Kerawanan dasar</h3>
                 <ul className="sk-about__bullets">
-                  <li>10 poin per kejadian banjir dalam 5 tahun terakhir (maks. 50).</li>
                   <li>
-                    Hingga 30 poin sesuai porsi kelurahan rawan (min. 10 bila ada).
+                    10 poin per kejadian banjir dalam 5 tahun terakhir (maks.
+                    50).
+                  </li>
+                  <li>
+                    Hingga 30 poin sesuai porsi kelurahan rawan (min. 10 bila
+                    ada).
                   </li>
                   <li>20 poin bila kecamatan pesisir rawan rob.</li>
                 </ul>
@@ -128,8 +132,8 @@ export default function AboutPage() {
               <div className="sk-about__block">
                 <h3>Faktor hujan</h3>
                 <p>
-                  Memakai curah hujan harian tertinggi dalam 3 hari ke depan. Bila
-                  data hujan tidak tersedia, faktor dianggap 0 dan halaman
+                  Memakai curah hujan harian tertinggi dalam 3 hari ke depan.
+                  Bila data hujan tidak tersedia, faktor dianggap 0 dan halaman
                   menandainya.
                 </p>
               </div>
@@ -234,9 +238,9 @@ export default function AboutPage() {
             </ul>
             <p>
               Chatbot menjawab dari pedoman resmi (BPBD DKI, BNPB,
-              Kemendikbudristek) dan menampilkan sumbernya. Titik aman dan kontak
-              darurat hanya diambil dari basis data, bukan dikarang AI. Nomor
-              darurat yang disebut AI hanya 112.
+              Kemendikbudristek) dan menampilkan sumbernya. Titik aman dan
+              kontak darurat hanya diambil dari basis data, bukan dikarang AI.
+              Nomor darurat yang disebut AI hanya 112.
             </p>
           </section>
 
@@ -250,14 +254,29 @@ export default function AboutPage() {
               <ShieldCheck size={18} aria-hidden="true" />
             </div>
             <ul className="sk-about__bullets">
-              <li>Tidak ada akun dan tidak ada kolom nama, alamat, atau telepon.</li>
               <li>
-                Alamat IP hanya disimpan sebagai hash untuk pembatasan permintaan.
+                Tidak ada akun dan tidak ada kolom nama, alamat, atau telepon.
               </li>
-              <li>Pertanyaan dan isian rencana dikirim ke penyedia AI untuk diproses.</li>
               <li>
-                Foto laporan dikompres di perangkat dan EXIF (termasuk GPS) dihapus
-                sebelum diunggah.
+                Alamat IP hanya disimpan sebagai hash untuk pembatasan
+                permintaan.
+              </li>
+              <li>
+                Pertanyaan dan isian rencana dikirim ke penyedia AI untuk
+                diproses.
+              </li>
+              <li>
+                Foto laporan dikompres di perangkat (maksimal 1600 px dan 1 MB)
+                dan EXIF (termasuk GPS) dihapus sebelum diunggah.
+              </li>
+              <li>
+                Laporan menyimpan foto, titik lokasi (dari GPS-mu atau titik
+                tengah kecamatan yang kamu pilih), dan keterangan opsional,
+                tanpa nama pelapor.
+              </li>
+              <li>
+                Peta laporan warga hanya menampilkan laporan 72 jam terakhir,
+                tanpa identitas pelapor.
               </li>
             </ul>
           </section>
@@ -274,8 +293,8 @@ export default function AboutPage() {
             <p>
               Dibangun dengan Next.js, React, Tailwind CSS, shadcn/ui, Vercel AI
               SDK, Supabase, zod, Leaflet, dan pustaka sumber terbuka lain. Lima
-              dokumen pedoman BPBD DKI, BNPB, dan Kemendikbudristek menjadi basis
-              pengetahuan chatbot.
+              dokumen pedoman BPBD DKI, BNPB, dan Kemendikbudristek menjadi
+              basis pengetahuan chatbot.
             </p>
             <ul className="sk-about__bullets">
               {AI_TOOLS.map((tool) => (
@@ -302,7 +321,8 @@ export default function AboutPage() {
             </div>
             <p>
               Dibuat untuk lomba IT RUSH 2026 oleh Ukon (frontend & UX), Rhein
-              (backend & data), Bagus (AI), dan Syaki (data, konten & dokumentasi).
+              (backend & data), Bagus (AI), dan Syaki (data, konten &
+              dokumentasi).
             </p>
             <p>
               Ikuti arahan BMKG dan BPBD DKI Jakarta. Dalam keadaan darurat,

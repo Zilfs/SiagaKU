@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
+import { PALETTE } from "@/lib/palette";
 
-/** The PWA manifest (docs/08 §8): installable, one screen, the brand's sea blue. */
+/** The PWA manifest (docs/08 §8): installable, one screen, the Cloudy White of the header. */
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "SiagaKU - Siaga Banjir Jakarta",
@@ -9,8 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "Cek risiko banjir kecamatanmu, susun rencana siaga keluarga, dan pantau peringatan dini di DKI Jakarta.",
     start_url: "/",
     display: "standalone",
-    background_color: "#F7FAFC",
-    theme_color: "#0E5E8C",
+    background_color: PALETTE.bg,
+    theme_color: PALETTE.bg,
     lang: "id",
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },

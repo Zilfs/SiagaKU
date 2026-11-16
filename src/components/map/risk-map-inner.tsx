@@ -6,12 +6,18 @@ import "leaflet/dist/leaflet.css";
 import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
 import type { MapDistrict, MapReport } from "./map-types";
 
-const COLOR: Record<MapDistrict["level"], string> = {
-  low: "#2e9e5b",
-  moderate: "#e2b007",
-  high: "#e8771e",
-  very_high: "#c62828",
+// Leaflet needs real colour strings, so the risk and palette tokens are read from globals.css
+const TOKEN: Record<MapDistrict["level"], string> = {
+  low: "--risk-low",
+  moderate: "--risk-moderate",
+  high: "--risk-high",
+  very_high: "--risk-very-high",
 };
+const token = (node: Element, name: string) =>
+  getComputedStyle(node).getPropertyValue(name).trim();
+
+// stable default: a fresh [] per render would rebuild the map on every parent render
+const NO_REPORTS: MapReport[] = [];
 
 const escape = (value: string) =>
   value
@@ -29,14 +35,24 @@ const CAMERA = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stro
  */
 export default function RiskMapInner({
   items,
-  reports = [],
+  reports = NO_REPORTS,
   label = "Peta risiko banjir per kecamatan di Jakarta",
+  onSelect,
+  selectedSlug,
 }: {
   items: MapDistrict[];
   reports?: MapReport[];
   label?: string;
+  onSelect?: (slug: string) => void;
+  selectedSlug?: string;
 }) {
   const container = useRef<HTMLDivElement>(null);
+  const circles = useRef(new Map<string, L.CircleMarker>());
+  // read through a ref so a new callback never rebuilds the map
+  const onSelectRef = useRef(onSelect);
+  useEffect(() => {
+    onSelectRef.current = onSelect;
+  });
 
   useEffect(() => {
     const node = container.current;
@@ -54,12 +70,14 @@ export default function RiskMapInner({
       maxZoom: 19,
     }).addTo(map);
 
+    const markers = circles.current;
+    const rim = token(node, "--p-card");
     for (const district of items) {
-      L.circleMarker([district.lat, district.lng], {
+      const circle = L.circleMarker([district.lat, district.lng], {
         radius: 14,
-        color: "#ffffff",
+        color: rim,
         weight: 2,
-        fillColor: COLOR[district.level],
+        fillColor: token(node, TOKEN[district.level]),
         fillOpacity: 0.92,
       })
         .addTo(map)
@@ -67,7 +85,9 @@ export default function RiskMapInner({
           `<div class="sk-map__popup"><b>${escape(district.name)}</b>` +
             `<span>${RISK_LEVEL_LABELS[district.level]} · skor ${district.score}</span>` +
             `<a href="/wilayah/${district.slug}">Lihat detail</a></div>`,
-        );
+        )
+        .on("click", () => onSelectRef.current?.(district.slug));
+      markers.set(district.slug, circle);
     }
 
     const camera = L.divIcon({
@@ -95,21 +115,34 @@ export default function RiskMapInner({
         );
     }
 
-    // the panes can settle after the first frame (fonts, the sticky header): one size check
-    const timer = window.setTimeout(() => map.invalidateSize(), 60);
+    // the box settles after the first frame and, on /peta, follows the weather column's height
+    const resize = new ResizeObserver(() => map.invalidateSize());
+    resize.observe(map.getContainer());
 
     return () => {
-      window.clearTimeout(timer);
+      resize.disconnect();
+      markers.clear();
       map.remove();
     };
   }, [items, reports]);
 
+  // selection only restyles the circles; the map itself stays
+  useEffect(() => {
+    const node = container.current;
+    if (!node) return;
+    const ink = token(node, "--p-ink");
+    const rim = token(node, "--p-card");
+    for (const [slug, circle] of circles.current) {
+      const selected = slug === selectedSlug;
+      circle.setStyle({
+        color: selected ? ink : rim,
+        weight: selected ? 4 : 2,
+      });
+      if (selected) circle.bringToFront();
+    }
+  }, [items, selectedSlug]);
+
   return (
-    <div
-      ref={container}
-      className="sk-map"
-      role="region"
-      aria-label={label}
-    />
+    <div ref={container} className="sk-map" role="region" aria-label={label} />
   );
 }

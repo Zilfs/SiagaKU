@@ -7,6 +7,7 @@ export type WeatherSlot = {
   description: string;
   icon: string | null;
   rainfallMm: number | null;
+  windSpeedKmh: number | null;
 };
 
 export type BmkgForecast = { updatedAt: string | null; slots: WeatherSlot[] };
@@ -35,6 +36,7 @@ export function parseBmkgForecast(json: unknown): BmkgForecast {
       description: str(s.weather_desc) ?? "",
       icon: str(s.image),
       rainfallMm: num(s.tp),
+      windSpeedKmh: num(s.ws),
     });
   }
   return { updatedAt, slots };

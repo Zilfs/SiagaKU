@@ -1,11 +1,23 @@
 import "server-only";
 import { getBmkgForecast } from "@/lib/data/bmkg";
-import { getMaxRainfall3Days } from "@/lib/data/open-meteo";
+import {
+  getMaxRainfall3Days,
+  getRainOutlook,
+  type RainOutlook,
+} from "@/lib/data/open-meteo";
 import { calculateRiskScore } from "@/lib/risk/score";
+import { countFloodEvents, type FloodFrequency } from "../flood-frequency";
+import {
+  monthlyFloodCounts,
+  trendWindowEnd,
+  type MonthlyFloodCount,
+} from "../flood-trend";
 import type { District, DistrictSummary, RiskDetail } from "../types";
 import {
   findDistrict,
   listDistricts,
+  listFloodEventDates,
+  listFloodEventDistricts,
   listFloodEvents,
   listShelters,
 } from "./risk-repository";
@@ -85,4 +97,34 @@ export async function getRiskDetail(
     floodHistory,
     safePoints,
   };
+}
+
+export async function getDistrictOutlook(
+  idOrSlug: string,
+): Promise<{ found: false } | { found: true; outlook: RainOutlook | null }> {
+  const d = await findDistrict(
+    /^\d+$/.test(idOrSlug) ? Number(idOrSlug) : idOrSlug,
+  );
+  if (!d) return { found: false };
+  return { found: true, outlook: await getRainOutlook(d.id, d.lat, d.lng) };
+}
+
+/** Jakarta-wide flood events per month; the 12-month window ends at the latest month with events. */
+export async function getFloodTrend(
+  now = new Date(),
+): Promise<MonthlyFloodCount[]> {
+  const since = monthlyFloodCounts([], now, 36)[0].month;
+  const dates = await listFloodEventDates(`${since}-01`);
+  return monthlyFloodCounts(dates, trendWindowEnd(dates, now));
+}
+
+/** Flood events recorded per district in the 12 months up to `now`, for the landing's map. */
+export async function getFloodFrequency(
+  now = new Date(),
+): Promise<FloodFrequency> {
+  const since = new Date(now);
+  since.setUTCFullYear(since.getUTCFullYear() - 1);
+  return countFloodEvents(
+    await listFloodEventDistricts(since.toISOString().slice(0, 10)),
+  );
 }
