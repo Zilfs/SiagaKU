@@ -22,6 +22,7 @@
   --p-ink: #0b1b2e;
   --p-muted: #44566b;
   --p-line: #cfe3f5;
+  --p-input-line: #6b7f95;
   --p-sky: #0099ff;
   --p-sky-ink: #006bb3;
   --p-jade: #83fd80;
@@ -32,6 +33,7 @@
   --p-inv-muted: #a9c6e0;
   --p-inv-link: #66c2ff;
   --p-danger: #c62828;
+  --p-danger-bg: #fdecec;
 
   /* roles */
   --p-link: var(--p-sky-ink);
@@ -43,7 +45,8 @@
   --p-inv-accent-ink: var(--p-ink);
   --p-inv-action: var(--p-sky);
   --p-inv-action-ink: var(--p-ink);
-  --p-focus: var(--p-sky);
+  /* sky-ink on light grounds (>= 3:1); dark bands switch it to sky below */
+  --p-focus: var(--p-sky-ink);
   /* soft sky shadow for cards and lifted pieces */
   --p-shadow-sm: 0 1px 2px color-mix(in srgb, var(--p-ink) 6%, transparent);
   --p-shadow:
@@ -59,7 +62,6 @@
   --p-warn-line: #f0d7b8;
   --p-warn-ink: #43260c;
   --p-warn-muted: #6b4a2a;
-  --p-danger-bg: #fdecec;
   --p-danger-bg-2: #f8dede;
   --p-danger-line: #f2c9c9;
   --p-danger-ink: #5a1414;
@@ -589,7 +591,7 @@ html[data-ground="sky"] {
   gap: 10px;
   height: 48px;
   padding: 0 14px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--p-input-line);
   border-radius: var(--r-btn);
   background: var(--p-bg);
   color: var(--ink);
@@ -612,7 +614,7 @@ html[data-ground="sky"] {
 }
 /* the focused field itself answers, not only the box around it (a keyboard user sees the caret's ring) */
 .sk-search input:focus-visible {
-  outline: 2px solid var(--p-action);
+  outline: 2px solid var(--p-focus);
   outline-offset: 1px;
   border-radius: 4px;
 }
@@ -3034,14 +3036,14 @@ section[tabindex="-1"]:focus {
   min-width: 0;
   height: 48px;
   padding: 0 14px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--p-input-line);
   border-radius: 12px;
   background: var(--p-card);
   color: var(--p-ink);
   font: inherit;
 }
 .sk-chat__form input:focus-visible {
-  outline: 3px solid var(--p-action);
+  outline: 3px solid var(--p-focus);
   outline-offset: 1px;
 }
 .sk-chat__send {
@@ -3655,7 +3657,7 @@ section[tabindex="-1"]:focus {
   width: 100%;
   min-height: 48px;
   padding: 12px 14px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--p-input-line);
   border-radius: var(--r-btn);
   background: var(--bg);
   color: var(--ink);
@@ -4026,7 +4028,7 @@ section[tabindex="-1"]:focus {
 .sk-inline-add input {
   height: 48px;
   padding: 0 12px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--p-input-line);
   border-radius: 10px;
   background: var(--p-card);
   color: var(--p-ink);
@@ -4372,7 +4374,7 @@ section[tabindex="-1"]:focus {
   width: 100%;
   height: 100%;
   margin: 0;
-  border: 2px solid var(--line-strong);
+  border: 2px solid var(--p-input-line);
   border-radius: 999px;
   background: var(--p-bg);
 }
@@ -4380,7 +4382,7 @@ input.sk-timeline__check {
   cursor: pointer;
 }
 .sk-timeline__check:focus-visible {
-  outline: 2px solid var(--p-action);
+  outline: 2px solid var(--p-focus);
   outline-offset: 2px;
 }
 .sk-timeline__node > svg {
@@ -4418,7 +4420,7 @@ input.sk-timeline__check {
   cursor: pointer;
 }
 .sk-timeline__toggle:focus-visible {
-  outline: 2px solid var(--p-action);
+  outline: 2px solid var(--p-focus);
   outline-offset: 2px;
 }
 .sk-timeline__toggle b {
@@ -4889,8 +4891,13 @@ html {
 :root {
   --link: var(--p-link);
 }
-.ground-inverse {
+.ground-inverse,
+.sk-footer,
+.sk-call,
+.sk-tanya__call,
+.sk-chat-emergency {
   --link: var(--p-inv-link);
+  --p-focus: var(--p-sky);
 }
 :focus-visible {
   outline-color: var(--p-focus);

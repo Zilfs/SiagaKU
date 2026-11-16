@@ -31,6 +31,8 @@ const AA_PAIRS: [PaletteKey, PaletteKey][] = [
   ["muted", "surface"],
   ["muted", "surface2"],
   ["danger", "bg"],
+  ["danger", "dangerBg"], // header 112 button
+  ["invInk", "danger"], // footer 112 button
   ["invInk", "invBg"],
   ["invInk", "invSurface"],
   ["invInk", "invBand"],
@@ -46,6 +48,26 @@ describe("palette contrast", () => {
     expect(
       contrastRatio(PALETTE[text], PALETTE[ground]),
     ).toBeGreaterThanOrEqual(4.5);
+  });
+
+  // WCAG 1.4.11: focus rings and control boundaries need 3:1 against the ground they sit on
+  const NON_TEXT_PAIRS: [PaletteKey, PaletteKey][] = [
+    ["skyInk", "bg"], // --p-focus on light grounds
+    ["skyInk", "card"],
+    ["skyInk", "surface"],
+    ["skyInk", "surface2"],
+    ["sky", "invBg"], // --p-focus inside dark bands
+    ["sky", "invBand"],
+    ["sky", "ink"],
+    ["inputLine", "bg"],
+    ["inputLine", "card"],
+    ["inputLine", "surface"],
+    ["inputLine", "surface2"],
+  ];
+  it.each(NON_TEXT_PAIRS)("%s on %s is at least 3:1", (fg, ground) => {
+    expect(contrastRatio(PALETTE[fg], PALETTE[ground])).toBeGreaterThanOrEqual(
+      3,
+    );
   });
 
   it("sky and jade fail as text on the light ground, so they stay fills", () => {

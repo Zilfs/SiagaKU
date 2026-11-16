@@ -11,6 +11,7 @@ export const PALETTE = {
   ink: "#0b1b2e",
   muted: "#44566b",
   line: "#cfe3f5",
+  inputLine: "#6b7f95", // input and checkbox boundaries (>= 3:1)
   sky: "#0099ff", // fills only; never text on light grounds (2.95:1)
   skyInk: "#006bb3", // links and blue text on light grounds
   jade: "#83fd80", // accent fills only, always with ink text
@@ -20,7 +21,8 @@ export const PALETTE = {
   invInk: "#fdfdfe",
   invMuted: "#a9c6e0",
   invLink: "#66c2ff",
-  danger: "#c62828",
+  danger: "#c62828", // the 112 button: red text on dangerBg, Cloudy White text on red
+  dangerBg: "#fdecec",
 } as const;
 
 export type PaletteKey = keyof typeof PALETTE;
@@ -34,6 +36,7 @@ export const PALETTE_TOKENS: Record<PaletteKey, string> = {
   ink: "--p-ink",
   muted: "--p-muted",
   line: "--p-line",
+  inputLine: "--p-input-line",
   sky: "--p-sky",
   skyInk: "--p-sky-ink",
   jade: "--p-jade",
@@ -44,4 +47,5 @@ export const PALETTE_TOKENS: Record<PaletteKey, string> = {
   invMuted: "--p-inv-muted",
   invLink: "--p-inv-link",
   danger: "--p-danger",
+  dangerBg: "--p-danger-bg",
 };
