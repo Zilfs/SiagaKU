@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Moments } from "@/components/taste/moments";
+import { PALETTE } from "@/lib/palette";
 import "./globals.css";
 
 // The whole interface, display sizes, body copy and numerals use Jakarta Sans (Hirzi, 15 Nov).
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0E5E8C",
+  themeColor: PALETTE.bg,
   colorScheme: "light",
 };
 

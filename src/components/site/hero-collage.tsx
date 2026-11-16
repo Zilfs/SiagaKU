@@ -157,7 +157,7 @@ export function HeroCollage({ className }: { className?: string }) {
           style={{ left: "66%", top: "4%", width: "34%", height: "76%" }}
         >
           <div className="sk-piece-head">
-            <span className="sk-dot" style={{ background: "#7fd8cf" }} />
+            <span className="sk-dot" style={{ background: "var(--p-decor-teal)" }} />
             <strong>Tanya SiagaKU</strong>
           </div>
           <p className="sk-piece-q">
