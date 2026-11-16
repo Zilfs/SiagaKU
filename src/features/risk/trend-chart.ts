@@ -24,7 +24,11 @@ export function niceTicks(max: number): number[] {
   if (max <= 0) return [0, 1];
   const rough = max / 3;
   const pow = 10 ** Math.floor(Math.log10(rough));
-  const step = ([1, 2, 2.5, 5, 10].find((m) => m * pow >= rough) ?? 10) * pow;
+  // Counts are integers, so only whole steps qualify (2.5 only from 25 up).
+  const step =
+    [1, 2, 2.5, 5, 10]
+      .map((m) => m * pow)
+      .find((v) => v >= rough && Number.isInteger(v)) ?? Math.ceil(rough);
   const ticks: number[] = [];
   for (let v = 0; v < max + step; v += step) {
     ticks.push(v);

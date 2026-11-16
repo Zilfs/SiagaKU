@@ -6,7 +6,11 @@ import {
   type RainOutlook,
 } from "@/lib/data/open-meteo";
 import { calculateRiskScore } from "@/lib/risk/score";
-import { monthlyFloodCounts, type MonthlyFloodCount } from "../flood-trend";
+import {
+  monthlyFloodCounts,
+  trendWindowEnd,
+  type MonthlyFloodCount,
+} from "../flood-trend";
 import type { District, DistrictSummary, RiskDetail } from "../types";
 import {
   findDistrict,
@@ -103,10 +107,11 @@ export async function getDistrictOutlook(
   return { found: true, outlook: await getRainOutlook(d.id, d.lat, d.lng) };
 }
 
-/** Jakarta-wide flood events per month for the last 12 months. */
+/** Jakarta-wide flood events per month; the 12-month window ends at the latest month with events. */
 export async function getFloodTrend(
   now = new Date(),
 ): Promise<MonthlyFloodCount[]> {
-  const first = monthlyFloodCounts([], now)[0].month;
-  return monthlyFloodCounts(await listFloodEventDates(`${first}-01`), now);
+  const since = monthlyFloodCounts([], now, 36)[0].month;
+  const dates = await listFloodEventDates(`${since}-01`);
+  return monthlyFloodCounts(dates, trendWindowEnd(dates, now));
 }

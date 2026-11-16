@@ -33,7 +33,12 @@ export function FloodTrendChart({ trend }: { trend: MonthlyFloodCount[] }) {
           <Waves size={18} aria-hidden="true" />
           Riwayat genangan per bulan
         </h2>
-        <span className="sk-mono">12 bulan terakhir</span>
+        {trend.length > 0 && (
+          <span className="sk-mono">
+            {monthLabel(trend[0].month, true)} –{" "}
+            {monthLabel(trend[last].month, true)}
+          </span>
+        )}
       </div>
       {max === 0 ? (
         <p className="sk-list__empty">
@@ -41,56 +46,66 @@ export function FloodTrendChart({ trend }: { trend: MonthlyFloodCount[] }) {
         </p>
       ) : (
         <figure className="sk-dash__trend">
-          <svg
-            viewBox={`0 0 ${W} ${H}`}
-            role="group"
-            aria-label="Grafik kejadian genangan per bulan"
-          >
-            {ticks.map((t) => {
-              const y = H - (t / top) * H;
-              return (
-                <g key={t}>
-                  <line
-                    x1="0"
-                    x2={W}
-                    y1={y}
-                    y2={y}
-                    className="sk-dash__grid-line"
-                  />
-                  <text x="4" y={Math.max(y - 4, 10)} className="sk-dash__tick">
-                    {t}
-                  </text>
-                </g>
-              );
-            })}
-            <path d={area} className="sk-dash__area" />
-            <path d={line} className="sk-dash__line" />
-            {trend.map((m, i) => (
-              <rect
-                key={m.month}
-                x={i * slot}
-                y="0"
-                width={slot}
-                height={H}
-                tabIndex={0}
-                role="img"
-                aria-label={`${monthLabel(m.month, true)}: ${m.count} kejadian`}
-                className={`sk-dash__hit${i === last ? " is-latest" : ""}${i === active ? " is-active" : ""}`}
-                onMouseEnter={() => setActive(i)}
-                onMouseLeave={() => setActive(null)}
-                onFocus={() => setActive(i)}
-                onBlur={() => setActive(null)}
-              />
-            ))}
-          </svg>
-          {cur && active !== null && (
-            <span
-              className="sk-dash__tip sk-mono"
-              style={{ left: `${((active + 0.5) / trend.length) * 100}%` }}
+          <div className="sk-dash__plot">
+            <svg
+              viewBox={`0 0 ${W} ${H}`}
+              role="group"
+              aria-label="Grafik kejadian genangan per bulan"
             >
-              {monthLabel(cur.month, true)} · {cur.count} kejadian
-            </span>
-          )}
+              {ticks.map((t) => {
+                const y = H - (t / top) * H;
+                return (
+                  <g key={t}>
+                    <line
+                      x1="0"
+                      x2={W}
+                      y1={y}
+                      y2={y}
+                      className="sk-dash__grid-line"
+                    />
+                  </g>
+                );
+              })}
+              <path d={area} className="sk-dash__area" />
+              <path d={line} className="sk-dash__line" />
+              {trend.map((m, i) => (
+                <rect
+                  key={m.month}
+                  x={i * slot}
+                  y="0"
+                  width={slot}
+                  height={H}
+                  tabIndex={0}
+                  role="img"
+                  aria-label={`${monthLabel(m.month, true)}: ${m.count} kejadian`}
+                  className={`sk-dash__hit${i === last ? " is-latest" : ""}${i === active ? " is-active" : ""}`}
+                  onMouseEnter={() => setActive(i)}
+                  onMouseLeave={() => setActive(null)}
+                  onFocus={() => setActive(i)}
+                  onBlur={() => setActive(null)}
+                />
+              ))}
+            </svg>
+            <div className="sk-dash__ticks" aria-hidden="true">
+              {ticks.map((t) => (
+                <span
+                  key={t}
+                  className="sk-mono"
+                  style={{ bottom: `${(t / top) * 100}%` }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+            {cur && active !== null && (
+              <span
+                className={`sk-dash__tip sk-mono${active < 3 ? " is-start" : active > trend.length - 4 ? " is-end" : ""}`}
+                style={{ left: `${((active + 0.5) / trend.length) * 100}%` }}
+              >
+                {monthLabel(cur.month, true)} · {cur.count} kejadian
+              </span>
+            )}
+          </div>
           <div className="sk-dash__months" aria-hidden="true">
             {trend.map((m, i) => (
               <span

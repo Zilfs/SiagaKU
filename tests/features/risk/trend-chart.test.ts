@@ -18,6 +18,11 @@ describe("niceTicks", () => {
     expect(niceTicks(69)).toEqual([0, 25, 50, 75]);
     expect(niceTicks(8)).toEqual([0, 5, 10]);
   });
+  it("keeps integer steps for small maxima", () => {
+    expect(niceTicks(7)).toEqual([0, 5, 10]);
+    expect(niceTicks(1)).toEqual([0, 1]);
+    expect(niceTicks(2)).toEqual([0, 1, 2]);
+  });
   it("falls back for an empty series", () => {
     expect(niceTicks(0)).toEqual([0, 1]);
   });

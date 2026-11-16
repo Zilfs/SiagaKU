@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { ClipboardList, MapPinned, TriangleAlert } from "lucide-react";
+import {
+  ClipboardList,
+  MapPinned,
+  ShieldAlert,
+  TriangleAlert,
+  Users,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DistrictSummary } from "../types";
 
@@ -35,15 +41,21 @@ export function JakartaSummary({
               siapkan rencana.
             </p>
           )}
-          <dl className="sk-dash__facts">
+          <dl className="sk-dash__rows">
             <div>
-              <dt>Risiko tertinggi</dt>
+              <dt>
+                <ShieldAlert size={14} aria-hidden="true" />
+                Risiko tertinggi
+              </dt>
               <dd>
                 {top.name} <span className="sk-mono">{top.score}</span>
               </dd>
             </div>
             <div>
-              <dt>Risiko Tinggi / Sangat Tinggi</dt>
+              <dt>
+                <Users size={14} aria-hidden="true" />
+                Tinggi / Sangat Tinggi
+              </dt>
               <dd>
                 <span className="sk-mono">{highCount}</span> kecamatan
               </dd>

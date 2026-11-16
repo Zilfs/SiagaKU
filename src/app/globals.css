@@ -2260,6 +2260,58 @@ html[data-ground="sky"] {
   margin-top: 2px;
   color: var(--risk-very-high);
 }
+.sk-dash__plot {
+  position: relative;
+  margin-left: 22px;
+}
+.sk-dash__ticks {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 100%;
+  width: 22px;
+  padding-right: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: right;
+}
+.sk-dash__ticks span {
+  position: absolute;
+  right: 4px;
+  transform: translateY(50%);
+}
+.sk-dash__rows {
+  display: grid;
+  margin: 0;
+}
+.sk-dash__rows div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-dash__rows div:first-child {
+  border-top: 0;
+}
+.sk-dash__rows dt {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.sk-dash__rows dd {
+  min-width: 0;
+  margin: 0;
+  font-size: var(--t-small);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
 .sk-dash__trend {
   position: relative;
   display: grid;
@@ -2276,10 +2328,6 @@ html[data-ground="sky"] {
   stroke-opacity: 0.2;
   stroke-dasharray: 2 3;
   vector-effect: non-scaling-stroke;
-}
-.sk-dash__tick {
-  fill: var(--muted);
-  font-size: 11px;
 }
 .sk-dash__area {
   fill: color-mix(in oklab, var(--p-action) 22%, transparent);
@@ -2318,7 +2366,14 @@ html[data-ground="sky"] {
   white-space: nowrap;
   pointer-events: none;
 }
+.sk-dash__tip.is-start {
+  transform: none;
+}
+.sk-dash__tip.is-end {
+  transform: translateX(-100%);
+}
 .sk-dash__months {
+  margin-left: 22px;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;

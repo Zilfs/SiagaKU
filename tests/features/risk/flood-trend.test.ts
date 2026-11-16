@@ -1,5 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { monthlyFloodCounts } from "@/features/risk/flood-trend";
+import {
+  monthlyFloodCounts,
+  trendWindowEnd,
+} from "@/features/risk/flood-trend";
+
+describe("trendWindowEnd", () => {
+  const now = new Date("2026-11-16T03:00:00Z");
+  it("ends at the latest event month when it is in the past", () => {
+    const end = trendWindowEnd(["2025-02-03", "2026-01-20", "2025-07-01"], now);
+    const r = monthlyFloodCounts([], end);
+    expect(r[0].month).toBe("2025-02");
+    expect(r[11].month).toBe("2026-01");
+  });
+  it("ignores future months and falls back to now without events", () => {
+    expect(trendWindowEnd([], now)).toBe(now);
+    expect(trendWindowEnd(["2027-03-01"], now)).toBe(now);
+  });
+});
 
 describe("monthlyFloodCounts", () => {
   it("zero-fills 12 months, oldest first, ending with the current month", () => {
