@@ -21,13 +21,6 @@ export const metadata: Metadata = {
     "Peta risiko banjir per kecamatan di DKI Jakarta: warna menunjukkan level risiko, klik kecamatan untuk melihat skor, prakiraan hujan, dan titik aman.",
 };
 
-const DOT: Record<RiskLevel, string> = {
-  low: "var(--risk-low)",
-  moderate: "var(--risk-moderate)",
-  high: "var(--risk-high)",
-  very_high: "var(--risk-very-high)",
-};
-
 const LEGEND: { level: RiskLevel; range: string }[] = [
   { level: "low", range: "0–24" },
   { level: "moderate", range: "25–49" },
@@ -65,7 +58,7 @@ export default async function MapPage() {
               <li key={item.level}>
                 <span
                   className="sk-dot"
-                  style={{ background: DOT[item.level] }}
+                  data-level={item.level}
                   aria-hidden="true"
                 />
                 {RISK_LEVEL_LABELS[item.level]}{" "}
@@ -107,7 +100,7 @@ export default async function MapPage() {
                   <Link href={`/wilayah/${district.slug}`}>
                     <span
                       className="sk-dot"
-                      style={{ background: DOT[district.level] }}
+                      data-level={district.level}
                       aria-hidden="true"
                     />
                     <span className="sk-district-list__name">

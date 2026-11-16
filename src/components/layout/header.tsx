@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, Siren, X } from "lucide-react";
 import { Mark } from "@/components/site/mark";
 import { EmergencyButton } from "./emergency-button";
@@ -16,12 +17,19 @@ const LINKS: { href: string; label: string; optional?: boolean }[] = [
   { href: "/lapor", label: "Lapor" },
 ];
 
+/** Route links only: a hash link on the landing (/#cari) is a section, not a page. */
+export function isCurrent(pathname: string, href: string): boolean {
+  if (href.includes("#")) return false;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 /**
  * One fixed, light glass bar on the page's .wrap (nav-centre): the words in the middle, the red 112
  * button and the one primary action on the right line, and a sheet on a phone.
  */
 export function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     document.body.classList.toggle("nav-locked", open);
@@ -49,6 +57,9 @@ export function Header() {
               <Link
                 className="nav__link"
                 href={link.href}
+                aria-current={
+                  isCurrent(pathname, link.href) ? "page" : undefined
+                }
                 onClick={() => setOpen(false)}
               >
                 {link.label}

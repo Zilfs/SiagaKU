@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Waves } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { MonthlyFloodCount } from "../flood-trend";
@@ -91,7 +91,7 @@ export function FloodTrendChart({ trend }: { trend: MonthlyFloodCount[] }) {
                 <span
                   key={t}
                   className="sk-mono"
-                  style={{ bottom: `${(t / top) * 100}%` }}
+                  style={{ "--y": `${(t / top) * 100}%` } as CSSProperties}
                 >
                   {t}
                 </span>
@@ -100,7 +100,11 @@ export function FloodTrendChart({ trend }: { trend: MonthlyFloodCount[] }) {
             {cur && active !== null && (
               <span
                 className={`sk-dash__tip sk-mono${active < 3 ? " is-start" : active > trend.length - 4 ? " is-end" : ""}`}
-                style={{ left: `${((active + 0.5) / trend.length) * 100}%` }}
+                style={
+                  {
+                    "--x": `${((active + 0.5) / trend.length) * 100}%`,
+                  } as CSSProperties
+                }
               >
                 {monthLabel(cur.month, true)} · {cur.count} kejadian
               </span>

@@ -3,6 +3,7 @@ import {
   BookOpen,
   HelpCircle,
   Info,
+  Lock,
   LayoutList,
   Map,
   MapPin,
@@ -29,6 +30,7 @@ const ABOUT: FooterLink[] = [
   { href: "/#cara", label: "Cara kerja", icon: BookOpen },
   { href: "/peringatan", label: "Peringatan dini", icon: ShieldAlert },
   { href: "/tentang", label: "Tentang & metodologi", icon: Info },
+  { href: "/tentang#privasi", label: "Privasi", icon: Lock },
   { href: "/#data", label: "Sumber data", icon: Database },
 ];
 

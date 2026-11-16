@@ -32,11 +32,11 @@ import { CountUp, Magnetic, Reveal } from "@/components/site/landing-motion";
 import Link from "next/link";
 import { PlanPreview } from "@/components/site/plan-preview";
 
-const LEGEND: { level: RiskLevel; range: string; dot: string }[] = [
-  { level: "low", range: "0–24", dot: "var(--risk-low)" },
-  { level: "moderate", range: "25–49", dot: "var(--risk-moderate)" },
-  { level: "high", range: "50–74", dot: "var(--risk-high)" },
-  { level: "very_high", range: "75–100", dot: "var(--risk-very-high)" },
+const LEGEND: { level: RiskLevel; range: string }[] = [
+  { level: "low", range: "0–24" },
+  { level: "moderate", range: "25–49" },
+  { level: "high", range: "50–74" },
+  { level: "very_high", range: "75–100" },
 ];
 
 const STEPS: { title: string; body: string; icon: LucideIcon }[] = [
@@ -553,14 +553,14 @@ export default function HomePage() {
                   <span>Kerawanan dasar</span>
                   <span className="sk-mono">bobot 0,55</span>
                   <span className="sk-bar__track" aria-hidden="true">
-                    <i style={{ width: "55%" }} />
+                    <i className="sk-bar__fill--base" />
                   </span>
                 </li>
                 <li className="sk-bar">
                   <span>Faktor hujan</span>
                   <span className="sk-mono">bobot 0,45</span>
                   <span className="sk-bar__track" aria-hidden="true">
-                    <i style={{ width: "45%" }} />
+                    <i className="sk-bar__fill--rain" />
                   </span>
                 </li>
               </ul>
@@ -575,7 +575,7 @@ export default function HomePage() {
                   <li key={item.level}>
                     <span
                       className="sk-dot"
-                      style={{ background: item.dot }}
+                      data-level={item.level}
                       aria-hidden="true"
                     />
                     <RiskBadge level={item.level} size="sm" />

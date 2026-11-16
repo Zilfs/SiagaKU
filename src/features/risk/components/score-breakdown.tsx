@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Gauge } from "lucide-react";
 import type { RiskDetail } from "@/features/risk/types";
 import { RAINFALL_CATEGORY_LABELS } from "@/lib/risk/score";
@@ -26,7 +27,7 @@ export function ScoreBreakdown({
           <span>Kerawanan dasar</span>
           <span className="sk-mono">{baseVulnerability} / 100</span>
           <span className="sk-bar__track" aria-hidden="true">
-            <i style={{ width: `${baseVulnerability}%` }} />
+            <i style={{ "--w": `${baseVulnerability}%` } as CSSProperties} />
           </span>
           <span className="sk-bar__note">
             Riwayat genangan dan bentuk lahan · bobot 0,55
@@ -39,7 +40,7 @@ export function ScoreBreakdown({
             {maxRainfallMm != null ? ` · ${maxRainfallMm} mm` : ""}
           </span>
           <span className="sk-bar__track" aria-hidden="true">
-            <i style={{ width: `${rainfallFactor}%` }} />
+            <i style={{ "--w": `${rainfallFactor}%` } as CSSProperties} />
           </span>
           <span className="sk-bar__note">
             Prakiraan tiga hari BMKG · bobot 0,45

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 /**
@@ -9,14 +9,19 @@ import Link from "next/link";
  * while the closing footer is in view so it never covers the footer's own links.
  */
 export function ActionBar() {
+  const sentinel = useRef<HTMLSpanElement>(null);
   const [on, setOn] = useState(false);
   const [atClose, setAtClose] = useState(false);
 
+  // The sentinel sits 480px down the document (the hero's end): the bar shows once it is above the view.
   useEffect(() => {
-    const onScroll = () => setOn(window.scrollY > 480);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const mark = sentinel.current;
+    if (!mark) return;
+    const observer = new IntersectionObserver(([entry]) =>
+      setOn(!entry.isIntersecting && entry.boundingClientRect.top < 0),
+    );
+    observer.observe(mark);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -31,10 +36,17 @@ export function ActionBar() {
   }, []);
 
   return (
-    <div className={on && !atClose ? "sk-actionbar is-on" : "sk-actionbar"}>
-      <Link className="btn btn--primary" href="/#cari">
-        Cek risiko wilayah
-      </Link>
-    </div>
+    <>
+      <span
+        ref={sentinel}
+        className="sk-actionbar__sentinel"
+        aria-hidden="true"
+      />
+      <div className={on && !atClose ? "sk-actionbar is-on" : "sk-actionbar"}>
+        <Link className="btn btn--primary" href="/#cari">
+          Cek risiko wilayah
+        </Link>
+      </div>
+    </>
   );
 }

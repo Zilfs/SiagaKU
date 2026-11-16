@@ -128,6 +128,30 @@
   --chart-4: var(--risk-very-high);
   --chart-5: var(--p-sky);
   --radius: 0.75rem;
+
+  /* motion: one ease-out for everything; colour fades 300ms, movement 500ms, nothing under 200ms.
+     The kit's --ease/--dur (src/styles/taste/system.css) read the same values. */
+  --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-color: 300ms;
+  --dur-move: 500ms;
+  --ease: var(--ease-base);
+  --dur: var(--dur-color);
+
+  /* z-index scale, low to high. Local layers (inside a component's own stacking context):
+     behind -1 < raised 1 (+1, +2 for a second and third layer). Page layers: sticky alert band 30 <
+     chat button 35 < phone action bar 40 < chat scrim 44 < chat sheet 45 < header 50 (the kit's
+     .nav; its phone sheet actions 51). The map overlay chip, 650, lives inside the map's own stacking
+     context: above Leaflet's panes (< 700), below its popups (700) and controls (800). The emergency
+     dialog is a native <dialog> in the top layer, so it needs no z-index. */
+  --z-behind: -1;
+  --z-raised: 1;
+  --z-sticky: 30;
+  --z-fab: 35;
+  --z-actionbar: 40;
+  --z-scrim: 44;
+  --z-sheet: 45;
+  --z-header: 50;
+  --z-map-overlay: 650;
 }
 
 /* the sky ground is the page's one lit ground (footer--statement and UI panels) */
@@ -196,7 +220,12 @@ html[data-ground="sky"] {
 }
 
 /* ------------------------------------------------------------------ data voice
-   Every number that drives a decision is set in the mono face with tabular figures. */
+   Every number that drives a decision is set in the mono face with tabular figures. Tabular figures
+   site-wide too (scores, counts, mm, degrees, times): set as a feature on the body, because the many
+   `font:` shorthands below reset font-variant-numeric but leave font-feature-settings inherited. */
+body {
+  font-feature-settings: "tnum" 1;
+}
 .sk-mono {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -217,6 +246,18 @@ html[data-ground="sky"] {
   border-radius: 999px;
   background: currentColor;
   flex: 0 0 auto;
+}
+.sk-dot[data-level="low"] {
+  background: var(--risk-low);
+}
+.sk-dot[data-level="moderate"] {
+  background: var(--risk-moderate);
+}
+.sk-dot[data-level="high"] {
+  background: var(--risk-high);
+}
+.sk-dot[data-level="very_high"] {
+  background: var(--risk-very-high);
 }
 
 /* risk badge: colour is never the only signal (label + dot) */
@@ -282,7 +323,7 @@ main > .hero.sk-sky {
 .sk-sky__layers {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-behind);
   pointer-events: none;
 }
 .sk-sky__layer {
@@ -400,7 +441,7 @@ main > .hero.sk-sky {
 }
 .sk-hero-search {
   position: relative;
-  z-index: 2;
+  z-index: calc(var(--z-raised) + 1);
   width: min(100%, 560px);
   margin-block: var(--s-2);
   text-align: left;
@@ -541,6 +582,7 @@ main > .hero.sk-sky {
 }
 .sk-bar__track > i {
   display: block;
+  width: var(--w, 0%);
   height: 100%;
   border-radius: inherit;
   background: var(--p-action);
@@ -856,6 +898,13 @@ main > .hero.sk-sky {
 .sk-formula .sk-bar__track > i {
   background: var(--p-action);
 }
+/* the landing's formula card: the two fixed weights of the score */
+.sk-bar__fill--base {
+  --w: 55%;
+}
+.sk-bar__fill--rain {
+  --w: 45%;
+}
 
 /* the fitur cards: the product's screen sits on a flat sky panel, one step in from its edge, and the
    panel is as tall as the screen's content (no stretched, empty window) */
@@ -1071,8 +1120,7 @@ main > section#fitur {
 .sk-dialog__call span {
   font-size: var(--t-label);
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
 }
 .sk-dialog__call b {
   font: 500 40px/1 var(--font-mono);
@@ -1088,12 +1136,20 @@ main > section#fitur {
 }
 
 /* the phone bar (main action once the hero's has scrolled away) */
+.sk-actionbar__sentinel {
+  position: absolute;
+  top: 480px;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
 .sk-actionbar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 40;
+  z-index: var(--z-actionbar);
   display: none;
   padding: 10px var(--gut) calc(10px + env(safe-area-inset-bottom));
   background: color-mix(in oklab, var(--p-bg) 92%, transparent);
@@ -1300,7 +1356,6 @@ main > section#fitur {
   margin: 0;
   font: 500 var(--t-label) / 1.3 var(--font-mono);
   letter-spacing: 0.02em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 .sk-page-head {
@@ -1744,7 +1799,7 @@ main > section#fitur {
   position: absolute;
   top: 12px;
   right: 12px;
-  z-index: 650;
+  z-index: var(--z-map-overlay);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1915,6 +1970,7 @@ main > section#fitur {
 }
 .sk-dash__ticks span {
   position: absolute;
+  bottom: var(--y);
   right: 4px;
   transform: translateY(50%);
 }
@@ -1941,8 +1997,7 @@ main > section#fitur {
   gap: 6px;
   color: var(--muted);
   font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 .sk-dash__rows dd {
   min-width: 0;
@@ -1981,7 +2036,7 @@ main > section#fitur {
 .sk-dash__hit {
   fill: transparent;
   outline: none;
-  transition: fill 0.15s;
+  transition: fill var(--dur-color) var(--ease-base);
 }
 .sk-dash__hit.is-latest {
   fill: color-mix(in oklab, var(--p-action) 8%, transparent);
@@ -1997,6 +2052,7 @@ main > section#fitur {
 .sk-dash__tip {
   position: absolute;
   top: 0;
+  left: var(--x);
   transform: translateX(-50%);
   padding: 4px 8px;
   border-radius: var(--r-btn);
@@ -2129,9 +2185,25 @@ main > section#fitur {
 .btn,
 .link {
   transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    color 180ms ease;
+    background-color var(--dur-color) var(--ease-base),
+    border-color var(--dur-color) var(--ease-base),
+    color var(--dur-color) var(--ease-base);
+}
+/* The kit's motion layer (public/taste/motion.css, loaded after this file) times hovers and presses
+   at 90-150ms: html:root outranks its :root, so every kit timing is at least --dur-color. */
+html:root {
+  --m-in: var(--dur-color);
+  --m-out: var(--dur-color);
+  --m-press: var(--dur-color);
+  --m-panel: var(--dur-color);
+  --m-close: var(--dur-color);
+}
+/* a pressed button gives a little (the doubled class outranks the kit's press); reduced motion keeps
+   the colour fades only */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) .btn.btn:active {
+    transform: scale(0.98);
+  }
 }
 
 /* UI UX Pro Max follow-ups: focus never hides behind the fixed bar or header, and compact
@@ -2218,8 +2290,8 @@ section[tabindex="-1"]:focus,
   font: 600 var(--t-small) / 1 var(--font-text);
   cursor: pointer;
   transition:
-    background-color 180ms ease,
-    border-color 180ms ease;
+    background-color var(--dur-color) var(--ease-base),
+    border-color var(--dur-color) var(--ease-base);
 }
 .sk-footer__sos:hover {
   background: color-mix(in oklab, var(--p-danger) 86%, var(--p-ink));
@@ -2233,7 +2305,6 @@ section[tabindex="-1"]:focus,
   margin: 0 0 var(--s-3);
   font: 600 var(--t-label) / 1.4 var(--font-text);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--link);
 }
 .sk-footer__col ul {
@@ -2251,7 +2322,7 @@ section[tabindex="-1"]:focus,
 .sk-footer__col a > svg {
   flex: none;
   color: var(--link);
-  transition: color 180ms ease;
+  transition: color var(--dur-color) var(--ease-base);
 }
 .sk-footer__col a:hover {
   color: var(--link);
@@ -2537,7 +2608,6 @@ section[tabindex="-1"]:focus,
   margin: 0 0 6px;
   font: 500 var(--t-label) / 1 var(--font-mono);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 .sk-sources ol {
@@ -2595,7 +2665,7 @@ section[tabindex="-1"]:focus,
   position: fixed;
   right: 16px;
   bottom: calc(var(--bar, 0px) + 16px);
-  z-index: 35;
+  z-index: var(--z-fab);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -2616,7 +2686,7 @@ section[tabindex="-1"]:focus,
 .sk-chat-scrim {
   position: fixed;
   inset: 0;
-  z-index: 44;
+  z-index: var(--z-scrim);
   border: 0;
   background: color-mix(in srgb, var(--p-ink) 38%, transparent);
   cursor: pointer;
@@ -2625,7 +2695,7 @@ section[tabindex="-1"]:focus,
   position: fixed;
   right: 16px;
   bottom: 16px;
-  z-index: 45;
+  z-index: var(--z-sheet);
   display: grid;
   width: min(420px, calc(100vw - 32px));
   height: min(640px, calc(100svh - 96px));
@@ -2640,7 +2710,7 @@ section[tabindex="-1"]:focus,
   position: absolute;
   top: 8px;
   right: 8px;
-  z-index: 2;
+  z-index: calc(var(--z-raised) + 1);
   display: grid;
   place-items: center;
   width: 36px;
@@ -2882,7 +2952,7 @@ section[tabindex="-1"]:focus,
 .sk-alert {
   position: sticky;
   top: var(--nav);
-  z-index: 30;
+  z-index: var(--z-sticky);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -3821,7 +3891,7 @@ section[tabindex="-1"]:focus,
 }
 .sk-timeline__node {
   position: relative;
-  z-index: 1;
+  z-index: var(--z-raised);
   display: grid;
   flex: none;
   width: var(--sk-node);
@@ -3922,24 +3992,24 @@ input.sk-timeline__check {
 }
 @media (prefers-reduced-motion: no-preference) {
   .sk-timeline::after {
-    transition: transform 400ms ease;
+    transition: transform var(--dur-move) var(--ease-base);
   }
   .sk-timeline__check,
   .sk-timeline__node > svg,
   .sk-timeline__toggle > svg {
     transition:
-      background-color 200ms ease,
-      border-color 200ms ease,
-      opacity 200ms ease,
-      transform 200ms ease;
+      background-color var(--dur-color) var(--ease-base),
+      border-color var(--dur-color) var(--ease-base),
+      opacity var(--dur-color) var(--ease-base),
+      transform var(--dur-color) var(--ease-base);
   }
   .sk-timeline__details {
     transition:
-      grid-template-rows 250ms ease,
-      visibility 250ms;
+      grid-template-rows var(--dur-color) var(--ease-base),
+      visibility var(--dur-color);
   }
   .sk-timeline__details > p {
-    transition: padding-top 250ms ease;
+    transition: padding-top var(--dur-color) var(--ease-base);
   }
 }
 .sk-plan-steps {
@@ -4198,7 +4268,7 @@ html {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 3;
+  z-index: calc(var(--z-raised) + 2);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -4223,7 +4293,7 @@ html {
 .sk-demo__hl {
   position: absolute;
   inset: 0 -8px;
-  z-index: -1;
+  z-index: var(--z-behind);
   border-radius: 6px;
   background: color-mix(in oklab, var(--p-action) 12%, transparent);
 }
@@ -4411,7 +4481,7 @@ html {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-behind);
   background: color-mix(in srgb, var(--p-bg) 84%, transparent);
   -webkit-backdrop-filter: saturate(1.6) blur(14px);
   backdrop-filter: saturate(1.6) blur(14px);
@@ -4429,9 +4499,20 @@ html {
 .nav__link:hover {
   color: var(--p-link);
 }
-.nav__link::before,
-.nav__link[aria-current="page"]::after {
+.nav__link::before {
   background: var(--p-sky);
+}
+/* the page you are on: ink word, a thicker jade bar under it (aria-current, set by the header) */
+.nav__link[aria-current="page"] {
+  color: var(--p-ink);
+  font-weight: 700;
+}
+.nav__link[aria-current="page"]::after {
+  height: 3px;
+  background: var(--p-jade);
+}
+.nav {
+  z-index: var(--z-header);
 }
 /* 112 stays red and stays a button, never a plain word in the row */
 .nav__sos {
@@ -4449,8 +4530,8 @@ html {
   white-space: nowrap;
   cursor: pointer;
   transition:
-    background-color 180ms ease,
-    border-color 180ms ease;
+    background-color var(--dur-color) var(--ease-base),
+    border-color var(--dur-color) var(--ease-base);
 }
 .nav__sos:hover {
   background: var(--p-danger-bg-2);
@@ -4542,7 +4623,7 @@ html {
       var(--p-surface) calc(100% - 1px),
       var(--p-line) 0
     )
-    fill 0 / / 100vh 100vmax 0;
+    fill 0 / /100vh 100vmax 0;
 }
 .sk-page-head .sk-eyebrow,
 .sk-detail-head .sk-eyebrow,
@@ -4669,7 +4750,7 @@ html {
       var(--p-surface) calc(100% - 1px),
       var(--p-line) 0
     )
-    fill 0 / / 100vh 100vmax 0;
+    fill 0 / /100vh 100vmax 0;
 }
 .sk-missing .sk-eyebrow {
   color: var(--p-link);
