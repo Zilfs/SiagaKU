@@ -4,7 +4,9 @@ import { CardSkeleton, PageSkeleton, Skeleton } from "@/components/ui/skeleton";
 export default function Loading() {
   return (
     <PageSkeleton className="sk-detail" head={false}>
-      <Skeleton className="mb-6 h-4 w-56" />
+      <div className="sk-crumbs">
+        <Skeleton className="h-[1lh] w-56" />
+      </div>
       <div className="sk-detail-head">
         <div className="sk-detail-head__copy">
           <Skeleton className="h-4 w-44" />

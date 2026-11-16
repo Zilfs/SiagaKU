@@ -4,12 +4,14 @@ import { CardSkeleton, PageSkeleton, Skeleton } from "@/components/ui/skeleton";
 export default function Loading() {
   return (
     <PageSkeleton className="sk-plan-page" head={false}>
-      <Skeleton className="mb-6 h-4 w-56" />
+      <div className="sk-crumbs">
+        <Skeleton className="h-[1lh] w-56" />
+      </div>
       <div className="sk-plan-head">
-        <div className="flex flex-col gap-3">
-          <Skeleton className="h-3 w-44" />
-          <Skeleton className="h-11 w-[min(440px,80vw)]" />
-          <Skeleton className="h-4 w-64" />
+        <div>
+          <Skeleton className="h-4 w-44" />
+          <Skeleton className="sk-skel-title w-[min(440px,80vw)]" />
+          <Skeleton className="h-6 w-64" />
         </div>
         <Skeleton className="h-11 w-56" />
       </div>
