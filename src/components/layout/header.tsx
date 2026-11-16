@@ -7,7 +7,7 @@ import { Mark } from "@/components/site/mark";
 import { EmergencyButton } from "./emergency-button";
 
 const LINKS: { href: string; label: string; optional?: boolean }[] = [
-  { href: "/#cek", label: "Cek risiko" },
+  { href: "/#cari", label: "Cek risiko" },
   { href: "/peta", label: "Peta" },
   { href: "/rencana", label: "Rencana" },
   { href: "/#cara", label: "Cara kerja", optional: true },
@@ -63,7 +63,7 @@ export function Header() {
           </EmergencyButton>
           <Link
             className="btn btn--primary"
-            href="/#cek"
+            href="/#cari"
             onClick={() => setOpen(false)}
           >
             Cek risiko wilayah

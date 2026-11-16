@@ -19,7 +19,7 @@ import { EmergencyButton } from "./emergency-button";
 type FooterLink = { href: string; label: string; icon: LucideIcon };
 
 const EXPLORE: FooterLink[] = [
-  { href: "/#cek", label: "Cek risiko wilayah", icon: MapPin },
+  { href: "/#cari", label: "Cek risiko wilayah", icon: MapPin },
   { href: "/peta", label: "Peta risiko", icon: Map },
   { href: "/rencana", label: "Rencana siaga", icon: LayoutList },
   { href: "/laporan", label: "Laporan warga", icon: MessageSquareWarning },
@@ -76,7 +76,7 @@ export function Footer() {
             Cek risiko wilayahmu hari ini, lalu susun rencana siaga keluarga.
             Gratis, tanpa akun, dan tidak meminta data pribadi.
           </p>
-          <Link className="btn btn--primary btn--xl" href="/#cek">
+          <Link className="btn btn--primary btn--xl" href="/#cari">
             Cek risiko wilayah
             <svg className="m-arrow" viewBox="0 0 12 12" aria-hidden="true">
               <path className="m-arrow__stem" d="M1 6h8" />

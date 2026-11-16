@@ -32,7 +32,7 @@ export function ActionBar() {
 
   return (
     <div className={on && !atClose ? "sk-actionbar is-on" : "sk-actionbar"}>
-      <Link className="btn btn--primary" href="/#cek">
+      <Link className="btn btn--primary" href="/#cari">
         Cek risiko wilayah
       </Link>
     </div>

@@ -393,6 +393,11 @@ main > .hero.sk-sky {
 }
 
 /* the hero search: one 56px row; matches float under it, so typing never moves the hero */
+/* #cari, the target of every "Cek risiko" link: lands mid-screen, so the headline stays in view */
+.sk-hero-search__anchor {
+  width: min(100%, 560px);
+  scroll-margin-top: 40svh;
+}
 .sk-hero-search {
   position: relative;
   z-index: 2;
@@ -550,7 +555,6 @@ main > .hero.sk-sky {
   background: var(--p-bg);
   color: var(--p-ink);
   align-content: start;
-  height: 100%;
 }
 .sk-feature__head {
   display: flex;
@@ -592,9 +596,11 @@ main > .hero.sk-sky {
 .sk-feature li:first-child {
   border-top: 0;
 }
+/* min-height: 0 undoes the form checkbox row's 44px (.sk-check below), which drew tall bars here */
 .sk-feature li .sk-check {
   width: 16px;
   height: 16px;
+  min-height: 0;
   border-radius: 4px;
   border: 1px solid var(--line-strong);
   flex: 0 0 auto;
@@ -851,10 +857,22 @@ main > .hero.sk-sky {
   background: var(--p-action);
 }
 
-/* the fitur cards: the product's screen floats on the lit panel, one step in from its edge */
+/* the fitur cards: the product's screen sits on a flat sky panel, one step in from its edge, and the
+   panel is as tall as the screen's content (no stretched, empty window) */
+main > section#fitur {
+  height: auto;
+}
+#fitur .group + .group {
+  margin-top: var(--card-gap);
+}
+#fitur .card > .panel {
+  --p-h: 0px;
+  min-height: 0;
+  background: var(--p-surface-2);
+}
 .card > .panel > .sk-feature {
-  position: absolute;
-  inset: clamp(12px, 1.5vw, 22px);
+  position: relative;
+  margin: clamp(12px, 1.5vw, 22px);
   border-radius: var(--r-sm);
   border: 1px solid color-mix(in srgb, var(--p-ink) 6%, transparent);
   box-shadow: 0 1px 2px color-mix(in srgb, var(--p-ink) 6%, transparent);
@@ -1181,9 +1199,6 @@ main > .hero.sk-sky {
   .sk-steps b {
     font-size: var(--t-body);
   }
-  .card > .panel {
-    --p-h: 150px;
-  }
   .card {
     --c-pad: 18px;
   }
@@ -1191,7 +1206,7 @@ main > .hero.sk-sky {
     margin-bottom: 24px;
   }
   .card > .panel > .sk-feature {
-    inset: 10px;
+    margin: 10px;
     padding: 12px;
   }
   .sk-feature__upload {
@@ -1223,9 +1238,6 @@ main > .hero.sk-sky {
   /* the plan card's 594px leaves 18 over a 768 screen: the section keeps its screen, the air goes */
   main > section#cara {
     --padb: 54px;
-  }
-  #fitur .card > .panel {
-    --p-h: 200px;
   }
 }
 
@@ -2088,18 +2100,6 @@ main > .hero.sk-sky {
   margin: 0;
 }
 
-/* phone cards: the product window fades at its foot instead of ending on a hard cut */
-@media (max-width: 639px) {
-  .card > .panel > .sk-feature::after {
-    content: "";
-    position: absolute;
-    inset: auto 0 0 0;
-    height: 40px;
-    background: linear-gradient(to top, var(--p-bg) 32%, transparent);
-    pointer-events: none;
-  }
-}
-
 /* the map's location button reads as a quiet secondary control, not plain text */
 .sk-geo .btn {
   height: var(--btn-h, 48px);
@@ -2140,7 +2140,8 @@ main > .hero.sk-sky {
   scroll-margin-block: calc(var(--nav) + 16px) calc(var(--bar) + 16px);
 }
 /* a section focused by a landing link (hash-scroll.tsx) is a Tab start point, not a control */
-section[tabindex="-1"]:focus {
+section[tabindex="-1"]:focus,
+#cari[tabindex="-1"]:focus {
   outline: none;
 }
 .sk-risk,
@@ -4497,6 +4498,11 @@ html {
 .sk-rank > li {
   display: grid;
   min-height: 76px;
+}
+.sk-rank .sk-district-list__name b {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .sk-rank__n {
   min-width: 2ch;

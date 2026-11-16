@@ -141,7 +141,7 @@ async function DistrictRanking() {
     .slice(0, RANKED);
   if (ranked.length === 0) {
     return (
-      <p className="sk-list__empty sk-rank">
+      <p className="sk-list__empty">
         Data risiko belum tersedia. Coba muat ulang halaman ini beberapa saat
         lagi.
       </p>
@@ -173,7 +173,7 @@ function DistrictRankingSkeleton() {
   return (
     <div aria-busy="true">
       <LoadingStatus />
-      <ol className="sk-district-list sk-rank">
+      <ol className="sk-district-list sk-rank" aria-hidden="true">
         {Array.from({ length: RANKED }, (_, index) => (
           <li key={index} className="sk-rank__ghost">
             <Skeleton className="h-11 w-full" />
@@ -197,9 +197,11 @@ export default function HomePage() {
               Cek skor risiko wilayahmu hari ini, lalu susun rencana siaga
               keluarga. Tanpa akun, tanpa data pribadi.
             </p>
-            <Suspense fallback={<HeroSearchSkeleton />}>
-              <HeroSearchPanel />
-            </Suspense>
+            <div className="sk-hero-search__anchor" id="cari">
+              <Suspense fallback={<HeroSearchSkeleton />}>
+                <HeroSearchPanel />
+              </Suspense>
+            </div>
             <ul className="sk-sky__stats" aria-label="Cakupan dan sumber data">
               <li>
                 <b>
@@ -250,7 +252,7 @@ export default function HomePage() {
       </section>
 
       <section
-        className="section g2 ground-base"
+        className="section ground-base"
         id="fitur"
         aria-labelledby="fitur-h"
       >
