@@ -1,4 +1,6 @@
 import { PageSkeleton, Skeleton } from "@/components/ui/skeleton";
+import { FloodTrendSkeleton } from "@/features/risk/components/flood-trend-chart";
+import { JakartaSummarySkeleton } from "@/features/risk/components/jakarta-summary";
 import { DashCardsSkeleton } from "@/features/risk/components/map-dashboard";
 
 /** The dashboard while districts load: the head, the live bar, map beside the cards, then the list. */
@@ -14,6 +16,10 @@ export default function Loading() {
           <div className="sk-dash__main">
             <div className="sk-map-shell sk-dash__map">
               <Skeleton className="sk-map rounded-none" />
+            </div>
+            <div className="sk-dash__bottom">
+              <JakartaSummarySkeleton />
+              <FloodTrendSkeleton />
             </div>
           </div>
           <div className="sk-dash__aside">

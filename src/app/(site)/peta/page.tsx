@@ -4,8 +4,14 @@ import { connection } from "next/server";
 import { List } from "lucide-react";
 import { UseLocation } from "@/components/map/use-location";
 import { RiskBadge } from "@/components/risk-badge";
+import { FloodTrendChart } from "@/features/risk/components/flood-trend-chart";
+import { JakartaSummary } from "@/features/risk/components/jakarta-summary";
 import { MapDashboard } from "@/features/risk/components/map-dashboard";
-import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
+import type { MonthlyFloodCount } from "@/features/risk/flood-trend";
+import {
+  getFloodTrend,
+  listDistrictsWithScore,
+} from "@/features/risk/server/risk-service";
 import type { DistrictSummary } from "@/features/risk/types";
 import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 
@@ -38,6 +44,13 @@ export default async function MapPage() {
     console.error("GET districts for the map failed", error);
     districts = [];
   }
+  let trend: MonthlyFloodCount[] = [];
+  try {
+    trend = await getFloodTrend();
+  } catch (error) {
+    console.error("GET flood trend for the map failed", error);
+    trend = [];
+  }
   const top = districts.reduce<DistrictSummary | null>(
     (best, d) => (best && best.score >= d.score ? best : d),
     null,
@@ -67,7 +80,16 @@ export default async function MapPage() {
           <UseLocation districts={districts} />
         </header>
 
-        <MapDashboard districts={districts} initialSlug={top?.slug ?? null} />
+        <MapDashboard
+          districts={districts}
+          initialSlug={top?.slug ?? null}
+          bottom={
+            <div className="sk-dash__bottom">
+              <JakartaSummary districts={districts} />
+              <FloodTrendChart trend={trend} />
+            </div>
+          }
+        />
 
         <section className="sk-peta__list" aria-labelledby="daftar-h">
           <div className="sk-card__head">

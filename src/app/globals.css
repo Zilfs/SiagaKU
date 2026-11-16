@@ -2241,6 +2241,106 @@ html[data-ground="sky"] {
   width: 12px;
   border-top: 2px dashed var(--risk-very-high);
 }
+.sk-dash__bottom {
+  display: grid;
+  gap: var(--s-4);
+}
+.sk-dash__warnbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-btn);
+  background: color-mix(in oklab, var(--risk-very-high) 12%, var(--p-surface));
+  font-size: var(--t-label);
+}
+.sk-dash__warnbox > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--risk-very-high);
+}
+.sk-dash__trend {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.sk-dash__trend svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.sk-dash__grid-line {
+  stroke: var(--p-ink);
+  stroke-opacity: 0.2;
+  stroke-dasharray: 2 3;
+  vector-effect: non-scaling-stroke;
+}
+.sk-dash__tick {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.sk-dash__area {
+  fill: color-mix(in oklab, var(--p-action) 22%, transparent);
+}
+.sk-dash__line {
+  fill: none;
+  stroke: var(--p-action);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.sk-dash__hit {
+  fill: transparent;
+  outline: none;
+  transition: fill 0.15s;
+}
+.sk-dash__hit.is-latest {
+  fill: color-mix(in oklab, var(--p-action) 8%, transparent);
+}
+.sk-dash__hit.is-active {
+  fill: color-mix(in oklab, var(--p-action) 16%, transparent);
+}
+.sk-dash__hit:focus-visible {
+  stroke: var(--p-action);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.sk-dash__tip {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: var(--r-btn);
+  background: var(--p-ink);
+  color: var(--p-bg);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.sk-dash__months {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+.sk-dash__months .is-latest {
+  color: var(--p-ink);
+  font-weight: 700;
+}
+@media (min-width: 640px) {
+  .sk-dash__bottom {
+    grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr);
+    align-items: start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk-dash__hit {
+    transition: none;
+  }
+}
 @media (min-width: 1024px) {
   .sk-dash__grid {
     grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
