@@ -114,3 +114,39 @@ export function rainHeadline(
     jakartaDate(slotTime(slot)) === jakartaDate(now.getTime()) ? "" : "besok ";
   return `${desc} diprakirakan ${day}${slot.localTime.slice(11, 16)} di ${districtName}.`;
 }
+
+export type ForecastDay = {
+  /** BMKG local date, "YYYY-MM-DD" */
+  date: string;
+  minTemp: number | null;
+  maxTemp: number | null;
+  /** the day's slots added up, one decimal */
+  rainfallMm: number;
+  /** the wettest slot's description */
+  description: string;
+};
+
+/** One entry per local calendar day, in slot order. */
+export function groupSlotsByDay(slots: WeatherSlot[]): ForecastDay[] {
+  const days = new Map<string, WeatherSlot[]>();
+  for (const slot of slots) {
+    const date = slot.localTime.slice(0, 10);
+    days.set(date, [...(days.get(date) ?? []), slot]);
+  }
+  return [...days].map(([date, daySlots]) => {
+    const temps = daySlots
+      .map((s) => s.temperature)
+      .filter((t): t is number => t !== null);
+    const wettest = daySlots.reduce((a, b) =>
+      (b.rainfallMm ?? 0) > (a.rainfallMm ?? 0) ? b : a,
+    );
+    const total = daySlots.reduce((sum, s) => sum + (s.rainfallMm ?? 0), 0);
+    return {
+      date,
+      minTemp: temps.length ? Math.min(...temps) : null,
+      maxTemp: temps.length ? Math.max(...temps) : null,
+      rainfallMm: Math.round(total * 10) / 10,
+      description: wettest.description,
+    };
+  });
+}

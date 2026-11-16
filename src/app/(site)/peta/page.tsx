@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { connection } from "next/server";
 import { List } from "lucide-react";
 import { UseLocation } from "@/components/map/use-location";
-import { RiskBadge } from "@/components/risk-badge";
+import { DistrictList } from "@/features/risk/components/district-list";
 import { FloodTrendChart } from "@/features/risk/components/flood-trend-chart";
 import { JakartaSummary } from "@/features/risk/components/jakarta-summary";
 import { MapDashboard } from "@/features/risk/components/map-dashboard";
@@ -88,34 +87,7 @@ export default async function MapPage() {
             </h2>
             <span className="sk-mono">{districts.length} kecamatan</span>
           </div>
-          <ul className="sk-district-list">
-            {districts.length === 0 ? (
-              <li className="sk-list__empty">
-                Data risiko belum tersedia. Coba muat ulang halaman ini beberapa
-                saat lagi.
-              </li>
-            ) : (
-              districts.map((district) => (
-                <li key={district.slug}>
-                  <Link href={`/wilayah/${district.slug}`}>
-                    <span
-                      className="sk-dot"
-                      data-level={district.level}
-                      aria-hidden="true"
-                    />
-                    <span className="sk-district-list__name">
-                      <b>{district.name}</b>
-                      <span>{district.city}</span>
-                    </span>
-                    <RiskBadge level={district.level} size="sm" />
-                    <span className="sk-mono sk-district-list__score">
-                      {district.score}
-                    </span>
-                  </Link>
-                </li>
-              ))
-            )}
-          </ul>
+          <DistrictList districts={districts} />
         </section>
 
         <p className="sk-detail-note">

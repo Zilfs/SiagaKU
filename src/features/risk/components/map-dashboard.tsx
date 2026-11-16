@@ -4,22 +4,17 @@ import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   CalendarDays,
-  Cloud,
-  CloudDrizzle,
-  CloudFog,
-  CloudLightning,
   CloudRain,
   CloudSun,
   Droplets,
   MapPin,
   Radio,
   Sparkles,
-  Sun,
   TriangleAlert,
   Wind,
-  type LucideIcon,
 } from "lucide-react";
 import { RiskMap } from "@/components/map/risk-map";
+import { WeatherIcon } from "./weather-icon";
 import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
 import type { RainOutlook } from "@/lib/data/open-meteo";
 import type { DistrictSummary, RiskDetail } from "../types";
@@ -32,29 +27,7 @@ import {
   pickCurrentSlot,
   pickNextRainSlot,
   rainHeadline,
-  type WeatherKind,
 } from "../weather-view";
-
-const ICONS: Record<WeatherKind, LucideIcon> = {
-  sun: Sun,
-  "cloud-sun": CloudSun,
-  cloud: Cloud,
-  drizzle: CloudDrizzle,
-  rain: CloudRain,
-  storm: CloudLightning,
-  fog: CloudFog,
-};
-
-function WeatherIcon({
-  kind,
-  size = 18,
-}: {
-  kind: WeatherKind;
-  size?: number;
-}) {
-  const Icon = ICONS[kind];
-  return <Icon size={size} aria-hidden="true" />;
-}
 
 type Loaded = {
   slug: string;

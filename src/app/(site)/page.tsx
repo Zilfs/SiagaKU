@@ -14,10 +14,15 @@ import {
   Search,
   type LucideIcon,
 } from "lucide-react";
-import { HeroSky } from "@/components/site/hero-sky";
+import { HeroDevices } from "@/components/site/hero-devices";
 import { HeroDistrictSearch } from "@/features/risk/components/district-search";
 import { RiskBadge } from "@/components/risk-badge";
-import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
+import {
+  getFloodFrequency,
+  listDistrictsWithScore,
+} from "@/features/risk/server/risk-service";
+import { FloodFrequencyMap } from "@/features/risk/components/flood-frequency-map";
+import { floodShade } from "@/features/risk/flood-frequency";
 import type { DistrictSummary } from "@/features/risk/types";
 import type { RiskLevel } from "@/lib/risk/level";
 import { connection } from "next/server";
@@ -184,25 +189,77 @@ function DistrictRankingSkeleton() {
   );
 }
 
+/** #cek, under the ranking: mainland districts shaded by the last 12 months of recorded flood events. */
+async function FloodFrequency() {
+  const districts = await loadDistricts();
+  let frequency;
+  try {
+    frequency = await getFloodFrequency();
+  } catch (error) {
+    console.error("GET flood frequency for the landing failed", error);
+    return null;
+  }
+  const { counts } = frequency;
+  const max = Math.max(0, ...Object.values(counts));
+  if (districts.length === 0 || max === 0) return null;
+  const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
+  return (
+    <div className="sk-flood">
+      <div className="sk-flood__text">
+        <h3>Kecamatan yang paling sering tergenang.</h3>
+        <p>
+          Makin pekat merahnya, makin sering genangan tercatat di kecamatan itu.
+          Arahkan kursor ke sebuah kecamatan untuk melihat jumlahnya, lalu pilih
+          untuk membuka rinciannya.
+        </p>
+        <p className="sk-flood__note">
+          {total} kejadian genangan tercatat BPBD DKI Jakarta dalam 12 bulan
+          terakhir. Kepulauan Seribu tidak digambar. Batas wilayah ©{" "}
+          <a
+            className="link"
+            href="https://www.openstreetmap.org/copyright"
+            rel="noreferrer"
+            target="_blank"
+          >
+            kontributor OpenStreetMap
+          </a>
+          .
+        </p>
+      </div>
+      <FloodFrequencyMap
+        districts={districts.map((d) => ({
+          slug: d.slug,
+          name: d.name,
+          city: d.city,
+          count: counts[d.id] ?? 0,
+          shade: floodShade(counts[d.id] ?? 0, max),
+        }))}
+      />
+    </div>
+  );
+}
+
 export default function HomePage() {
   return (
     <>
-      <section className="hero sk-sky" data-enter aria-labelledby="hero-h">
-        <HeroSky />
-        <div className="wrap">
-          <div className="hero-text sk-sky__copy">
+      <section className="hero sk-hero" aria-labelledby="hero-h">
+        <div className="wrap sk-hero__grid">
+          <div className="sk-hero__copy">
             <p className="sk-eyebrow">Mitigasi banjir · DKI Jakarta</p>
-            <h1 id="hero-h">Risiko banjir Jakarta, tiap kecamatan.</h1>
+            <h1 id="hero-h">
+              Risiko banjir Jakarta, <em>tiap kecamatan.</em>
+            </h1>
             <p className="hero__lead">
               Cek skor risiko wilayahmu hari ini, lalu susun rencana siaga
               keluarga. Tanpa akun, tanpa data pribadi.
             </p>
-            <div className="sk-hero-search__anchor" id="cari">
+            {/* tabIndex matches what hash-scroll sets on a /#id load, so hydration agrees */}
+            <div className="sk-hero-search__anchor" id="cari" tabIndex={-1}>
               <Suspense fallback={<HeroSearchSkeleton />}>
                 <HeroSearchPanel />
               </Suspense>
             </div>
-            <ul className="sk-sky__stats" aria-label="Cakupan dan sumber data">
+            <ul className="sk-hero__stats" aria-label="Cakupan dan sumber data">
               <li>
                 <b>
                   <CountUp value={44} />
@@ -223,12 +280,14 @@ export default function HomePage() {
               Lihat peta risiko Jakarta
             </Link>
           </div>
+          <HeroDevices />
         </div>
       </section>
 
       <section
         className="section ground-surface"
         id="cek"
+        tabIndex={-1}
         aria-labelledby="cek-h"
       >
         <div className="wrap">
@@ -248,12 +307,16 @@ export default function HomePage() {
           <Suspense fallback={<DistrictRankingSkeleton />}>
             <DistrictRanking />
           </Suspense>
+          <Suspense fallback={<Skeleton className="sk-flood__ghost" />}>
+            <FloodFrequency />
+          </Suspense>
         </div>
       </section>
 
       <section
         className="section ground-base"
         id="fitur"
+        tabIndex={-1}
         aria-labelledby="fitur-h"
       >
         <FeatureDemoGroup>
@@ -467,6 +530,7 @@ export default function HomePage() {
       <section
         className="section ground-inverse"
         id="cara"
+        tabIndex={-1}
         aria-labelledby="cara-h"
       >
         <div className="wrap">
@@ -516,6 +580,7 @@ export default function HomePage() {
       <section
         className="section ground-surface"
         id="data"
+        tabIndex={-1}
         aria-labelledby="data-h"
       >
         <div className="wrap">
@@ -594,6 +659,7 @@ export default function HomePage() {
       <section
         className="section ground-base"
         id="tanya"
+        tabIndex={-1}
         aria-labelledby="tanya-h"
       >
         <div className="wrap">

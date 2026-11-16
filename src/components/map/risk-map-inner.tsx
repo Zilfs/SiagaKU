@@ -115,11 +115,12 @@ export default function RiskMapInner({
         );
     }
 
-    // the panes can settle after the first frame (fonts, the sticky header): one size check
-    const timer = window.setTimeout(() => map.invalidateSize(), 60);
+    // the box settles after the first frame and, on /peta, follows the weather column's height
+    const resize = new ResizeObserver(() => map.invalidateSize());
+    resize.observe(map.getContainer());
 
     return () => {
-      window.clearTimeout(timer);
+      resize.disconnect();
       markers.clear();
       map.remove();
     };

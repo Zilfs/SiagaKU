@@ -6,6 +6,7 @@ import {
   type RainOutlook,
 } from "@/lib/data/open-meteo";
 import { calculateRiskScore } from "@/lib/risk/score";
+import { countFloodEvents, type FloodFrequency } from "../flood-frequency";
 import {
   monthlyFloodCounts,
   trendWindowEnd,
@@ -16,6 +17,7 @@ import {
   findDistrict,
   listDistricts,
   listFloodEventDates,
+  listFloodEventDistricts,
   listFloodEvents,
   listShelters,
 } from "./risk-repository";
@@ -114,4 +116,15 @@ export async function getFloodTrend(
   const since = monthlyFloodCounts([], now, 36)[0].month;
   const dates = await listFloodEventDates(`${since}-01`);
   return monthlyFloodCounts(dates, trendWindowEnd(dates, now));
+}
+
+/** Flood events recorded per district in the 12 months up to `now`, for the landing's map. */
+export async function getFloodFrequency(
+  now = new Date(),
+): Promise<FloodFrequency> {
+  const since = new Date(now);
+  since.setUTCFullYear(since.getUTCFullYear() - 1);
+  return countFloodEvents(
+    await listFloodEventDistricts(since.toISOString().slice(0, 10)),
+  );
 }

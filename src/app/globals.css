@@ -8,59 +8,50 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ------------------------------------------------------------------ SiagaKU palette
-   Sky blue, Cloudy White and Neon Jade (redesign, Nov 2026). Every colour the UI uses lives here;
+   Ivory White, Coal Black and Royal Blue (redesign, Nov 2026). Every colour the UI uses lives here;
    src/lib/palette.ts mirrors the --p-* base values and tests/lib/palette.test.ts checks contrast.
-   Sky (2.95:1) and jade (1.27:1) fail as text on the light ground: they are fills, always with ink
-   text on them. Blue text and links use --p-link (sky-ink). The four risk colours are status only;
-   jade is never a status. */
+   Royal blue carries ivory text (7:1) and is the link colour on light grounds. On coal it is too
+   dark (2.9:1), so dark bands use --p-inv-link for links and focus and an ivory button. The four
+   risk colours are status only. */
 :root {
   /* base palette (mirrored in src/lib/palette.ts) */
-  --p-bg: #fdfdfe;
-  --p-surface: #eef7ff;
-  --p-surface-2: #e1f1ff;
+  --p-bg: #fefefd;
+  --p-surface: #f4f5f7;
+  --p-surface-2: #eaecf1;
   --p-card: #ffffff;
-  --p-ink: #0b1b2e;
-  --p-muted: #44566b;
-  --p-line: #cfe3f5;
-  --p-input-line: #6b7f95;
-  --p-sky: #0099ff;
-  --p-sky-ink: #006bb3;
-  --p-jade: #83fd80;
-  --p-inv-bg: #06233f;
-  --p-inv-surface: #0b3358;
-  --p-inv-band: #012a4a;
-  --p-inv-ink: #fdfdfe;
-  --p-inv-muted: #a9c6e0;
-  --p-inv-link: #66c2ff;
+  --p-ink: #080808;
+  --p-muted: #55585f;
+  --p-line: #e2e4ea;
+  --p-input-line: #7a7e88;
+  --p-blue: #154ecd;
+  --p-tint: #dce6fb;
+  --p-inv-bg: #080808;
+  --p-inv-surface: #171717;
+  --p-inv-band: #080808;
+  --p-inv-ink: #fefefd;
+  --p-inv-muted: #a8abb2;
+  --p-inv-link: #8fb0ff;
   --p-danger: #c62828;
   --p-danger-bg: #fdecec;
-  /* the landing sky's layers, light enough that ink text reads over any of them */
-  --p-sky-top: #cbe8ff;
-  --p-city-far: #b3dcfb;
-  --p-city: #8cc8f3;
-  --p-water: #5cb3ee;
-  --p-flame: #f6c445; /* Monas's gold flame; decorative, never under text */
 
   /* roles */
-  --p-link: var(--p-sky-ink);
-  --p-accent: var(--p-jade);
+  --p-link: var(--p-blue);
+  --p-accent: var(--p-tint);
   --p-accent-ink: var(--p-ink);
-  --p-action: var(--p-sky);
-  --p-action-ink: var(--p-ink);
-  --p-inv-accent: var(--p-jade);
+  --p-action: var(--p-blue);
+  --p-action-ink: var(--p-bg);
+  --p-inv-accent: var(--p-tint);
   --p-inv-accent-ink: var(--p-ink);
-  --p-inv-action: var(--p-sky);
+  --p-inv-action: var(--p-inv-ink);
   --p-inv-action-ink: var(--p-ink);
-  /* sky-ink on light grounds (>= 3:1); dark bands switch it to sky below */
-  --p-focus: var(--p-sky-ink);
-  /* soft sky shadow for cards and lifted pieces */
+  --p-focus: var(--p-blue);
   --p-shadow-sm: 0 1px 2px color-mix(in srgb, var(--p-ink) 6%, transparent);
   --p-shadow:
     0 1px 2px color-mix(in srgb, var(--p-ink) 5%, transparent),
-    0 14px 32px -18px color-mix(in srgb, var(--p-sky) 38%, transparent);
+    0 14px 32px -18px color-mix(in srgb, var(--p-ink) 18%, transparent);
   --p-shadow-lg:
     0 2px 6px color-mix(in srgb, var(--p-ink) 6%, transparent),
-    0 28px 64px -28px color-mix(in srgb, var(--p-sky-ink) 45%, transparent);
+    0 28px 64px -28px color-mix(in srgb, var(--p-ink) 30%, transparent);
 
   /* status tints: notices (amber), errors (red), AI and success (green); not brand accents */
   --p-warn-bg: #fdf3e8;
@@ -109,7 +100,7 @@
   --card-foreground: var(--p-ink);
   --popover: var(--p-card);
   --popover-foreground: var(--p-ink);
-  --primary: var(--p-sky);
+  --primary: var(--p-blue);
   --primary-foreground: var(--p-ink);
   --secondary: var(--p-surface);
   --secondary-foreground: var(--p-ink);
@@ -126,7 +117,7 @@
   --chart-2: var(--risk-moderate);
   --chart-3: var(--risk-high);
   --chart-4: var(--risk-very-high);
-  --chart-5: var(--p-sky);
+  --chart-5: var(--p-blue);
   --radius: 0.75rem;
 
   /* motion: one ease-out for everything; colour fades 300ms, movement 500ms, nothing under 200ms.
@@ -160,7 +151,7 @@ html[data-ground="sky"] {
   --ground-surface: var(--p-surface);
   --ground-ink: var(--p-ink);
   --ground-muted: var(--p-muted);
-  --ground-accent: var(--p-sky);
+  --ground-accent: var(--p-blue);
 }
 
 @theme inline {
@@ -296,141 +287,11 @@ body {
   width: 26px;
   height: 30px;
   flex: 0 0 auto;
-  color: var(--p-sky);
+  color: var(--p-blue);
 }
 .sk-mark path,
 .sk-mark circle {
   vector-effect: non-scaling-stroke;
-}
-
-/* ------------------------------------------------------------------ the landing sky
-   A full-screen sky: gradient, clouds (slow), the skyline with Monas (medium), the water line
-   (fast). The words sit above the skyline (the hero's bottom padding is the layers' height), so
-   they only ever lie on the sky and the white clouds. Scroll-driven, no JS; still elsewhere. */
-main > .hero.sk-sky {
-  --sky-water: clamp(44px, 8svh, 88px);
-  --sky-city: clamp(150px, 30svh, 320px);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: 1fr;
-  height: auto;
-  min-height: 100vh;
-  min-height: 100svh;
-  padding-bottom: calc(var(--sky-city) + var(--sky-water) / 2 + var(--s-5));
-  overflow: hidden;
-  background: linear-gradient(to bottom, var(--p-sky-top), var(--p-bg) 78%);
-}
-.sk-sky__layers {
-  position: absolute;
-  inset: 0;
-  z-index: var(--z-behind);
-  pointer-events: none;
-}
-.sk-sky__layer {
-  position: absolute;
-  left: 0;
-  width: 100%;
-}
-.sk-sky__clouds {
-  top: var(--nav);
-  height: 60%;
-  fill: var(--p-card);
-  opacity: 0.9;
-}
-.sk-sky__city {
-  bottom: calc(var(--sky-water) / 2);
-  height: var(--sky-city);
-}
-.sk-sky__far {
-  fill: var(--p-city-far);
-}
-.sk-sky__near {
-  fill: var(--p-city);
-}
-.sk-sky__flame {
-  fill: var(--p-flame);
-}
-/* runs 12vh under the hero, so rising on scroll never opens a gap at its foot */
-.sk-sky__water {
-  bottom: -12vh;
-  height: calc(var(--sky-water) + 12vh);
-  background: linear-gradient(to bottom, transparent 47px, var(--p-water) 47px);
-}
-.sk-sky__water svg {
-  display: block;
-  width: 100%;
-  height: 48px;
-}
-.sk-sky__sea {
-  fill: var(--p-water);
-}
-.sk-sky__crest {
-  fill: none;
-  stroke: var(--p-sky);
-  stroke-width: 3;
-  vector-effect: non-scaling-stroke;
-}
-/* speed against the page over the first screen of scroll: clouds 0.55x, skyline 0.82x, water 1.08x */
-.sk-sky__clouds {
-  --sky-shift: 45vh;
-}
-.sk-sky__city {
-  --sky-shift: 18vh;
-}
-.sk-sky__water {
-  --sky-shift: -8vh;
-}
-@keyframes sk-sky-drift {
-  to {
-    transform: translate3d(0, var(--sky-shift), 0);
-  }
-}
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    :root:not([data-motion="off"]) .sk-sky__layer {
-      animation: sk-sky-drift linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 100vh;
-      will-change: transform;
-    }
-  }
-}
-
-.sk-sky__copy {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s-4);
-  text-align: center;
-}
-.sk-sky__copy > h1 {
-  max-width: 18ch;
-}
-.sk-sky__copy > .hero__lead {
-  margin: 0;
-  color: var(--p-ink);
-}
-/* ink, not sky-ink: sky-ink on the sky's top is only 4.40:1 */
-.sk-sky__copy > .link {
-  color: var(--p-ink);
-}
-.sk-sky__stats {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: var(--t-small);
-  color: var(--p-ink);
-}
-.sk-sky__stats li + li::before {
-  content: "·" / "";
-  margin-inline: 10px;
-}
-.sk-sky__stats b {
-  font-weight: 600;
 }
 
 /* the hero search: one 56px row; matches float under it, so typing never moves the hero */
@@ -511,7 +372,7 @@ main > .hero.sk-sky {
 }
 .sk-search:focus-within {
   border-color: var(--p-action);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-sky) 22%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-blue) 22%, transparent);
 }
 .sk-search input {
   flex: 1 1 auto;
@@ -781,7 +642,7 @@ main > .hero.sk-sky {
   width: 32px;
   height: 32px;
   border-radius: 999px;
-  background: var(--p-jade);
+  background: var(--p-tint);
   font: 600 var(--t-small) / 1 var(--font-mono);
   color: var(--p-ink);
 }
@@ -1484,6 +1345,21 @@ main > section#fitur {
 .sk-detail-grid > .sk-safepoints {
   grid-column: 7 / span 6;
 }
+/* each pair of cards shares a height, so neither leaves a hole beside the other */
+.sk-detail-grid > :is(.sk-breakdown, .sk-weather, .sk-history, .sk-safepoints) {
+  align-self: stretch;
+}
+.sk-safepoints__more > summary {
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  color: var(--p-link);
+  font-size: var(--t-small);
+  font-weight: 500;
+  cursor: pointer;
+}
+.sk-safepoints__more[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
 .sk-card {
   display: grid;
   gap: var(--s-4);
@@ -1525,45 +1401,50 @@ main > section#fitur {
   font-size: var(--t-label);
   line-height: 1.4;
 }
-.sk-weather__rows {
-  display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sk-weather__rows li {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2px 12px;
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
-}
-.sk-weather__rows li:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-.sk-weather__day {
-  font-weight: 500;
-}
-.sk-weather__cond {
-  grid-column: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+/* the forecast card: "now" (the /peta dashboard's parts), a sideways 3-hour strip, one row per day */
+.sk-weather__sub {
+  margin: var(--s-2) 0 0;
+  font: 500 var(--t-label) / 1.3 var(--font-mono);
   color: var(--muted);
+}
+.sk-weather__hours {
+  display: flex;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0 0 6px;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+.sk-weather__hours li {
+  display: grid;
+  flex: 0 0 auto;
+  justify-items: center;
+  gap: 4px;
+  min-width: 64px;
+  padding: 10px 8px;
+  border-radius: var(--r-md);
+  background: var(--p-surface);
   font-size: var(--t-small);
+  scroll-snap-align: start;
+}
+.sk-weather__hours li:first-child {
+  background: var(--p-tint);
+}
+.sk-weather__hours svg {
+  color: var(--p-link);
+}
+.sk-weather__hours b {
+  font-weight: 600;
 }
 .sk-weather__mm {
-  grid-column: 2;
-  grid-row: 1;
-  align-self: center;
-}
-.sk-weather__time {
-  grid-column: 2;
-  grid-row: 2;
-  justify-self: end;
   color: var(--muted);
   font-size: var(--t-label);
+}
+.sk-weather__days li {
+  grid-template-columns: minmax(0, 1fr) auto auto 7ch;
+  white-space: nowrap;
 }
 .sk-history__list,
 .sk-safepoints__list {
@@ -1593,8 +1474,8 @@ main > section#fitur {
 }
 .sk-history__depth {
   grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
+  grid-row: 1;
+  justify-self: end;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -2098,10 +1979,28 @@ main > section#fitur {
     transition: none;
   }
 }
+/* wide screens: both columns end on one line. The map takes whatever height the weather column
+   leaves over the bottom row, and the two bottom cards share a height. */
 @media (min-width: 1024px) {
   .sk-dash__grid {
     grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
-    align-items: start;
+  }
+  .sk-dash__main {
+    grid-template-rows: minmax(380px, 1fr) auto;
+    align-content: stretch;
+  }
+  .sk-dash__map,
+  .sk-dash__map .sk-map {
+    height: 100%;
+  }
+  .sk-dash__bottom {
+    align-items: stretch;
+  }
+  .sk-dash__aside {
+    align-content: stretch;
+  }
+  .sk-dash__aside > :last-child {
+    align-self: stretch;
   }
 }
 @media (pointer: coarse) {
@@ -2357,9 +2256,11 @@ section[tabindex="-1"]:focus,
 .sk-footer__art {
   display: block;
   margin-top: var(--s-6);
-  height: clamp(200px, 30vw, 460px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 40%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 40%);
+  /* the lower three quarters of the picture at any width, so Monas is never cut off */
+  aspect-ratio: 1920 / 610;
+  min-height: 200px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
 }
 .sk-footer__art img {
   display: block;
@@ -3614,9 +3515,9 @@ section[tabindex="-1"]:focus,
   font-size: var(--t-small);
 }
 .sk-choice.is-on {
-  border-color: var(--p-sky-ink);
+  border-color: var(--p-blue);
   background: var(--p-surface);
-  box-shadow: inset 0 0 0 1px var(--p-sky-ink);
+  box-shadow: inset 0 0 0 1px var(--p-blue);
 }
 .sk-choice-grid--chips {
   display: flex;
@@ -4420,9 +4321,9 @@ html {
 }
 
 /* ------------------------------------------------------------------ redesign: base components
-   Sky, Cloudy White and Neon Jade. Primary = sky fill with ink text (white on sky fails AA);
-   secondary = outline; Links are sky-ink (sky on white is 2.95:1).
-   Cards are white on the tinted surface with a soft sky shadow. Focus is a ring in sky-ink on light grounds (sky in dark bands). */
+   Primary = royal blue fill with ivory text; secondary = outline; links are royal blue.
+   Cards are white on the grey surface with a soft neutral shadow. Focus is a blue ring on light
+   grounds (--p-inv-link in dark bands). */
 :root {
   --link: var(--p-link);
 }
@@ -4432,14 +4333,14 @@ html {
 .sk-tanya__call,
 .sk-chat-emergency {
   --link: var(--p-inv-link);
-  --p-focus: var(--p-sky);
+  --p-focus: var(--p-inv-link);
 }
 :focus-visible {
   outline-color: var(--p-focus);
 }
-/* hover steps toward the ground (lighter sky), so ink on it only gains contrast */
+/* hover steps toward ink: the fill darkens a little under its ivory text */
 .btn--primary:hover {
-  background: color-mix(in oklab, var(--action) 80%, var(--p-bg));
+  background: color-mix(in oklab, var(--action) 86%, var(--p-ink));
 }
 .btn--secondary {
   background: transparent;
@@ -4454,7 +4355,7 @@ html {
   text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
 }
 .card {
-  --c-border: color-mix(in oklab, var(--p-sky) 14%, transparent);
+  --c-border: color-mix(in oklab, var(--p-blue) 14%, transparent);
   box-shadow: var(--p-shadow);
 }
 
@@ -4463,7 +4364,7 @@ html {
    fixed bar itself would trap the phone sheet (position: fixed) inside the bar's box. */
 .nav {
   background: transparent;
-  border-bottom-color: color-mix(in oklab, var(--p-sky) 16%, transparent);
+  border-bottom-color: color-mix(in oklab, var(--p-blue) 16%, transparent);
 }
 .nav::before {
   content: "";
@@ -4488,7 +4389,7 @@ html {
   color: var(--p-link);
 }
 .nav__link::before {
-  background: var(--p-sky);
+  background: var(--p-blue);
 }
 /* the page you are on: ink word, a thicker sky-ink bar under it (3:1 on the light header) (aria-current, set by the header) */
 .nav__link[aria-current="page"] {
@@ -4497,7 +4398,7 @@ html {
 }
 .nav__link[aria-current="page"]::after {
   height: 3px;
-  background: var(--p-sky-ink);
+  background: var(--p-blue);
 }
 .nav {
   z-index: var(--z-header);
@@ -4554,7 +4455,7 @@ html {
 /* a light card inside the navy band takes the light ground's link and focus colours back */
 .ground-inverse .ground-base {
   --link: var(--p-link);
-  --p-focus: var(--p-sky-ink);
+  --p-focus: var(--p-blue);
 }
 /* #cek's map link keeps its own width beside (or under) the heading */
 .section-head--split > .btn {
@@ -4671,11 +4572,11 @@ html {
   background: var(--p-card);
 }
 .sk-wizard__step.is-current {
-  border-color: var(--p-sky-ink);
+  border-color: var(--p-blue);
   box-shadow: var(--p-shadow-sm);
 }
 .sk-wizard__step.is-current .sk-wizard__num {
-  background: var(--p-jade);
+  background: var(--p-tint);
   color: var(--p-ink);
 }
 .sk-wizard__step.is-done .sk-wizard__num {
@@ -4691,7 +4592,7 @@ html {
 }
 /* /rencana/[slug]: step numbers are jade badges with ink, like the landing's how-it-works steps */
 .sk-plan-steps__num {
-  background: var(--p-jade);
+  background: var(--p-tint);
   color: var(--p-ink);
 }
 /* the saved plan's title: the real h1 is clamp(34px, 4vw, 52px) at line-height 1.05, 8px above and below */
@@ -4715,7 +4616,7 @@ html {
   background: var(--p-card);
 }
 .sk-about__index a:hover {
-  border-color: var(--p-sky-ink);
+  border-color: var(--p-blue);
   background: var(--p-surface);
 }
 /* /lapor: the photo picker is the form's first control, so its dashed edge gets the 3:1 boundary */
@@ -4763,4 +4664,855 @@ html {
 /* the root error boundary renders without the header, so no header allowance on top */
 .sk-page--bare {
   --nav: 0px;
+}
+
+/* ------------------------------------------------------------------ landing hero
+   One full screen on ivory: the words and the district search on the left, a tilted laptop and phone on
+   the right (under the words on small screens, cut by the hero edge). The phones drift at
+   different speeds on scroll (scroll-driven, no JS; still where unsupported) and their screens
+   loop a short product preview. All of it stops under reduced motion and data-motion="off". */
+main > .hero.sk-hero {
+  --pw: clamp(170px, 15.5vw, 225px);
+  display: grid;
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-bottom: 0;
+  overflow: clip;
+  background:
+    radial-gradient(48% 56% at 76% 58%, var(--p-tint), transparent 70%),
+    var(--p-bg);
+}
+main > .hero.sk-hero > .wrap.sk-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-rows: none;
+  gap: var(--s-7);
+  align-items: center;
+  height: auto;
+}
+.sk-hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+  padding-bottom: var(--s-8);
+}
+.sk-hero__copy > h1 {
+  max-width: 13ch;
+  font-weight: 600;
+}
+.sk-hero__copy > h1 em {
+  font-style: normal;
+  color: var(--p-blue);
+}
+.sk-hero__copy > .hero__lead {
+  margin: 0;
+  color: var(--p-muted);
+}
+.sk-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-small);
+  color: var(--p-muted);
+}
+.sk-hero__stats li + li::before {
+  content: "·" / "";
+  margin-inline: 10px;
+}
+.sk-hero__stats b {
+  font-weight: 600;
+  color: var(--p-ink);
+}
+
+.sk-devices {
+  position: relative;
+  justify-self: center;
+  width: calc(var(--pw) * 2.4);
+  height: calc(var(--pw) * 3);
+}
+.sk-device {
+  position: absolute;
+}
+.sk-laptop {
+  left: 0;
+  top: 0;
+  width: calc(var(--pw) * 1.78);
+  --drift: 10vh;
+}
+.sk-phone {
+  right: 0;
+  top: 27%;
+  z-index: var(--z-raised);
+  width: var(--pw);
+  --drift: -16vh;
+}
+.sk-laptop__tilt {
+  transform: perspective(1400px) rotateY(14deg) rotateX(6deg) rotate(-4deg);
+}
+.sk-laptop__lid {
+  aspect-ratio: 16 / 10.4;
+  padding: calc(var(--pw) * 0.03);
+  border-radius: calc(var(--pw) * 0.06);
+  background: var(--p-ink);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--p-inv-ink) 22%, transparent),
+    0 40px 70px -30px color-mix(in srgb, var(--p-ink) 55%, transparent);
+}
+.sk-laptop__base {
+  width: 112%;
+  height: calc(var(--pw) * 0.045);
+  margin-left: -6%;
+  border-radius: 2px 2px calc(var(--pw) * 0.05) calc(var(--pw) * 0.05);
+  background: linear-gradient(to bottom, var(--p-inv-muted), var(--p-ink) 70%);
+}
+.sk-laptop__screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: calc(var(--pw) * 0.035);
+  background: var(--p-surface);
+  color: var(--p-ink);
+  font-size: calc(var(--pw) * 0.036);
+  line-height: 1.3;
+}
+.sk-laptop__screen p,
+.sk-phone__screen p {
+  margin: 0;
+}
+.sk-pv-chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.5em 0.8em;
+  background: var(--p-bg);
+  border-bottom: 1px solid var(--p-line);
+}
+.sk-pv-chrome i {
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: var(--p-surface-2);
+}
+.sk-pv-chrome span {
+  margin-left: 0.6em;
+  padding: 0.15em 0.9em;
+  border-radius: 999px;
+  background: var(--p-surface);
+  color: var(--p-muted);
+}
+.sk-pv-dash {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+  gap: 0.7em;
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 0.7em;
+}
+.sk-pv-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  min-height: 0;
+}
+.sk-pv-card {
+  display: grid;
+  gap: 0.25em;
+  padding: 0.7em;
+  border-radius: 0.8em;
+  background: var(--p-card);
+  box-shadow: var(--p-shadow-sm);
+}
+.sk-pv-card--fill {
+  flex: 1 1 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+}
+.sk-pv-big {
+  font-size: 1.9em;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: var(--display-tracking);
+}
+.sk-pv-day {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.25em;
+  border-top: 1px solid var(--p-line);
+}
+.sk-pv-day b {
+  font-weight: 500;
+}
+.sk-pv-day span {
+  color: var(--p-muted);
+}
+/* the map: a pale ground, the bay along the top, a few roads, and the districts' risk dots */
+.sk-pv-map {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.8em;
+  background:
+    linear-gradient(172deg, var(--p-tint) 0 20%, transparent calc(20% + 1px)),
+    linear-gradient(
+      58deg,
+      transparent 49.4%,
+      var(--p-card) 49.5% 50.5%,
+      transparent 50.6%
+    ),
+    linear-gradient(
+      -32deg,
+      transparent 49.4%,
+      var(--p-card) 49.5% 50.5%,
+      transparent 50.6%
+    ),
+    linear-gradient(
+      94deg,
+      transparent 61.4%,
+      var(--p-card) 61.5% 62.5%,
+      transparent 62.6%
+    ),
+    var(--p-surface-2);
+}
+.sk-pv-map i {
+  position: absolute;
+  width: 1.15em;
+  height: 1.15em;
+  margin: -0.575em 0 0 -0.575em;
+  border: 0.14em solid var(--p-card);
+  border-radius: 50%;
+  background: var(--c);
+}
+.sk-pv-map i.is-selected {
+  border-color: var(--p-ink);
+}
+.sk-pv-map i.is-selected::after {
+  content: "";
+  position: absolute;
+  inset: -0.14em;
+  border-radius: 50%;
+  background: var(--c);
+  opacity: 0;
+}
+.sk-pv-chip {
+  position: absolute;
+  top: 0.6em;
+  right: 0.6em;
+  padding: 0.25em 0.8em;
+  border-radius: 999px;
+  background: var(--p-card);
+  box-shadow: var(--p-shadow-sm);
+  font-weight: 500;
+}
+.sk-pv-rain {
+  display: flex;
+  align-items: flex-end;
+  gap: 5%;
+  min-height: 0;
+  padding: 6%;
+  border-radius: 0.6em;
+  background: var(--p-blue);
+}
+.sk-pv-rain i {
+  flex: 1 1 0;
+  height: var(--h);
+  border-radius: 0.2em;
+  background: var(--p-bg);
+  transform-origin: bottom;
+}
+.sk-pv-rain i:nth-child(5) {
+  background: var(--p-ink);
+}
+
+.sk-phone__body {
+  aspect-ratio: 9 / 18.5;
+  padding: calc(var(--pw) * 0.035);
+  border-radius: calc(var(--pw) * 0.17);
+  background: var(--p-ink);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--p-inv-ink) 22%, transparent),
+    0 40px 70px -30px color-mix(in srgb, var(--p-ink) 55%, transparent);
+  transform: perspective(1400px) rotateY(-16deg) rotateX(8deg) rotate(9deg);
+}
+.sk-phone__screen {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--pw) * 0.04);
+  height: 100%;
+  padding: calc(var(--pw) * 0.065);
+  overflow: hidden;
+  border-radius: calc(var(--pw) * 0.135);
+  background: var(--p-bg);
+  color: var(--p-ink);
+  font-size: calc(var(--pw) * 0.05);
+  line-height: 1.35;
+}
+.sk-phone__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+}
+.sk-phone__bar i {
+  width: 22%;
+  height: calc(var(--pw) * 0.05);
+  border-radius: 999px;
+  background: var(--p-ink);
+}
+.sk-pv-kicker {
+  color: var(--p-muted);
+}
+.sk-phone__screen .sk-pv-title {
+  margin-top: calc(var(--pw) * -0.03);
+  font-size: 1.9em;
+  font-weight: 600;
+  letter-spacing: var(--display-tracking);
+}
+.sk-pv-meter {
+  flex: 0 0 auto;
+  height: calc(var(--pw) * 0.03);
+  border-radius: 999px;
+  background: var(--p-surface-2);
+  overflow: hidden;
+}
+.sk-pv-meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--p-blue);
+  transform-origin: left;
+}
+.sk-pv-kit {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  justify-content: space-between;
+  min-height: 0;
+  margin: 0;
+  padding: 0.3em 0.9em;
+  list-style: none;
+  border-radius: calc(var(--pw) * 0.06);
+  background: var(--p-surface);
+}
+.sk-pv-kit li {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding-block: 0.55em;
+  font-weight: 500;
+}
+.sk-pv-kit li + li {
+  border-top: 1px solid var(--p-line);
+}
+.sk-pv-kit i {
+  position: relative;
+  flex: none;
+  width: 1.3em;
+  height: 1.3em;
+  border: 0.12em solid var(--p-input-line);
+  border-radius: 0.35em;
+}
+/* the tick: a blue fill (::before) and an ivory check mark (::after), animated as one */
+.sk-pv-kit i::before,
+.sk-pv-kit i::after {
+  content: "";
+  position: absolute;
+}
+.sk-pv-kit i::before {
+  inset: -0.12em;
+  border-radius: inherit;
+  background: var(--p-blue);
+}
+.sk-pv-kit i::after {
+  left: 34%;
+  top: 10%;
+  width: 30%;
+  height: 58%;
+  border: solid var(--p-bg);
+  border-width: 0 0.16em 0.16em 0;
+  rotate: 45deg;
+}
+.sk-pv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em;
+  padding: 0.8em 0.9em;
+  border-radius: calc(var(--pw) * 0.05);
+  background: var(--p-surface);
+}
+.sk-pv-row b {
+  font-weight: 600;
+}
+.sk-pv-row span {
+  color: var(--p-muted);
+  white-space: nowrap;
+}
+
+/* Every loop rests on the finished look (all ticked, bars full), so without animation each screen
+   is whole. The three ticks and the meter share one 8s clock, so they reset together. */
+@keyframes sk-hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+}
+@keyframes sk-device-drift {
+  to {
+    transform: translate3d(0, var(--drift), 0);
+  }
+}
+@keyframes sk-pv-grow-y {
+  0%,
+  6% {
+    transform: scaleY(0.12);
+  }
+  22%,
+  100% {
+    transform: scaleY(1);
+  }
+}
+@keyframes sk-pv-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  7%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sk-pv-ping {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+@keyframes sk-pv-tick-1 {
+  0%,
+  14% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  18%,
+  94% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes sk-pv-tick-2 {
+  0%,
+  34% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  38%,
+  94% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes sk-pv-tick-3 {
+  0%,
+  54% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  58%,
+  94% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes sk-pv-fill {
+  0%,
+  14% {
+    transform: scaleX(0.5);
+  }
+  20%,
+  34% {
+    transform: scaleX(0.667);
+  }
+  40%,
+  54% {
+    transform: scaleX(0.833);
+  }
+  60%,
+  94% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0.5);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* one entrance per group: the words in a short stagger, then the devices */
+  :root:not([data-motion="off"]) .sk-hero__copy > *,
+  :root:not([data-motion="off"]) .sk-devices {
+    animation: sk-hero-in 600ms var(--ease-base) backwards;
+  }
+  :root:not([data-motion="off"]) .sk-hero__copy > :nth-child(2) {
+    animation-delay: 40ms;
+  }
+  :root:not([data-motion="off"]) .sk-hero__copy > :nth-child(3) {
+    animation-delay: 80ms;
+  }
+  :root:not([data-motion="off"]) .sk-hero__copy > :nth-child(n + 4) {
+    animation-delay: 110ms;
+  }
+  :root:not([data-motion="off"]) .sk-devices {
+    animation-delay: 150ms;
+  }
+  /* the previews: explanatory marketing motion, so they may loop and run long */
+  :root:not([data-motion="off"]) .sk-pv-rain i {
+    animation: sk-pv-grow-y 8s var(--ease-base) calc(var(--i) * 60ms) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-map i {
+    animation: sk-pv-pop 8s var(--ease-base) calc(var(--i) * 90ms) backwards
+      infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-map i.is-selected::after {
+    animation: sk-pv-ping 2s var(--ease-base) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-meter i {
+    animation: sk-pv-fill 8s var(--ease-base) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(4) i::before,
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(4) i::after {
+    animation: sk-pv-tick-1 8s var(--ease-base) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(5) i::before,
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(5) i::after {
+    animation: sk-pv-tick-2 8s var(--ease-base) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(6) i::before,
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(6) i::after {
+    animation: sk-pv-tick-3 8s var(--ease-base) infinite;
+  }
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="off"]) .sk-device {
+      animation: sk-device-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+      will-change: transform;
+    }
+  }
+}
+@media (max-width: 899px) {
+  main > .hero.sk-hero {
+    --pw: clamp(112px, 30vw, 170px);
+    background:
+      radial-gradient(70% 40% at 50% 82%, var(--p-tint), transparent 70%),
+      var(--p-bg);
+  }
+  main > .hero.sk-hero > .wrap.sk-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  .sk-hero__copy {
+    padding-bottom: 0;
+  }
+  /* the phones run off the bottom edge of the hero */
+  .sk-devices {
+    height: calc(var(--pw) * 2.2);
+  }
+}
+
+/* ------------------------------------------------------------------ flood frequency map (#cek)
+   Under the ranking: the words on the left, the district shapes on the right (stacked on small
+   screens). Five shades from white to red; the whole row (words and map) sits on a pale blue panel, so the white districts still read; the active district gets an ink outline. */
+/* the ranking plus the map is taller than one screen, so #cek grows with its content */
+main > section#cek {
+  height: auto;
+}
+.sk-flood {
+  display: grid;
+  gap: var(--s-6);
+  align-items: center;
+  margin-top: var(--s-8);
+  padding: clamp(20px, 4vw, 48px);
+  border-radius: var(--r-lg);
+  background: var(--p-tint);
+}
+.sk-flood__text {
+  display: grid;
+  gap: var(--s-3);
+  max-width: 44ch;
+}
+.sk-flood__text p {
+  margin: 0;
+}
+.sk-flood__note {
+  font-size: var(--t-small);
+}
+.sk-flood__ghost {
+  height: 420px;
+  margin-top: var(--s-8);
+}
+.sk-floodmap {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  justify-self: center;
+}
+.sk-floodmap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.sk-floodmap path {
+  stroke: var(--p-tint);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: fill 150ms ease;
+}
+.sk-floodmap [data-shade="0"] {
+  --shade: var(--p-card);
+}
+.sk-floodmap [data-shade="1"] {
+  --shade: color-mix(in oklab, var(--p-danger) 22%, var(--p-card));
+}
+.sk-floodmap [data-shade="2"] {
+  --shade: color-mix(in oklab, var(--p-danger) 46%, var(--p-card));
+}
+.sk-floodmap [data-shade="3"] {
+  --shade: color-mix(in oklab, var(--p-danger) 72%, var(--p-card));
+}
+.sk-floodmap [data-shade="4"] {
+  --shade: var(--p-danger);
+}
+.sk-floodmap path[data-shade] {
+  fill: var(--shade);
+}
+.sk-floodmap a {
+  outline: none;
+}
+.sk-floodmap path.sk-floodmap__active {
+  fill: none;
+  stroke: var(--p-ink);
+  stroke-width: 2.5;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sk-floodmap a:hover path {
+    fill: color-mix(in oklab, var(--shade) 86%, var(--p-ink));
+  }
+}
+.sk-floodmap__tip {
+  position: absolute;
+  z-index: var(--z-raised);
+  display: grid;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: var(--r-btn);
+  background: var(--p-ink);
+  color: var(--p-inv-ink);
+  font-size: var(--t-label);
+  line-height: 1.35;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 10px));
+}
+.sk-floodmap__tip b {
+  font-weight: 600;
+}
+.sk-floodmap__tip span {
+  color: var(--p-inv-muted);
+}
+.sk-floodmap__legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: var(--s-4) 0 0;
+  font-size: var(--t-label);
+  color: var(--p-ink);
+}
+.sk-floodmap__legend i {
+  width: 28px;
+  height: 10px;
+  background: var(--shade);
+  box-shadow: inset 0 0 0 1px var(--p-line);
+}
+.sk-floodmap__legend i:first-of-type {
+  margin-left: 6px;
+  border-radius: 999px 0 0 999px;
+}
+.sk-floodmap__legend i:last-of-type {
+  margin-right: 6px;
+  border-radius: 0 999px 999px 0;
+}
+@media (min-width: 900px) {
+  .sk-flood {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: var(--s-8);
+  }
+}
+
+/* ------------------------------------------------------------------ /peta district list
+   Search on top, the highest scores first, the rest behind one button. */
+.sk-district-browse {
+  display: grid;
+  gap: var(--s-4);
+}
+.sk-district-browse > .sk-search {
+  max-width: 420px;
+}
+.sk-district-browse > .btn {
+  justify-self: center;
+}
+
+/* ------------------------------------------------------------------ score breakdown extras
+   Under the two bars: the sum worked out, the level scale with a marker at the score, and what
+   heavier rain would do. */
+.sk-sum {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+.sk-sum p {
+  display: grid;
+  flex: 1 1 0;
+  gap: 2px;
+  min-width: 84px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--p-surface);
+}
+.sk-sum span {
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-sum b {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.sk-sum i {
+  color: var(--muted);
+  font-style: normal;
+}
+.sk-sum p.sk-sum__total {
+  background: var(--p-ink);
+  color: var(--p-inv-ink);
+}
+.sk-sum__total span {
+  color: var(--p-inv-muted);
+}
+.sk-scale {
+  display: grid;
+  gap: 6px;
+}
+.sk-scale__track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  height: 10px;
+}
+.sk-scale__track i {
+  border-radius: 999px;
+}
+.sk-scale__track i[data-level="low"] {
+  background: var(--risk-low);
+}
+.sk-scale__track i[data-level="moderate"] {
+  background: var(--risk-moderate);
+}
+.sk-scale__track i[data-level="high"] {
+  background: var(--risk-high);
+}
+.sk-scale__track i[data-level="very_high"] {
+  background: var(--risk-very-high);
+}
+/* the marker: an ink pin with an ivory ring, centred on the score */
+.sk-scale__track b {
+  position: absolute;
+  top: 50%;
+  left: var(--at);
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--p-bg);
+  border-radius: 50%;
+  background: var(--p-ink);
+  box-shadow: var(--p-shadow-sm);
+  transform: translate(-50%, -50%);
+}
+.sk-scale__labels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: var(--t-label);
+  line-height: 1.3;
+}
+.sk-scale__labels li {
+  display: grid;
+}
+.sk-scale__labels li[aria-current] {
+  color: var(--p-ink);
+  font-weight: 600;
+}
+.sk-breakdown__action {
+  margin: 0;
+  font-size: var(--t-small);
+}
+.sk-whatif {
+  display: grid;
+  gap: var(--s-2);
+}
+.sk-whatif ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-whatif li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto 3ch;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+.sk-whatif li > :first-child {
+  display: grid;
+  font-weight: 500;
+}
+.sk-whatif small {
+  color: var(--muted);
+  font-size: var(--t-label);
+  font-weight: 400;
+}
+.sk-whatif b {
+  justify-self: end;
 }

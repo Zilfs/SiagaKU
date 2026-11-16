@@ -65,8 +65,15 @@ export default async function DistrictPage({
   }
   if (!detail) notFound();
 
-  const { district, score, level, components, weather, floodHistory, safePoints } =
-    detail;
+  const {
+    district,
+    score,
+    level,
+    components,
+    weather,
+    floodHistory,
+    safePoints,
+  } = detail;
   const label = RISK_LEVEL_LABELS[level];
 
   return (
@@ -126,6 +133,8 @@ export default async function DistrictPage({
           <ScoreBreakdown
             components={components}
             noRainfallData={detail.noRainfallData}
+            score={score}
+            level={level}
           />
           <WeatherStrip slots={weather.slots} stale={weather.stale} />
           <FloodHistory events={floodHistory} />
@@ -137,9 +146,9 @@ export default async function DistrictPage({
         </div>
 
         <p className="sk-detail-note">
-          Skor dari data BMKG dan Open-Meteo, bukan peringatan resmi. Skor risiko
-          adalah perkiraan berbasis data terbuka, bukan jaminan kondisi lapangan.
-          Untuk darurat, hubungi 112.
+          Skor dari data BMKG dan Open-Meteo, bukan peringatan resmi. Skor
+          risiko adalah perkiraan berbasis data terbuka, bukan jaminan kondisi
+          lapangan. Untuk darurat, hubungi 112.
         </p>
 
         <ChatWidget kecamatanId={district.id} kecamatanName={district.name} />

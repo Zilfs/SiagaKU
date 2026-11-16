@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { WeatherSlot } from "@/lib/data/bmkg";
 import type { RainOutlook } from "@/lib/data/open-meteo";
 import {
+  groupSlotsByDay,
   jakartaHour,
   kindFromCode,
   kindFromDescription,
@@ -150,5 +151,54 @@ describe("freshOutlook", () => {
   });
   it("passes null through", () => {
     expect(freshOutlook(null, now)).toBeNull();
+  });
+});
+
+describe("groupSlotsByDay", () => {
+  const slot = (
+    localTime: string,
+    temperature: number | null,
+    rainfallMm: number | null,
+    description: string,
+  ) => ({
+    localTime,
+    temperature,
+    humidity: null,
+    description,
+    icon: null,
+    rainfallMm,
+    windSpeedKmh: null,
+  });
+
+  it("gives one entry per local date with the range, the total and the wettest description", () => {
+    expect(
+      groupSlotsByDay([
+        slot("2026-11-16 16:00:00", 30, 0.5, "Cerah"),
+        slot("2026-11-16 19:00:00", 27, 2.2, "Hujan Ringan"),
+        slot("2026-11-17 01:00:00", 25, null, "Berawan"),
+      ]),
+    ).toEqual([
+      {
+        date: "2026-11-16",
+        minTemp: 27,
+        maxTemp: 30,
+        rainfallMm: 2.7,
+        description: "Hujan Ringan",
+      },
+      {
+        date: "2026-11-17",
+        minTemp: 25,
+        maxTemp: 25,
+        rainfallMm: 0,
+        description: "Berawan",
+      },
+    ]);
+  });
+
+  it("keeps a day without temperatures and returns nothing for no slots", () => {
+    expect(
+      groupSlotsByDay([slot("2026-11-16 16:00:00", null, 1, "Hujan")])[0],
+    ).toMatchObject({ minTemp: null, maxTemp: null });
+    expect(groupSlotsByDay([])).toEqual([]);
   });
 });

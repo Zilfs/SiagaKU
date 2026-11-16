@@ -20,12 +20,13 @@ const AA_PAIRS: [PaletteKey, PaletteKey][] = [
   ["ink", "bg"],
   ["ink", "surface"],
   ["ink", "surface2"],
-  ["ink", "sky"],
-  ["ink", "jade"],
-  ["skyInk", "bg"],
-  ["skyInk", "card"],
-  ["skyInk", "surface"],
-  ["skyInk", "surface2"],
+  ["ink", "tint"],
+  ["bg", "blue"], // primary buttons, chips, the user's chat bubble
+  ["blue", "bg"], // links
+  ["blue", "card"],
+  ["blue", "surface"],
+  ["blue", "surface2"],
+  ["blue", "tint"],
   ["muted", "bg"],
   ["muted", "card"],
   ["muted", "surface"],
@@ -40,15 +41,9 @@ const AA_PAIRS: [PaletteKey, PaletteKey][] = [
   ["invMuted", "invSurface"],
   ["invMuted", "invBand"],
   ["invLink", "invBg"],
+  ["invLink", "invSurface"],
   ["invLink", "invBand"],
-  ["invInk", "ink"], // dark cards: the chat's emergency and 112 cards
-  ["invMuted", "ink"],
-  // the landing hero: ink over every sky layer, muted (eyebrow) on the sky's top
-  ["ink", "skyTop"],
-  ["ink", "cityFar"],
-  ["ink", "city"],
-  ["ink", "water"],
-  ["muted", "skyTop"],
+  ["ink", "invInk"], // the ivory button in dark bands
 ];
 
 describe("palette contrast", () => {
@@ -60,18 +55,16 @@ describe("palette contrast", () => {
 
   // WCAG 1.4.11: focus rings and control boundaries need 3:1 against the ground they sit on
   const NON_TEXT_PAIRS: [PaletteKey, PaletteKey][] = [
-    ["skyInk", "bg"], // --p-focus on light grounds
-    ["skyInk", "card"],
-    ["skyInk", "surface"],
-    ["skyInk", "surface2"],
-    ["sky", "invBg"], // --p-focus inside dark bands
-    ["sky", "invBand"],
-    ["sky", "ink"],
+    ["blue", "bg"], // --p-focus on light grounds
+    ["blue", "card"],
+    ["blue", "surface"],
+    ["blue", "surface2"],
+    ["invLink", "invBg"], // --p-focus inside dark bands
+    ["invLink", "invSurface"],
     ["inputLine", "bg"],
     ["inputLine", "card"],
     ["inputLine", "surface"],
     ["inputLine", "surface2"],
-    ["skyInk", "skyTop"], // the hero's focus rings on the sky
   ];
   it.each(NON_TEXT_PAIRS)("%s on %s is at least 3:1", (fg, ground) => {
     expect(contrastRatio(PALETTE[fg], PALETTE[ground])).toBeGreaterThanOrEqual(
@@ -79,8 +72,7 @@ describe("palette contrast", () => {
     );
   });
 
-  it("sky and jade fail as text on the light ground, so they stay fills", () => {
-    expect(contrastRatio(PALETTE.sky, PALETTE.bg)).toBeLessThan(4.5);
-    expect(contrastRatio(PALETTE.jade, PALETTE.bg)).toBeLessThan(4.5);
+  it("royal blue is too dark on coal, so dark bands use invLink", () => {
+    expect(contrastRatio(PALETTE.blue, PALETTE.invBg)).toBeLessThan(3);
   });
 });
