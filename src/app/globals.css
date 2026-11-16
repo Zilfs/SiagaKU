@@ -2045,8 +2045,8 @@ main > section#fitur {
   fill: color-mix(in oklab, var(--p-action) 16%, transparent);
 }
 .sk-dash__hit:focus-visible {
-  stroke: var(--p-action);
-  stroke-width: 2;
+  stroke: var(--p-focus);
+  stroke-width: 3;
   vector-effect: non-scaling-stroke;
 }
 .sk-dash__tip {
@@ -2170,8 +2170,8 @@ main > section#fitur {
 }
 
 /* ------------------------------------------------------------------ landing refresh
-   UI UX Pro Max "Trust & Authority + Accessible & Ethical", mapped to the docs/08 sea-blue
-   identity (the generator's alert red was rejected: the brief asks for calm, not panic). */
+   UI UX Pro Max "Trust & Authority + Accessible & Ethical", mapped to the Sky,
+   Cloudy White and Neon Jade palette (the generator's alert red was rejected: calm, not panic). */
 /* the feature cards count themselves: 01 to 04 in the heading, no extra row */
 .sk-card-index {
   margin-right: 8px;
@@ -3608,9 +3608,9 @@ section[tabindex="-1"]:focus,
   font-size: var(--t-small);
 }
 .sk-choice.is-on {
-  border-color: var(--p-action);
+  border-color: var(--p-sky-ink);
   background: var(--p-surface);
-  box-shadow: inset 0 0 0 1px var(--p-action);
+  box-shadow: inset 0 0 0 1px var(--p-sky-ink);
 }
 .sk-choice-grid--chips {
   display: flex;
@@ -4415,8 +4415,8 @@ html {
 
 /* ------------------------------------------------------------------ redesign: base components
    Sky, Cloudy White and Neon Jade. Primary = sky fill with ink text (white on sky fails AA);
-   secondary = outline; accent = jade fill with ink. Links are sky-ink (sky on white is 2.95:1).
-   Cards are white on the tinted surface with a soft sky shadow. Focus is a 3px sky ring. */
+   secondary = outline; Links are sky-ink (sky on white is 2.95:1).
+   Cards are white on the tinted surface with a soft sky shadow. Focus is a ring in sky-ink on light grounds (sky in dark bands). */
 :root {
   --link: var(--p-link);
 }
@@ -4443,13 +4443,6 @@ html {
   background: color-mix(in oklab, var(--action) 10%, var(--bg));
   border-color: var(--action);
 }
-.btn--accent {
-  background: var(--p-jade);
-  color: var(--p-ink);
-}
-.btn--accent:hover {
-  background: color-mix(in oklab, var(--p-jade) 75%, var(--p-bg));
-}
 .link {
   color: var(--link);
   text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
@@ -4457,17 +4450,6 @@ html {
 .card {
   --c-border: color-mix(in oklab, var(--p-sky) 14%, transparent);
   box-shadow: var(--p-shadow);
-}
-.badge--accent,
-.sk-tag--accent {
-  border-color: transparent;
-  background: var(--p-jade);
-  color: var(--p-ink);
-}
-.sk-tag--sky {
-  border-color: transparent;
-  background: var(--p-surface-2);
-  color: var(--p-link);
 }
 
 /* ------------------------------------------------------------------ redesign: header
@@ -4502,14 +4484,14 @@ html {
 .nav__link::before {
   background: var(--p-sky);
 }
-/* the page you are on: ink word, a thicker jade bar under it (aria-current, set by the header) */
+/* the page you are on: ink word, a thicker sky-ink bar under it (3:1 on the light header) (aria-current, set by the header) */
 .nav__link[aria-current="page"] {
   color: var(--p-ink);
   font-weight: 700;
 }
 .nav__link[aria-current="page"]::after {
   height: 3px;
-  background: var(--p-jade);
+  background: var(--p-sky-ink);
 }
 .nav {
   z-index: var(--z-header);
@@ -4770,4 +4752,9 @@ html {
   .sk-missing > .wrap {
     border-image: none;
   }
+}
+
+/* the root error boundary renders without the header, so no header allowance on top */
+.sk-page--bare {
+  --nav: 0px;
 }

@@ -272,7 +272,7 @@ export default function AboutPage() {
               <li>
                 Laporan menyimpan foto, titik lokasi (dari GPS-mu atau titik
                 tengah kecamatan yang kamu pilih), dan keterangan opsional,
-                tanpa nama pelapor. AI memeriksa fotonya sebelum laporan tampil.
+                tanpa nama pelapor.
               </li>
               <li>
                 Peta laporan warga hanya menampilkan laporan 72 jam terakhir,

@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Moments } from "@/components/taste/moments";
 import { PALETTE } from "@/lib/palette";
+import { resolveSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 // The whole interface, display sizes, body copy and numerals use Jakarta Sans (Hirzi, 15 Nov).
@@ -13,8 +14,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 // Absolute URLs for the share image; the production URL when NEXT_PUBLIC_SITE_URL is unset.
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://siaga-ku.vercel.app";
+const SITE_URL = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 
 const TITLE = "SiagaKU: Cek risiko banjir Jakarta per kecamatan";
 const DESCRIPTION =

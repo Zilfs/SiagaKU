@@ -10,7 +10,7 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <main className="sk-page sk-missing">
+    <main className="sk-page sk-page--bare sk-missing">
       <div className="wrap">
         <p className="sk-eyebrow">Galat · SiagaKU</p>
         <h1>Terjadi kesalahan</h1>
