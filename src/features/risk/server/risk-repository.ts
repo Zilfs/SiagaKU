@@ -69,6 +69,15 @@ export async function listFloodEvents(
   }));
 }
 
+export async function listFloodEventDates(since: string): Promise<string[]> {
+  const { data, error } = await supabaseServer()
+    .from("flood_events")
+    .select("event_date")
+    .gte("event_date", since);
+  if (error) throw error;
+  return (data ?? []).map((r) => r.event_date as string);
+}
+
 export async function listShelters(districtId: number): Promise<SafePoint[]> {
   const { data, error } = await supabaseServer()
     .from("shelters")

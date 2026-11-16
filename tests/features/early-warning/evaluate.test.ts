@@ -23,6 +23,7 @@ function slot(
     description,
     icon: null,
     rainfallMm,
+    windSpeedKmh: 10,
   };
 }
 

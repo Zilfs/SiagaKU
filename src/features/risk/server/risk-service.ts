@@ -1,11 +1,17 @@
 import "server-only";
 import { getBmkgForecast } from "@/lib/data/bmkg";
-import { getMaxRainfall3Days } from "@/lib/data/open-meteo";
+import {
+  getMaxRainfall3Days,
+  getRainOutlook,
+  type RainOutlook,
+} from "@/lib/data/open-meteo";
 import { calculateRiskScore } from "@/lib/risk/score";
+import { monthlyFloodCounts, type MonthlyFloodCount } from "../flood-trend";
 import type { District, DistrictSummary, RiskDetail } from "../types";
 import {
   findDistrict,
   listDistricts,
+  listFloodEventDates,
   listFloodEvents,
   listShelters,
 } from "./risk-repository";
@@ -85,4 +91,22 @@ export async function getRiskDetail(
     floodHistory,
     safePoints,
   };
+}
+
+export async function getDistrictOutlook(
+  idOrSlug: string,
+): Promise<{ found: false } | { found: true; outlook: RainOutlook | null }> {
+  const d = await findDistrict(
+    /^\d+$/.test(idOrSlug) ? Number(idOrSlug) : idOrSlug,
+  );
+  if (!d) return { found: false };
+  return { found: true, outlook: await getRainOutlook(d.id, d.lat, d.lng) };
+}
+
+/** Jakarta-wide flood events per month for the last 12 months. */
+export async function getFloodTrend(
+  now = new Date(),
+): Promise<MonthlyFloodCount[]> {
+  const first = monthlyFloodCounts([], now)[0].month;
+  return monthlyFloodCounts(await listFloodEventDates(`${first}-01`), now);
 }
