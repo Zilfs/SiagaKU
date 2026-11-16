@@ -69,6 +69,31 @@ export async function listFloodEvents(
   }));
 }
 
+// shortcut: PostgREST caps at 1000 rows, fine for ~240 events; aggregate in SQL if events grow past that
+export async function listFloodEventDates(since: string): Promise<string[]> {
+  const { data, error } = await supabaseServer()
+    .from("flood_events")
+    .select("event_date")
+    .gte("event_date", since);
+  if (error) throw error;
+  return (data ?? []).map((r) => r.event_date as string);
+}
+
+// shortcut: same 1000-row cap as listFloodEventDates
+export async function listFloodEventDistricts(
+  since: string,
+): Promise<{ districtId: number; date: string }[]> {
+  const { data, error } = await supabaseServer()
+    .from("flood_events")
+    .select("district_id, event_date")
+    .gte("event_date", since);
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    districtId: r.district_id as number,
+    date: r.event_date as string,
+  }));
+}
+
 export async function listShelters(districtId: number): Promise<SafePoint[]> {
   const { data, error } = await supabaseServer()
     .from("shelters")

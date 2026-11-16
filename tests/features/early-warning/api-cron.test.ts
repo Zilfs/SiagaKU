@@ -45,6 +45,7 @@ const heavyRain: BmkgForecast = {
       description: "Hujan Lebat",
       icon: null,
       rainfallMm: 60,
+      windSpeedKmh: 10,
     },
   ],
 };

@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Moments } from "@/components/taste/moments";
+import { PALETTE } from "@/lib/palette";
+import { resolveSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 // The whole interface, display sizes, body copy and numerals use Jakarta Sans (Hirzi, 15 Nov).
@@ -11,10 +13,30 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+// Absolute URLs for the share image; the production URL when NEXT_PUBLIC_SITE_URL is unset.
+const SITE_URL = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
+
+const TITLE = "SiagaKU: Cek risiko banjir Jakarta per kecamatan";
+const DESCRIPTION =
+  "Cek skor risiko banjir kecamatanmu hari ini, lihat dari mana angkanya, lalu susun rencana siaga keluarga. Tanpa akun, tanpa data pribadi.";
+
 export const metadata: Metadata = {
-  title: "SiagaKU: Cek risiko banjir Jakarta per kecamatan",
-  description:
-    "Cek skor risiko banjir kecamatanmu hari ini, lihat dari mana angkanya, lalu susun rencana siaga keluarga. Tanpa akun, tanpa data pribadi.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  // One share card for the whole site (pages keep their own <title>); the image is app/opengraph-image.tsx.
+  openGraph: {
+    type: "website",
+    siteName: "SiagaKU",
+    locale: "id_ID",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
   appleWebApp: {
     capable: true,
     title: "SiagaKU",
@@ -27,7 +49,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0E5E8C",
+  themeColor: PALETTE.bg,
   colorScheme: "light",
 };
 
@@ -41,6 +63,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-ground="sky"
       data-buttons="solid"
       data-motion=""
+      // Next switches smooth scrolling off for route changes, so a new page starts at the top at once
+      data-scroll-behavior="smooth"
       className={`${jakarta.variable}`}
     >
       <body>

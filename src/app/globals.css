@@ -8,27 +8,69 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ------------------------------------------------------------------ SiagaKU palette
-   Brand colours from docs/08 UI-UX.md. The interface stays neutral; sea blue is the one
-   accent (primary action, focus, links) and the four risk colours are status, never decoration. */
+   Ivory White, Coal Black and Royal Blue (redesign, Nov 2026). Every colour the UI uses lives here;
+   src/lib/palette.ts mirrors the --p-* base values and tests/lib/palette.test.ts checks contrast.
+   Royal blue carries ivory text (7:1) and is the link colour on light grounds. On coal it is too
+   dark (2.9:1), so dark bands use --p-inv-link for links and focus and an ivory button. The four
+   risk colours are status only. */
 :root {
-  --p-bg: #f7fafc;
-  --p-surface: #e9f0f4;
-  --p-ink: #0b1b26;
-  --p-muted: #445259;
-  --p-accent: #0e5e8c;
-  --p-accent-ink: #ffffff;
-  --p-action: #0e5e8c;
-  --p-action-ink: #ffffff;
-  --p-inv-bg: #0a2233;
-  --p-inv-surface: #123348;
-  --p-inv-ink: #f2f7fa;
-  --p-inv-muted: #a7bac7;
-  --p-inv-accent: #f2f7fa;
-  --p-inv-accent-ink: #0a2233;
-  --p-inv-action: #f2f7fa;
-  --p-inv-action-ink: #0a2233;
+  /* base palette (mirrored in src/lib/palette.ts) */
+  --p-bg: #fefefd;
+  --p-surface: #f4f5f7;
+  --p-surface-2: #eaecf1;
+  --p-card: #ffffff;
+  --p-ink: #080808;
+  --p-muted: #55585f;
+  --p-line: #e2e4ea;
+  --p-input-line: #7a7e88;
+  --p-blue: #154ecd;
+  --p-tint: #dce6fb;
+  --p-inv-bg: #080808;
+  --p-inv-surface: #171717;
+  --p-inv-band: #080808;
+  --p-inv-ink: #fefefd;
+  --p-inv-muted: #a8abb2;
+  --p-inv-link: #8fb0ff;
+  --p-danger: #c62828;
+  --p-danger-bg: #fdecec;
 
-  --font-display: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  /* roles */
+  --p-link: var(--p-blue);
+  --p-accent: var(--p-tint);
+  --p-accent-ink: var(--p-ink);
+  --p-action: var(--p-blue);
+  --p-action-ink: var(--p-bg);
+  --p-inv-accent: var(--p-tint);
+  --p-inv-accent-ink: var(--p-ink);
+  --p-inv-action: var(--p-inv-ink);
+  --p-inv-action-ink: var(--p-ink);
+  --p-focus: var(--p-blue);
+  --p-shadow-sm: 0 1px 2px color-mix(in srgb, var(--p-ink) 6%, transparent);
+  --p-shadow:
+    0 1px 2px color-mix(in srgb, var(--p-ink) 5%, transparent),
+    0 14px 32px -18px color-mix(in srgb, var(--p-ink) 18%, transparent);
+  --p-shadow-lg:
+    0 2px 6px color-mix(in srgb, var(--p-ink) 6%, transparent),
+    0 28px 64px -28px color-mix(in srgb, var(--p-ink) 30%, transparent);
+
+  /* status tints: notices (amber), errors (red), AI and success (green); not brand accents */
+  --p-warn-bg: #fdf3e8;
+  --p-warn-bg-2: #fff7ed;
+  --p-warn-line: #f0d7b8;
+  --p-warn-ink: #43260c;
+  --p-warn-muted: #6b4a2a;
+  --p-danger-bg-2: #f8dede;
+  --p-danger-line: #f2c9c9;
+  --p-danger-ink: #5a1414;
+  --p-danger-text: #9b1c1c;
+  --p-ai-bg: #e3f2f0;
+  --p-ai-ink: #0d6b64;
+  --p-ai-ink-2: #104a46;
+  --p-ok-bg: #e3f2e8;
+  --p-ok-ink: #1c6b3e;
+
+  --font-display:
+    var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --font-text: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --display-weight: 500;
@@ -36,49 +78,80 @@
   --display-tracking-xl: -0.045em;
   --ly-scale: 1;
 
-  /* risk levels: colour + label + icon, always together */
+  /* risk levels: colour + label + icon, always together (unchanged by the redesign) */
   --risk-low: #2e9e5b;
+  --risk-low-bg: #dff2e6;
+  --risk-low-ink: #1c6b3e;
   --risk-moderate: #e2b007;
+  --risk-moderate-bg: #fbf0c9;
   --risk-moderate-ink: #3b2f00;
   --risk-high: #e8771e;
+  --risk-high-bg: #fbe4d3;
+  --risk-high-ink: #8a3d06;
   --risk-very-high: #c62828;
+  --risk-very-high-bg: #f8dede;
+  --risk-very-high-ink: #8d1a1a;
   --risk-track: #dfe8ee;
 
   /* shadcn tokens, so later app screens inherit the same system */
-  --background: #f7fafc;
-  --foreground: #0b1b26;
-  --card: #ffffff;
-  --card-foreground: #0b1b26;
-  --popover: #ffffff;
-  --popover-foreground: #0b1b26;
-  --primary: #0e5e8c;
-  --primary-foreground: #ffffff;
-  --secondary: #e9f0f4;
-  --secondary-foreground: #0b1b26;
+  --background: var(--p-bg);
+  --foreground: var(--p-ink);
+  --card: var(--p-card);
+  --card-foreground: var(--p-ink);
+  --popover: var(--p-card);
+  --popover-foreground: var(--p-ink);
+  --primary: var(--p-blue);
+  --primary-foreground: var(--p-ink);
+  --secondary: var(--p-surface);
+  --secondary-foreground: var(--p-ink);
   /* --muted is the kit's muted text colour; the pale fill is --surface / --color-muted below */
-  --muted: #445259;
-  --muted-foreground: #445259;
-  --accent: #dcebf3;
-  --accent-foreground: #0b1b26;
-  --destructive: #c62828;
-  --border: #d6e2e9;
-  --input: #d6e2e9;
-  --ring: #0e5e8c;
-  --chart-1: #2e9e5b;
-  --chart-2: #e2b007;
-  --chart-3: #e8771e;
-  --chart-4: #c62828;
-  --chart-5: #0e5e8c;
+  --muted: var(--p-muted);
+  --muted-foreground: var(--p-muted);
+  --accent: var(--p-surface-2);
+  --accent-foreground: var(--p-ink);
+  --destructive: var(--p-danger);
+  --border: var(--p-line);
+  --input: var(--p-line);
+  --ring: var(--p-focus);
+  --chart-1: var(--risk-low);
+  --chart-2: var(--risk-moderate);
+  --chart-3: var(--risk-high);
+  --chart-4: var(--risk-very-high);
+  --chart-5: var(--p-blue);
   --radius: 0.75rem;
+
+  /* motion: one ease-out for everything; colour fades 300ms, movement 500ms, nothing under 200ms.
+     The kit's --ease/--dur (src/styles/taste/system.css) read the same values. */
+  --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-color: 300ms;
+  --dur-move: 500ms;
+  --ease: var(--ease-base);
+  --dur: var(--dur-color);
+
+  /* z-index scale, low to high. Local layers (inside a component's own stacking context):
+     behind -1 < raised 1 (+1, +2 for a second and third layer). Page layers: sticky alert band 30 <
+     chat button 35 < phone action bar 40 < chat scrim 44 < chat sheet 45 < header 50 (the kit's
+     .nav; its phone sheet actions 51). The map overlay chip, 650, lives inside the map's own stacking
+     context: above Leaflet's panes (< 700), below its popups (700) and controls (800). The emergency
+     dialog is a native <dialog> in the top layer, so it needs no z-index. */
+  --z-behind: -1;
+  --z-raised: 1;
+  --z-sticky: 30;
+  --z-fab: 35;
+  --z-actionbar: 40;
+  --z-scrim: 44;
+  --z-sheet: 45;
+  --z-header: 50;
+  --z-map-overlay: 650;
 }
 
 /* the sky ground is the page's one lit ground (footer--statement and UI panels) */
 html[data-ground="sky"] {
-  --ground-bg: #d7e4ee;
-  --ground-surface: #e4edf4;
-  --ground-ink: #0b1b26;
-  --ground-muted: #4a5c68;
-  --ground-accent: #0e5e8c;
+  --ground-bg: var(--p-surface-2);
+  --ground-surface: var(--p-surface);
+  --ground-ink: var(--p-ink);
+  --ground-muted: var(--p-muted);
+  --ground-accent: var(--p-blue);
 }
 
 @theme inline {
@@ -107,7 +180,7 @@ html[data-ground="sky"] {
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
-  --color-muted: #e9f0f4;
+  --color-muted: var(--p-surface);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
@@ -138,7 +211,12 @@ html[data-ground="sky"] {
 }
 
 /* ------------------------------------------------------------------ data voice
-   Every number that drives a decision is set in the mono face with tabular figures. */
+   Every number that drives a decision is set in the mono face with tabular figures. Tabular figures
+   site-wide too (scores, counts, mm, degrees, times): set as a feature on the body, because the many
+   `font:` shorthands below reset font-variant-numeric but leave font-feature-settings inherited. */
+body {
+  font-feature-settings: "tnum" 1;
+}
 .sk-mono {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -160,6 +238,18 @@ html[data-ground="sky"] {
   background: currentColor;
   flex: 0 0 auto;
 }
+.sk-dot[data-level="low"] {
+  background: var(--risk-low);
+}
+.sk-dot[data-level="moderate"] {
+  background: var(--risk-moderate);
+}
+.sk-dot[data-level="high"] {
+  background: var(--risk-high);
+}
+.sk-dot[data-level="very_high"] {
+  background: var(--risk-very-high);
+}
 
 /* risk badge: colour is never the only signal (label + dot) */
 .sk-risk {
@@ -176,20 +266,20 @@ html[data-ground="sky"] {
   background: var(--risk-track);
 }
 .sk-risk--low {
-  background: #dff2e6;
-  color: #1c6b3e;
+  background: var(--risk-low-bg);
+  color: var(--risk-low-ink);
 }
 .sk-risk--moderate {
-  background: #fbf0c9;
+  background: var(--risk-moderate-bg);
   color: var(--risk-moderate-ink);
 }
 .sk-risk--high {
-  background: #fbe4d3;
-  color: #8a3d06;
+  background: var(--risk-high-bg);
+  color: var(--risk-high-ink);
 }
 .sk-risk--very-high {
-  background: #f8dede;
-  color: #8d1a1a;
+  background: var(--risk-very-high-bg);
+  color: var(--risk-very-high-ink);
 }
 
 /* ------------------------------------------------------------------ the logo mark */
@@ -197,355 +287,92 @@ html[data-ground="sky"] {
   width: 26px;
   height: 30px;
   flex: 0 0 auto;
-  color: var(--p-action);
+  color: var(--p-blue);
 }
 .sk-mark path,
 .sk-mark circle {
   vector-effect: non-scaling-stroke;
 }
 
-/* ------------------------------------------------------------------ hero collage pieces
-   The triptych's three columns; the collage holds the product's own screens, sized in
-   container units so the phone shows the same picture smaller. */
-.sk-hero .ly-collage {
-  container-type: inline-size;
+/* the hero search: one 56px row; matches float under it, so typing never moves the hero */
+/* #cari, the target of every "Cek risiko" link: lands mid-screen, so the headline stays in view */
+.sk-hero-search__anchor {
+  width: min(100%, 560px);
+  scroll-margin-top: 40svh;
 }
-.sk-hero .ly-piece {
-  display: grid;
-  gap: 1.4cqw;
-  padding: 2.6cqw;
-  font: 400 max(12px, 1.55cqw) / 1.35 var(--font-text);
-  border: 1px solid rgb(11 27 38 / 0.06);
-  /* the kit clips a piece with overflow; clip-path does the same without a fake scroll window
-     (the row check reads any overflow clip with wider content as a cut carousel) */
-  overflow: visible;
-  clip-path: inset(0 round var(--r-md));
-  /* rows keep their own height: the card's few lines sit under each other, not spread over it */
-  align-content: start;
+.sk-hero-search {
+  position: relative;
+  z-index: calc(var(--z-raised) + 1);
+  width: min(100%, 560px);
+  margin-block: var(--s-2);
+  text-align: left;
 }
-.sk-hero .ly-piece h4,
-.sk-hero .ly-piece p {
-  margin: 0;
+/* scoped so it beats .sk-search's 48px: the skeleton and the streamed field share one height */
+.sk-hero-search .sk-hero-search__field {
+  height: 56px;
+  border-radius: var(--r-btn);
 }
-.sk-hero .ly-piece strong {
-  font-weight: 500;
+.sk-search.sk-hero-search__field {
+  padding-right: 4px;
+  background: var(--p-card);
+  box-shadow: var(--p-shadow);
 }
-
-/* the risk card, the hero's main piece */
-.sk-card-risk {
-  background: var(--p-bg);
-  color: var(--p-ink);
-}
-.sk-card-risk .sk-piece-head {
-  display: flex;
-  align-items: center;
-  gap: 1.2cqw;
-  min-width: 0;
-}
-.sk-card-risk .sk-piece-head .sk-mono {
-  font-size: max(11px, 1.3cqw);
-  color: var(--p-muted);
-}
-.sk-card-risk .sk-piece-title {
-  font-size: max(13px, 2.1cqw);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-.sk-card-risk .sk-piece-score {
-  display: flex;
-  align-items: flex-end;
-  gap: 2cqw;
-  margin: 1cqw 0 0.4cqw;
-}
-.sk-card-risk .sk-piece-score b {
-  font: 500 9cqw/0.9 var(--font-mono);
-  letter-spacing: -0.04em;
-}
-.sk-card-risk .sk-piece-score span {
-  padding-bottom: 0.9cqw;
-}
-.sk-card-risk .sk-piece-copy {
-  color: var(--p-muted);
-  line-height: 1.45;
-}
-.sk-card-risk .sk-piece-action {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2cqw;
-  margin-top: 0.6cqw;
-  padding-top: 1.8cqw;
-  border-top: 1px solid var(--line);
-  font-weight: 500;
-  color: var(--p-action);
-}
-
-/* the day's count, top right */
-.sk-card-counts {
-  background: var(--p-ink);
-  color: var(--p-inv-ink);
-  border-color: transparent;
-}
-.sk-card-counts .sk-piece-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1cqw;
-}
-.sk-card-counts .sk-piece-head span:last-child {
-  color: var(--p-inv-muted);
-  font-size: max(10px, 1.2cqw);
-}
-.sk-card-counts ul {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.2cqw 2cqw;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sk-card-counts li {
-  display: flex;
-  align-items: center;
-  gap: 1cqw;
-  font-size: max(11px, 1.35cqw);
-  color: var(--p-inv-muted);
-}
-.sk-card-counts li b {
-  margin-left: auto;
-  font: 500 max(13px, 1.9cqw)/1 var(--font-mono);
-  color: var(--p-inv-ink);
-}
-.sk-card-counts .sk-dot {
-  width: 1.4cqw;
-  height: 1.4cqw;
-  min-width: 7px;
-  min-height: 7px;
-}
-
-/* the plan checklist, set two's main piece */
-.sk-card-plan {
-  background: var(--p-bg);
-  color: var(--p-ink);
-}
-.sk-card-plan .sk-piece-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 2cqw;
-}
-.sk-card-plan .sk-piece-title {
-  font-size: max(13px, 2.1cqw);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-.sk-card-plan .sk-track {
-  height: 0.9cqw;
-  min-height: 5px;
-  border-radius: 999px;
-  background: var(--risk-track);
-  overflow: hidden;
-}
-.sk-card-plan .sk-track > i {
-  display: block;
-  height: 100%;
-  width: 36%;
-  border-radius: inherit;
-  background: var(--p-action);
-}
-.sk-card-plan ul {
-  display: grid;
-  gap: 1.2cqw;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sk-card-plan li {
-  display: flex;
-  align-items: center;
-  gap: 1.2cqw;
-  padding-top: 1.2cqw;
-  border-top: 1px solid var(--line);
-  line-height: 1.3;
-}
-.sk-card-plan li .sk-check {
-  width: 2.2cqw;
-  height: 2.2cqw;
-  min-width: 13px;
-  min-height: 13px;
-  border-radius: 3px;
-  border: 1px solid var(--line-strong);
+.sk-hero-search__field .btn {
   flex: 0 0 auto;
+  height: 46px;
+  padding-inline: var(--s-4);
 }
-.sk-card-plan li.is-done .sk-check {
-  background: var(--p-action);
-  border-color: var(--p-action);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size: 80%;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* chat answer, set two's second piece */
-.sk-card-chat {
-  background: #0f2f42;
-  color: #eaf2f7;
-  border-color: transparent;
-}
-.sk-card-chat .sk-piece-q {
-  display: flex;
-  gap: 1.2cqw;
-  align-items: flex-start;
-  color: #b9cbd7;
-}
-.sk-card-chat .sk-piece-q b {
-  color: #f2f7fa;
-  font-weight: 500;
-}
-.sk-card-chat .sk-piece-a {
-  padding-top: 1.4cqw;
-  border-top: 1px solid rgb(255 255 255 / 0.16);
-  line-height: 1.4;
-}
-.sk-card-chat .sk-piece-src {
-  display: flex;
-  align-items: center;
-  gap: 0.8cqw;
-  color: #9fb5c2;
-  font-size: max(10px, 1.15cqw);
-}
-
-/* alert + weather strip, the pieces that end at 96% x 96% so the pause disc sits on them */
-.sk-card-alert {
-  background: #fdf3e8;
-  color: #43260c;
-  border-color: #f0d7b8;
-}
-.sk-card-alert .sk-piece-head {
-  display: flex;
-  align-items: center;
-  gap: 1.2cqw;
-  font-weight: 500;
-}
-.sk-card-alert p {
-  color: #6b4a2a;
-  line-height: 1.4;
-}
-.sk-card-weather {
-  background: var(--p-bg);
-  color: var(--p-ink);
-}
-.sk-card-weather .sk-piece-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1cqw;
-}
-.sk-card-weather .sk-piece-head span:first-child {
-  font-weight: 500;
-}
-.sk-card-weather ol {
+.sk-hero-search__results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1cqw;
   margin: 0;
-  padding: 0;
+  padding: 6px;
   list-style: none;
-}
-.sk-card-weather li {
-  display: grid;
-  justify-items: start;
-  gap: 0.4cqw;
-  font-size: max(10px, 1.15cqw);
-  color: var(--p-muted);
-}
-.sk-card-weather li b {
-  font: 500 max(12px, 1.6cqw)/1 var(--font-mono);
-  color: var(--p-ink);
-}
-.sk-card-weather .sk-rain {
-  width: 1.8cqw;
-  height: 1.8cqw;
-  min-width: 11px;
-  min-height: 11px;
-  color: var(--p-action);
-}
-
-@media (max-width: 639px) {
-  .sk-hero .ly-piece {
-    padding: 14px;
-    font-size: 12px;
-  }
-  .sk-hero .sk-piece--aside {
-    display: none;
-  }
-  .sk-hero .sk-piece--main {
-    left: 0 !important;
-    top: 0 !important;
-    width: 96% !important;
-    height: 100% !important;
-  }
-  .sk-hero .ly-collage > button.loop-pause.loop-pause {
-    right: 8px;
-    bottom: 8px;
-  }
-}
-
-/* ------------------------------------------------------------------ the app frame
-   #cek: search + district list + the selected district's score. The section shows the
-   product itself, not a picture of it. */
-.sk-app {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--gutter);
-  align-items: stretch;
-  min-height: 0;
   border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  background: var(--p-bg);
+  border-radius: var(--r-md);
+  background: var(--p-card);
+  box-shadow: var(--p-shadow-lg);
+  /* a short screen scrolls the list instead of the hero clipping it */
+  max-height: min(312px, 45svh);
+  overflow-y: auto;
 }
-.sk-app__side {
-  grid-column: 1 / span 5;
-}
-.sk-app__main {
-  grid-column: 6 / span 7;
-  border-left: 1px solid var(--line);
-}
-.sk-app__side,
-.sk-app__main {
-  min-width: 0;
-  min-height: 0;
-}
-.sk-app__side {
+.sk-hero-search__results a {
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  color: var(--p-ink);
+  text-decoration: none;
 }
-.sk-app__search {
-  display: grid;
-  gap: 8px;
-  padding: 16px;
+.sk-hero-search__results a:hover {
+  background: var(--p-surface);
 }
-.sk-app__search label {
-  font-size: var(--t-label);
-  font-weight: 500;
-  color: var(--muted);
+.sk-hero-search__results .sk-list__name {
+  flex: 1 1 auto;
 }
+.sk-hero-search__results .sk-list__empty {
+  padding: 12px 10px;
+}
+/* the search field (the hero's district search) */
 .sk-search {
   display: flex;
   align-items: center;
   gap: 10px;
   height: 48px;
   padding: 0 14px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--p-input-line);
   border-radius: var(--r-btn);
   background: var(--p-bg);
   color: var(--ink);
 }
 .sk-search:focus-within {
   border-color: var(--p-action);
-  box-shadow: 0 0 0 3px rgb(14 94 140 / 0.16);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-blue) 22%, transparent);
 }
 .sk-search input {
   flex: 1 1 auto;
@@ -561,66 +388,29 @@ html[data-ground="sky"] {
 }
 /* the focused field itself answers, not only the box around it (a keyboard user sees the caret's ring) */
 .sk-search input:focus-visible {
-  outline: 2px solid var(--p-action);
+  outline: 2px solid var(--p-focus);
   outline-offset: 1px;
   border-radius: 4px;
-}.sk-search svg {
+}
+.sk-search svg {
   flex: 0 0 auto;
   color: var(--muted);
 }
-.sk-list {
-  display: grid;
-  align-content: start;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  overflow: visible;
-  flex: 0 0 auto;
-  min-height: 0;
-}
-.sk-list__foot {
-  margin: 0;
-  padding: 2px 10px 0;
-  font: 400 var(--t-label) / 1.3 var(--font-mono);
-  color: var(--muted);
-}
-.sk-list button {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 48px;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  font: inherit;
-}
-.sk-list button:hover {
-  background: var(--p-surface);
-}
-.sk-list button[aria-current="true"] {
-  background: #dcebf3;
-}
-.sk-list .sk-list__name {
+.sk-hero-search__results .sk-list__name {
   display: grid;
   gap: 1px;
   min-width: 0;
 }
-.sk-list .sk-list__name b {
+.sk-hero-search__results .sk-list__name b {
   font-weight: 500;
   font-size: var(--t-body);
   line-height: 1.3;
 }
-.sk-list .sk-list__name span {
+.sk-hero-search__results .sk-list__name span {
   font-size: var(--t-small);
   color: var(--muted);
 }
-.sk-list .sk-list__score {
+.sk-hero-search__results .sk-list__score {
   font: 500 var(--t-small)/1 var(--font-mono);
   color: var(--muted);
 }
@@ -629,99 +419,6 @@ html[data-ground="sky"] {
   color: var(--muted);
   font-size: var(--t-small);
 }
-.sk-app__main {
-  display: grid;
-  align-content: start;
-  gap: var(--s-5);
-  padding: clamp(16px, 2.2vw, 28px);
-  overflow: auto;
-}
-.sk-app__top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--s-4);
-}
-.sk-app__place {
-  display: grid;
-  gap: 2px;
-}
-.sk-app__place b {
-  font: var(--display-weight) clamp(22px, 2vw, 30px) / 1.1 var(--font-display);
-  letter-spacing: var(--display-tracking);
-}
-.sk-app__place span {
-  font-size: var(--t-small);
-  color: var(--muted);
-}
-.sk-app__updated {
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-.sk-score {
-  display: flex;
-  align-items: center;
-  gap: var(--s-5);
-  padding: var(--s-2) 0;
-}
-.sk-score__num {
-  font: 500 clamp(32px, 2.8vw, 44px) / 0.95 var(--font-mono);
-  letter-spacing: -0.05em;
-}
-.sk-score__meta {
-  display: grid;
-  gap: 8px;
-  justify-items: start;
-}
-.sk-score__meta p {
-  margin: 0;
-  color: var(--muted);
-  font-size: var(--t-small);
-}
-.sk-ai {
-  display: grid;
-  gap: 8px;
-}
-.sk-ai p {
-  margin: 0;
-  max-width: 62ch;
-}
-.sk-ai__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: var(--t-label);
-  font-weight: 500;
-  color: #0d6b64;
-}
-.sk-ai__action {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  padding: 12px 14px;
-  border-radius: var(--r-sm);
-  background: #e3f2f0;
-  color: #104a46;
-  font-size: var(--t-small);
-  line-height: 1.45;
-}
-.sk-ai__action b {
-  font-weight: 500;
-}
-.sk-app__foot {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-4);
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 4px;
-}
-.sk-app__foot .sk-mono {
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-
 /* the score's components */
 .sk-bars {
   display: grid;
@@ -746,47 +443,10 @@ html[data-ground="sky"] {
 }
 .sk-bar__track > i {
   display: block;
+  width: var(--w, 0%);
   height: 100%;
   border-radius: inherit;
   background: var(--p-action);
-}
-
-/* 640-1023 keeps the two panes: the section still fits one screen */
-@media (max-width: 1023px) {
-  .sk-app {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-  .sk-list {
-    max-height: none;
-  }
-}
-/* a phone stacks them: two screens hold the search, the list and the detail, with air, not overlap */
-@media (max-width: 639px) {
-  section#cek {
-    --hm: 2;
-  }
-  .sk-app {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-  .sk-app__side,
-  .sk-app__main {
-    grid-column: 1 / -1;
-  }
-  .sk-app__side {
-    max-height: none;
-    border-bottom: 1px solid var(--line);
-  }
-  .sk-app__main {
-    border-left: 0;
-  }
-  .sk-app__main {
-    gap: 16px;
-    overflow: auto;
-  }
-  .sk-score {
-    gap: 16px;
-  }
 }
 
 /* ------------------------------------------------------------------ feature cards
@@ -798,7 +458,6 @@ html[data-ground="sky"] {
   background: var(--p-bg);
   color: var(--p-ink);
   align-content: start;
-  height: 100%;
 }
 .sk-feature__head {
   display: flex;
@@ -814,7 +473,7 @@ html[data-ground="sky"] {
   font-size: var(--t-small);
 }
 .sk-feature__title svg {
-  color: var(--p-action);
+  color: var(--p-link);
   flex: 0 0 auto;
 }
 .sk-feature__meta {
@@ -840,17 +499,20 @@ html[data-ground="sky"] {
 .sk-feature li:first-child {
   border-top: 0;
 }
+/* min-height: 0 undoes the form checkbox row's 44px (.sk-check below), which drew tall bars here */
 .sk-feature li .sk-check {
   width: 16px;
   height: 16px;
+  min-height: 0;
   border-radius: 4px;
   border: 1px solid var(--line-strong);
   flex: 0 0 auto;
 }
-.sk-feature li.is-done .sk-check {
+.sk-feature li.is-done .sk-check,
+.sk-demo__tick {
   background: var(--p-action);
   border-color: var(--p-action);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='%230b1b2e' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size: 78%;
   background-position: center;
   background-repeat: no-repeat;
@@ -878,8 +540,8 @@ html[data-ground="sky"] {
   gap: 6px;
   padding: 12px;
   border-radius: 12px;
-  background: #0f2f42;
-  color: #eaf2f7;
+  background: var(--p-inv-surface);
+  color: var(--p-inv-ink);
   font-size: var(--t-small);
   line-height: 1.45;
 }
@@ -888,7 +550,7 @@ html[data-ground="sky"] {
   align-items: center;
   gap: 6px;
   padding-top: 6px;
-  border-top: 1px solid rgb(255 255 255 / 0.16);
+  border-top: 1px solid color-mix(in srgb, var(--p-inv-ink) 16%, transparent);
   color: var(--muted);
   font-size: var(--t-label);
 }
@@ -905,7 +567,7 @@ html[data-ground="sky"] {
   font-size: var(--t-label);
 }
 .sk-feature__upload svg {
-  color: var(--p-action);
+  color: var(--p-link);
 }
 .sk-feature__status {
   display: flex;
@@ -913,8 +575,8 @@ html[data-ground="sky"] {
   gap: 8px;
   padding: 10px 12px;
   border-radius: var(--r-sm);
-  background: #e3f2e8;
-  color: #1c6b3e;
+  background: var(--p-ok-bg);
+  color: var(--p-ok-ink);
   font-size: var(--t-small);
 }
 .sk-feature__row {
@@ -942,9 +604,9 @@ html[data-ground="sky"] {
   gap: 6px;
   padding: 12px;
   border-radius: var(--r-sm);
-  background: #fdf3e8;
-  border: 1px solid #f0d7b8;
-  color: #43260c;
+  background: var(--p-warn-bg);
+  border: 1px solid var(--p-warn-line);
+  color: var(--p-warn-ink);
   font-size: var(--t-small);
   line-height: 1.4;
 }
@@ -979,10 +641,10 @@ html[data-ground="sky"] {
   place-items: center;
   width: 32px;
   height: 32px;
-  border: 1px solid var(--line-strong);
   border-radius: 999px;
-  font: 500 var(--t-small) / 1 var(--font-mono);
-  color: var(--p-action);
+  background: var(--p-tint);
+  font: 600 var(--t-small) / 1 var(--font-mono);
+  color: var(--p-ink);
 }
 .sk-steps b {
   display: block;
@@ -1021,70 +683,6 @@ html[data-ground="sky"] {
 .sk-plan__head span {
   font-size: var(--t-label);
   color: var(--muted);
-}
-.sk-plan__progress {
-  display: grid;
-  gap: 6px;
-}
-.sk-plan__progress .sk-track {
-  height: 8px;
-  border-radius: 999px;
-  background: var(--risk-track);
-  overflow: hidden;
-}
-.sk-plan__progress .sk-track > i {
-  display: block;
-  height: 100%;
-  width: 36%;
-  border-radius: inherit;
-  background: var(--p-action);
-}
-.sk-plan__progress p {
-  display: flex;
-  justify-content: space-between;
-  margin: 0;
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-.sk-plan ul {
-  display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sk-plan li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 40px;
-  border-top: 1px solid var(--line);
-  font-size: var(--t-small);
-  line-height: 1.35;
-}
-.sk-plan li:first-child {
-  border-top: 0;
-}
-.sk-plan li .sk-check {
-  width: 17px;
-  height: 17px;
-  border-radius: 4px;
-  border: 1px solid var(--line-strong);
-  flex: 0 0 auto;
-}
-.sk-plan li.is-done .sk-check {
-  background: var(--p-action);
-  border-color: var(--p-action);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size: 78%;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.sk-plan li em {
-  margin-left: auto;
-  font-style: normal;
-  font-size: var(--t-label);
-  color: var(--muted);
-  white-space: nowrap;
 }
 .sk-plan__foot {
   display: flex;
@@ -1161,109 +759,33 @@ html[data-ground="sky"] {
 .sk-formula .sk-bar__track > i {
   background: var(--p-action);
 }
-
-/* the fitur cards: the product's screen floats on the lit panel, one step in from its edge */
-.card > .panel > .sk-feature {
-  position: absolute;
-  inset: clamp(12px, 1.5vw, 22px);
-  border-radius: var(--r-sm);
-  border: 1px solid rgb(11 27 38 / 0.06);
-  box-shadow: 0 1px 2px rgb(11 27 38 / 0.06);
+/* the landing's formula card: the two fixed weights of the score */
+.sk-bar__fill--base {
+  --w: 55%;
+}
+.sk-bar__fill--rain {
+  --w: 45%;
 }
 
-/* #cek's frame takes what the heading leaves of the screen */
-.sk-fill {
-  flex: 1 1 0;
+/* the fitur cards: the product's screen sits on a flat sky panel, one step in from its edge, and the
+   panel is as tall as the screen's content (no stretched, empty window) */
+main > section#fitur {
+  height: auto;
+}
+#fitur .group + .group {
+  margin-top: var(--card-gap);
+}
+#fitur .card > .panel {
+  --p-h: 0px;
   min-height: 0;
+  background: var(--p-surface-2);
 }
-.sk-fill > .sk-app {
-  height: 100%;
-}
-
-/* the hero's action column: the one button and the line of facts under it */
-.sk-hero__cta {
-  display: grid;
-  gap: 12px;
-  justify-items: end;
-  width: min(100%, 320px);
-  margin-left: auto;
-}
-
-/* ------------------------------------------------------------------ hero extras
-   The collage is the product itself: three sets of screens, each set a finished state. The pieces
-   carry the same shadow as a screenshot lifted off the page, and the main piece takes the phone. */
-.sk-hero .ly-piece {
-  box-shadow:
-    0 1px 2px rgb(11 27 38 / 0.08),
-    0 18px 40px -20px rgb(11 27 38 / 0.4);
-}
-.sk-hero .ly-collage > button.loop-pause.loop-pause {
-  background: rgb(247 250 252 / 0.9);
-  border-color: rgb(11 27 38 / 0.14);
-  color: var(--p-ink);
-  backdrop-filter: blur(6px);
-}
-.sk-hero__note {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-
-/* the popover heads in the mocks */
-.sk-piece-head__dot {
-  width: 1.5cqw;
-  height: 1.5cqw;
-  min-width: 8px;
-  min-height: 8px;
-  border-radius: 999px;
-  flex: 0 0 auto;
-}
-
-/* the report rows of set three */
-.sk-card-report {
-  background: var(--p-bg);
-  color: var(--p-ink);
-}
-.sk-card-report .sk-piece-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1cqw;
-  font-weight: 500;
-}
-.sk-card-report .sk-piece-head span:last-child {
-  color: var(--p-muted);
-  font-size: max(10px, 1.2cqw);
-  font-weight: 400;
-}
-.sk-card-report ul {
-  display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sk-card-report li {
-  display: flex;
-  align-items: center;
-  gap: 1.2cqw;
-  padding: 1.2cqw 0;
-  border-top: 1px solid var(--line);
-  font-size: max(11px, 1.4cqw);
-  line-height: 1.3;
-}
-.sk-card-report li:first-child {
-  border-top: 0;
-}
-.sk-card-report li > span:first-of-type {
-  min-width: 0;
-}
-.sk-card-report li b {
-  margin-left: auto;
-  font: 500 max(11px, 1.35cqw) / 1 var(--font-mono);
-  color: var(--p-muted);
-  white-space: nowrap;
+.card > .panel > .sk-feature {
+  position: relative;
+  margin: clamp(12px, 1.5vw, 22px);
+  border-radius: var(--r-sm);
+  border: 1px solid color-mix(in srgb, var(--p-ink) 6%, transparent);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--p-ink) 6%, transparent);
 }
 
 /* ------------------------------------------------------------------ section furniture */
@@ -1285,8 +807,8 @@ html[data-ground="sky"] {
 }
 .sk-tag--ai {
   border-color: transparent;
-  background: #e3f2f0;
-  color: #0d6b64;
+  background: var(--p-ai-bg);
+  color: var(--p-ai-ink);
 }
 .sk-legend {
   display: flex;
@@ -1364,7 +886,7 @@ html[data-ground="sky"] {
   width: 48px;
   height: 48px;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.12);
+  background: color-mix(in srgb, var(--p-inv-ink) 12%, transparent);
   color: var(--p-inv-ink);
 }
 .sk-call b {
@@ -1388,7 +910,7 @@ html[data-ground="sky"] {
 }
 .sk-call .sk-tag {
   justify-self: start;
-  border-color: rgb(255 255 255 / 0.24);
+  border-color: color-mix(in srgb, var(--p-inv-ink) 24%, transparent);
   color: var(--p-inv-ink);
 }
 .sk-call__num {
@@ -1405,10 +927,11 @@ html[data-ground="sky"] {
   border-radius: var(--r-lg);
   background: var(--p-bg);
   color: var(--p-ink);
-  box-shadow: 0 32px 80px -28px rgb(11 27 38 / 0.55);
+  box-shadow: 0 32px 80px -28px
+    color-mix(in srgb, var(--p-ink) 55%, transparent);
 }
 .sk-dialog::backdrop {
-  background: rgb(10 34 51 / 0.62);
+  background: color-mix(in srgb, var(--p-inv-bg) 62%, transparent);
   backdrop-filter: blur(3px);
 }
 .sk-dialog__in {
@@ -1452,14 +975,13 @@ html[data-ground="sky"] {
   gap: 2px;
   padding: 18px 20px;
   border-radius: var(--r-md);
-  background: #f8dede;
-  color: #8d1a1a;
+  background: var(--p-danger-bg-2);
+  color: var(--risk-very-high-ink);
 }
 .sk-dialog__call span {
   font-size: var(--t-label);
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
 }
 .sk-dialog__call b {
   font: 500 40px/1 var(--font-mono);
@@ -1475,12 +997,20 @@ html[data-ground="sky"] {
 }
 
 /* the phone bar (main action once the hero's has scrolled away) */
+.sk-actionbar__sentinel {
+  position: absolute;
+  top: 480px;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
 .sk-actionbar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 40;
+  z-index: var(--z-actionbar);
   display: none;
   padding: 10px var(--gut) calc(10px + env(safe-area-inset-bottom));
   background: color-mix(in oklab, var(--p-bg) 92%, transparent);
@@ -1506,12 +1036,17 @@ html[data-ground="sky"] {
 }
 .nav__actions .btn,
 .nav:not(.is-open) .nav__actions .btn,
-.hero--triptych .hero__cta .btn,
 .sk-call .btn {
   height: var(--btn-h);
   padding-inline: var(--s-5);
   font: 500 var(--t-body) / 1 var(--font-text);
   letter-spacing: 0;
+}
+/* below 420px logo + "Cek risiko wilayah" + menu toggle overflow the row: drop the last word */
+@media (max-width: 419px) {
+  .nav:not(.is-open) .nav__cta-more {
+    display: none;
+  }
 }
 /* the close's one large action keeps the kit's size: a 640 box, taller than the 48px row buttons */
 .btn--xl {
@@ -1567,11 +1102,8 @@ html[data-ground="sky"] {
   :root {
     --display-tracking: -0.03em;
   }
-  /* the hero ends on the fold: its last line sits 24 above the screen's foot */
-  main > .hero {
-    padding-bottom: calc(var(--hpadb) + var(--bar));
-  }
   /* stacking needs the second screen: nothing overlaps, the air goes under the last row */
+  section#cek,
   section#cara,
   section#data,
   section#tanya {
@@ -1587,18 +1119,8 @@ html[data-ground="sky"] {
     width: 28px;
     height: 28px;
   }
-  .sk-hero__cta {
-    justify-items: stretch;
-    width: 100%;
-  }
-  .sk-app__foot {
-    justify-content: flex-start;
-  }
   .sk-steps b {
     font-size: var(--t-body);
-  }
-  .card > .panel {
-    --p-h: 150px;
   }
   .card {
     --c-pad: 18px;
@@ -1606,46 +1128,12 @@ html[data-ground="sky"] {
   .section-head {
     margin-bottom: 24px;
   }
-  .sk-list__foot {
-    padding-bottom: 2px;
-  }
   .card > .panel > .sk-feature {
-    inset: 10px;
+    margin: 10px;
     padding: 12px;
   }
   .sk-feature__upload {
     min-height: 72px;
-  }
-  /* the footer's two link lists share a row on a phone: the close and the links still end on the fold */
-  .closing__links > .grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--s-4) var(--gutter);
-  }
-  .closing__links > .grid > :first-child {
-    grid-column: 1 / -1;
-  }
-  .closing__links .footer__col {
-    grid-column: auto / span 1;
-  }
-  /* its links run as a vertical list again: the two columns are side by side */
-  .closing__links .footer__col ul {
-    display: grid;
-    gap: 0;
-  }
-  .closing__cta {
-    gap: var(--s-4);
-  }
-  /* the close and the links keep their air, but the screen ends on the fold */
-  footer.closing > .wrap {
-    row-gap: 28px;
-  }
-  .closing__links {
-    gap: var(--s-3);
-    row-gap: var(--s-3);
-  }
-  .footer__legal {
-    padding-top: var(--s-2);
-    row-gap: var(--s-3);
   }
   .sk-split,
   .sk-ask {
@@ -1667,16 +1155,12 @@ html[data-ground="sky"] {
 /* a short landscape screen (1024x768): the close needs two screens, and the four cards' panels give
    back the 38px that put #fitur past its two */
 @media (min-width: 640px) and (max-height: 820px) {
-  main > section#tanya,
-  footer.closing {
+  main > section#tanya {
     --h: 2;
   }
   /* the plan card's 594px leaves 18 over a 768 screen: the section keeps its screen, the air goes */
   main > section#cara {
     --padb: 54px;
-  }
-  #fitur .card > .panel {
-    --p-h: 200px;
   }
 }
 
@@ -1697,15 +1181,6 @@ html[data-ground="sky"] {
   }
 }
 
-/* the hero's action follows the words on a stacked hero (640-1023): same left line, full width */
-@media (max-width: 1023px) {
-  .sk-hero__cta {
-    width: 100%;
-    margin-left: 0;
-    justify-items: stretch;
-  }
-}
-
 /* phone: the head sits 24 above its first row (the kit reads one --head-gap, 32 by default) */
 @media (max-width: 639px) {
   main {
@@ -1713,19 +1188,10 @@ html[data-ground="sky"] {
   }
 }
 
-
-
-/* a phone: the hero's words start 35 under the header (not 40), so its last line ends 24 above the fold */
+/* a phone: the hero's words start 35 under the header (not 40) */
 @media (max-width: 639px) {
   main > .hero {
     --hgap: 35px;
-  }
-}
-
-/* a short landscape screen: the product panel gets a tighter head, so its list still ends on the floor */
-@media (min-width: 640px) and (max-height: 820px) {
-  main > section#cek .section-head {
-    margin-bottom: 24px;
   }
 }
 
@@ -1757,7 +1223,6 @@ html[data-ground="sky"] {
   margin: 0;
   font: 500 var(--t-label) / 1.3 var(--font-mono);
   letter-spacing: 0.02em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 .sk-page-head {
@@ -1880,6 +1345,21 @@ html[data-ground="sky"] {
 .sk-detail-grid > .sk-safepoints {
   grid-column: 7 / span 6;
 }
+/* each pair of cards shares a height, so neither leaves a hole beside the other */
+.sk-detail-grid > :is(.sk-breakdown, .sk-weather, .sk-history, .sk-safepoints) {
+  align-self: stretch;
+}
+.sk-safepoints__more > summary {
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  color: var(--p-link);
+  font-size: var(--t-small);
+  font-weight: 500;
+  cursor: pointer;
+}
+.sk-safepoints__more[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
 .sk-card {
   display: grid;
   gap: var(--s-4);
@@ -1901,6 +1381,16 @@ html[data-ground="sky"] {
   font: var(--display-weight) var(--t-card) / 1.25 var(--font-display);
   letter-spacing: -0.01em;
 }
+/* A card heading with a leading decorative icon, in the muted action colour. */
+.sk-heading-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.sk-heading-icon > svg {
+  flex: none;
+  color: var(--link);
+}
 .sk-card__head > .sk-mono {
   font-size: var(--t-label);
   color: var(--muted);
@@ -1911,45 +1401,50 @@ html[data-ground="sky"] {
   font-size: var(--t-label);
   line-height: 1.4;
 }
-.sk-weather__rows {
-  display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sk-weather__rows li {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2px 12px;
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
-}
-.sk-weather__rows li:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-.sk-weather__day {
-  font-weight: 500;
-}
-.sk-weather__cond {
-  grid-column: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+/* the forecast card: "now" (the /peta dashboard's parts), a sideways 3-hour strip, one row per day */
+.sk-weather__sub {
+  margin: var(--s-2) 0 0;
+  font: 500 var(--t-label) / 1.3 var(--font-mono);
   color: var(--muted);
+}
+.sk-weather__hours {
+  display: flex;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0 0 6px;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+.sk-weather__hours li {
+  display: grid;
+  flex: 0 0 auto;
+  justify-items: center;
+  gap: 4px;
+  min-width: 64px;
+  padding: 10px 8px;
+  border-radius: var(--r-md);
+  background: var(--p-surface);
   font-size: var(--t-small);
+  scroll-snap-align: start;
+}
+.sk-weather__hours li:first-child {
+  background: var(--p-tint);
+}
+.sk-weather__hours svg {
+  color: var(--p-link);
+}
+.sk-weather__hours b {
+  font-weight: 600;
 }
 .sk-weather__mm {
-  grid-column: 2;
-  grid-row: 1;
-  align-self: center;
-}
-.sk-weather__time {
-  grid-column: 2;
-  grid-row: 2;
-  justify-self: end;
   color: var(--muted);
   font-size: var(--t-label);
+}
+.sk-weather__days li {
+  grid-template-columns: minmax(0, 1fr) auto auto 7ch;
+  white-space: nowrap;
 }
 .sk-history__list,
 .sk-safepoints__list {
@@ -1979,8 +1474,8 @@ html[data-ground="sky"] {
 }
 .sk-history__depth {
   grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
+  grid-row: 1;
+  justify-self: end;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -2013,7 +1508,7 @@ html[data-ground="sky"] {
   height: 40px;
   border-radius: 999px;
   background: var(--p-surface);
-  color: var(--p-action);
+  color: var(--p-link);
 }
 .sk-safepoints__name {
   display: grid;
@@ -2059,19 +1554,13 @@ html[data-ground="sky"] {
   height: clamp(380px, 54vh, 560px);
   background: var(--p-surface);
 }
-.sk-map--loading {
-  display: grid;
-  place-items: center;
-  color: var(--muted);
-  font-size: var(--t-small);
-}
 .sk-map__popup {
   display: grid;
   gap: 4px;
   font-family: var(--font-text);
 }
 .sk-map__popup a {
-  color: var(--p-action);
+  color: var(--p-link);
 }
 .leaflet-container {
   font: 400 var(--t-small) / 1.4 var(--font-text);
@@ -2100,7 +1589,7 @@ html[data-ground="sky"] {
   text-decoration: none;
 }
 .sk-district-list a:hover {
-  color: var(--p-action);
+  color: var(--p-link);
 }
 .sk-district-list__name {
   display: grid;
@@ -2113,6 +1602,414 @@ html[data-ground="sky"] {
 }
 .sk-district-list__score {
   color: var(--muted);
+}
+/* ------------------------------------------------------------------ /peta dashboard
+   map | aside on wide screens, one column below 1024px; a light sky tint behind the cards */
+.sk-dash {
+  display: grid;
+  gap: var(--s-4);
+  padding: clamp(12px, 1.6vw, 20px);
+  border-radius: var(--r-lg);
+  background: color-mix(in oklab, var(--accent) 60%, var(--p-bg));
+}
+.sk-dash__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+.sk-dash__live {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  min-width: 0;
+  font-size: var(--t-small);
+}
+.sk-dash__live > svg {
+  flex: none;
+  color: var(--p-link);
+}
+.sk-dash__live a,
+.sk-dash__link {
+  color: var(--p-link);
+  font-weight: 500;
+  text-underline-offset: 3px;
+}
+.sk-dash__chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--p-bg);
+  font-size: var(--t-small);
+  font-weight: 500;
+}
+.sk-dash__chip > svg {
+  color: var(--p-link);
+}
+.sk-dash__chip select {
+  max-width: 14rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.sk-dash__chip:focus-within {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.sk-dash__chip select:focus {
+  outline: none;
+}
+.sk-dash__grid {
+  display: grid;
+  gap: var(--s-4);
+}
+.sk-dash__main,
+.sk-dash__aside {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+  min-width: 0;
+}
+.sk-dash__map {
+  position: relative;
+  background: var(--p-bg);
+}
+.sk-dash__alert {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: var(--z-map-overlay);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 80px);
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--p-bg);
+  box-shadow: 0 1px 4px color-mix(in oklab, var(--p-ink) 18%, transparent);
+  font-size: var(--t-label);
+  font-weight: 500;
+}
+.sk-dash__alert > svg {
+  flex: none;
+  color: var(--risk-very-high);
+}
+.sk-dash__card {
+  gap: var(--s-3);
+}
+.sk-dash__now {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+.sk-dash__now > svg {
+  flex: none;
+  color: var(--p-link);
+}
+.sk-dash__now div {
+  display: grid;
+  gap: 2px;
+}
+.sk-dash__now span {
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-dash__temp {
+  font: 500 36px / 1 var(--font-mono);
+  letter-spacing: -0.03em;
+}
+.sk-dash__facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2);
+  margin: 0;
+}
+.sk-dash__facts div {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  background: var(--p-surface);
+}
+.sk-dash__facts dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-dash__facts dd {
+  margin: 0;
+  font-size: var(--t-small);
+}
+.sk-dash__days {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-dash__days li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 3ch 7ch;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+.sk-dash__days li:first-child {
+  border-top: 0;
+}
+.sk-dash__day {
+  font-weight: 500;
+}
+.sk-dash__cond {
+  display: inline-flex;
+  color: var(--p-link);
+}
+.sk-dash__mm {
+  justify-self: end;
+  color: var(--muted);
+}
+.sk-dash__card > .btn {
+  justify-self: start;
+}
+.sk-dash__hours {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.sk-dash__hours svg {
+  width: 100%;
+  height: 96px;
+}
+.sk-dash__hours rect {
+  fill: var(--p-action);
+}
+.sk-dash__hours rect.is-past {
+  fill: color-mix(in oklab, var(--p-action) 40%, var(--p-surface));
+}
+.sk-dash__nowline {
+  stroke: var(--risk-very-high);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+  vector-effect: non-scaling-stroke;
+}
+.sk-dash__axis {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 11px;
+}
+.sk-dash__hours figcaption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-dash__nowkey {
+  width: 12px;
+  border-top: 2px dashed var(--risk-very-high);
+}
+.sk-dash__bottom {
+  display: grid;
+  gap: var(--s-4);
+}
+.sk-dash__warnbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-btn);
+  background: color-mix(in oklab, var(--risk-very-high) 12%, var(--p-surface));
+  font-size: var(--t-label);
+}
+.sk-dash__warnbox > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--risk-very-high);
+}
+.sk-dash__plot {
+  position: relative;
+  margin-left: 22px;
+}
+.sk-dash__ticks {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 100%;
+  width: 22px;
+  padding-right: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: right;
+}
+.sk-dash__ticks span {
+  position: absolute;
+  bottom: var(--y);
+  right: 4px;
+  transform: translateY(50%);
+}
+.sk-dash__rows {
+  display: grid;
+  margin: 0;
+}
+.sk-dash__rows div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-dash__rows div:first-child {
+  border-top: 0;
+}
+.sk-dash__rows dt {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+.sk-dash__rows dd {
+  min-width: 0;
+  margin: 0;
+  font-size: var(--t-small);
+  margin-left: auto;
+  text-align: right;
+  overflow-wrap: break-word;
+}
+.sk-dash__trend {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.sk-dash__trend svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.sk-dash__grid-line {
+  stroke: var(--p-ink);
+  stroke-opacity: 0.2;
+  stroke-dasharray: 2 3;
+  vector-effect: non-scaling-stroke;
+}
+.sk-dash__area {
+  fill: color-mix(in oklab, var(--p-action) 22%, transparent);
+}
+.sk-dash__line {
+  fill: none;
+  stroke: var(--p-action);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.sk-dash__hit {
+  fill: transparent;
+  outline: none;
+  transition: fill var(--dur-color) var(--ease-base);
+}
+.sk-dash__hit.is-latest {
+  fill: color-mix(in oklab, var(--p-action) 8%, transparent);
+}
+.sk-dash__hit.is-active {
+  fill: color-mix(in oklab, var(--p-action) 16%, transparent);
+}
+.sk-dash__hit:focus-visible {
+  stroke: var(--p-focus);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+.sk-dash__tip {
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: var(--r-btn);
+  background: var(--p-ink);
+  color: var(--p-bg);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.sk-dash__tip.is-start {
+  transform: none;
+}
+.sk-dash__tip.is-end {
+  transform: translateX(-100%);
+}
+.sk-dash__months {
+  margin-left: 22px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+.sk-dash__months .is-latest {
+  color: var(--p-ink);
+  font-weight: 700;
+}
+@media (min-width: 640px) {
+  .sk-dash__bottom {
+    grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr);
+    align-items: start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk-dash__hit {
+    transition: none;
+  }
+}
+/* wide screens: both columns end on one line. The map takes whatever height the weather column
+   leaves over the bottom row, and the two bottom cards share a height. */
+@media (min-width: 1024px) {
+  .sk-dash__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+  }
+  .sk-dash__main {
+    grid-template-rows: minmax(380px, 1fr) auto;
+    align-content: stretch;
+  }
+  .sk-dash__map,
+  .sk-dash__map .sk-map {
+    height: 100%;
+  }
+  .sk-dash__bottom {
+    align-items: stretch;
+  }
+  .sk-dash__aside {
+    align-content: stretch;
+  }
+  .sk-dash__aside > :last-child {
+    align-self: stretch;
+  }
+}
+@media (pointer: coarse) {
+  .sk-dash__live a,
+  .sk-dash__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }
 .sk-missing {
   min-height: 60vh;
@@ -2153,39 +2050,6 @@ html[data-ground="sky"] {
   }
 }
 
-/* a 1024x768 screen: the product panel keeps one screen by taking the air out of its own rows
-   (the list shows three districts, the AI answer and the bars lose their redundant spacing) */
-@media (min-width: 640px) and (max-height: 820px) {
-  .sk-app__main {
-    gap: 8px;
-    padding: 14px;
-  }
-  .sk-app__main .sk-ai {
-    gap: 6px;
-  }
-  .sk-app__main .sk-ai__action {
-    display: none;
-  }
-  .sk-app__main .sk-score {
-    gap: 12px;
-    padding: 0;
-  }
-  .sk-app__main .sk-score__num {
-    font-size: 46px;
-  }
-  .sk-app__main .sk-app__foot {
-    display: none;
-  }
-}
-
-/* a tablet keeps the hero's button a button, not a full-width band */
-@media (min-width: 640px) and (max-width: 1023px) {
-  .sk-hero__cta {
-    max-width: 360px;
-    justify-items: start;
-  }
-}
-
 /* the location button under the map's legend */
 .sk-geo {
   display: flex;
@@ -2197,18 +2061,6 @@ html[data-ground="sky"] {
   margin: 0;
 }
 
-/* phone cards: the product window fades at its foot instead of ending on a hard cut */
-@media (max-width: 639px) {
-  .card > .panel > .sk-feature::after {
-    content: "";
-    position: absolute;
-    inset: auto 0 0 0;
-    height: 40px;
-    background: linear-gradient(to top, var(--p-bg) 32%, transparent);
-    pointer-events: none;
-  }
-}
-
 /* the map's location button reads as a quiet secondary control, not plain text */
 .sk-geo .btn {
   height: var(--btn-h, 48px);
@@ -2217,97 +2069,14 @@ html[data-ground="sky"] {
   background: var(--p-bg);
 }
 
-/* phone: the district rows keep their 48px target but give back 24px so the foot stays inside the panel */
-@media (max-width: 639px) {
-  .sk-list button {
-    padding: 6px 10px;
-  }
-}
-
-/* the hero pieces: the kit gives every .ly-piece a surface ground, which beat the piece's own
-   dark/light ground and left light text on a light card. These keep the piece's own ground. */
-.sk-hero .ly-piece.sk-card-risk,
-.sk-hero .ly-piece.sk-card-plan,
-.sk-hero .ly-piece.sk-card-weather,
-.sk-hero .ly-piece.sk-card-report {
-  background: var(--p-bg);
-}
-.sk-hero .ly-piece.sk-card-counts {
-  background: var(--p-ink);
-}
-.sk-hero .ly-piece.sk-card-chat {
-  background: #0f2f42;
-}
-.sk-hero .ly-piece.sk-card-alert {
-  background: #fdf3e8;
-}
-
 /* the source line inside the dark answer bubble reads as light, not as body grey */
 .sk-feature__answer .sk-feature__src {
-  color: #b9cbd7;
-}
-
-/* the hero's list pieces fill their card instead of leaving a white void under the last row */
-.sk-hero .ly-piece.sk-card-plan {
-  grid-template-rows: auto auto 1fr;
-}
-.sk-hero .ly-piece.sk-card-plan > ul,
-.sk-hero .ly-piece.sk-card-counts > ul,
-.sk-hero .ly-piece.sk-card-report > ul,
-.sk-hero .ly-piece.sk-card-weather > ol {
-  align-content: stretch;
-}
-.sk-hero .ly-piece.sk-card-counts,
-.sk-hero .ly-piece.sk-card-report {
-  grid-template-rows: auto 1fr;
-}
-.sk-hero .ly-piece.sk-card-weather {
-  grid-template-rows: auto 1fr;
-}
-.sk-hero .ly-piece.sk-card-report {
-  grid-template-rows: auto 1fr auto;
-}
-
-/* a tablet: the hero button stays under half the container, so it never reads as a band */
-@media (min-width: 640px) and (max-width: 1023px) {
-  .sk-hero__cta {
-    max-width: 320px;
-  }
+  color: var(--p-inv-muted);
 }
 
 /* ------------------------------------------------------------------ landing refresh
-   UI UX Pro Max "Trust & Authority + Accessible & Ethical", mapped to the docs/08 sea-blue
-   identity (the generator's alert red was rejected: the brief asks for calm, not panic). */
-.sk-hero__eyebrow {
-  display: none;
-}
-@media (min-width: 640px) {
-  .sk-hero__eyebrow {
-    display: block;
-    margin: 0 0 var(--s-4);
-  }
-}
-/* three proof facts under the hero's one button, in the note's old place */
-.sk-hero__proof {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-.sk-hero__proof li {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 5px;
-}
-.sk-hero__proof b {
-  font: 500 var(--t-small) / 1 var(--font-mono);
-  letter-spacing: -0.02em;
-  color: var(--p-ink);
-}
+   UI UX Pro Max "Trust & Authority + Accessible & Ethical", mapped to the Sky,
+   Cloudy White and Neon Jade palette (the generator's alert red was rejected: calm, not panic). */
 /* the feature cards count themselves: 01 to 04 in the heading, no extra row */
 .sk-card-index {
   margin-right: 8px;
@@ -2319,12 +2088,27 @@ html[data-ground="sky"] {
   outline-width: 3px;
 }
 .btn,
-.link,
-.sk-list button {
+.link {
   transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    color 180ms ease;
+    background-color var(--dur-color) var(--ease-base),
+    border-color var(--dur-color) var(--ease-base),
+    color var(--dur-color) var(--ease-base);
+}
+/* The kit's motion layer (public/taste/motion.css, loaded after this file) times hovers and presses
+   at 90-150ms: html:root outranks its :root, so every kit timing is at least --dur-color. */
+html:root {
+  --m-in: var(--dur-color);
+  --m-out: var(--dur-color);
+  --m-press: var(--dur-color);
+  --m-panel: var(--dur-color);
+  --m-close: var(--dur-color);
+}
+/* a pressed button gives a little (the doubled class outranks the kit's press); reduced motion keeps
+   the colour fades only */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) .btn.btn:active {
+    transform: scale(0.98);
+  }
 }
 
 /* UI UX Pro Max follow-ups: focus never hides behind the fixed bar or header, and compact
@@ -2332,61 +2116,180 @@ html[data-ground="sky"] {
 :where(a, button, input, summary, [tabindex]):focus-visible {
   scroll-margin-block: calc(var(--nav) + 16px) calc(var(--bar) + 16px);
 }
+/* a section focused by a landing link (hash-scroll.tsx) is a Tab start point, not a control */
+section[tabindex="-1"]:focus,
+#cari[tabindex="-1"]:focus {
+  outline: none;
+}
 .sk-risk,
 .sk-tag {
   white-space: nowrap;
 }
 
-/* the footer's close word: capped so it never runs into the links under it */
-.close__word {
-  font-size: clamp(56px, 19vw, 132px);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  padding-bottom: 0.05em;
+/* ------------------------------------------------------------------ footer
+   One deep-blue band: the close, the brand and the link columns on the plain sky, then the legal
+   line, over the Jakarta illustration. The band colour (--p-inv-band) is the image's own top
+   colour, and the picture fades in from it, so there is no seam. Text uses the inverse tokens
+   (AA on the band, tests/lib/palette.test.ts); sky marks the headings and icons, red stays for 112. */
+.sk-footer {
+  --band: var(--p-inv-band);
+  --link: var(--p-inv-link);
+  --bg: var(--band);
+  --ink: var(--p-inv-ink);
+  --muted: var(--p-inv-muted);
+  --action: var(--p-inv-action);
+  --action-ink: var(--p-inv-action-ink);
+  --line: color-mix(in oklab, var(--p-inv-ink) 16%, transparent);
+  position: relative;
+  overflow: clip;
+  background: var(--band);
+  color: var(--ink);
+  padding-top: var(--s-9);
 }
-/* the emergency control inside the footer list reads as one more footer link */
-.footer__button {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  padding: 0;
-  text-align: left;
+.sk-footer__inner {
+  display: grid;
+  gap: var(--s-7);
+}
+.sk-footer__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+  padding-bottom: var(--s-7);
+  border-bottom: 1px solid var(--line);
+}
+.sk-footer__cta h2 {
+  max-width: 20ch;
+  color: var(--ink);
+}
+.sk-footer__cta p {
+  max-width: 52ch;
+  color: var(--muted);
+}
+.sk-footer__main {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--s-7) var(--gutter);
+  align-items: start;
+}
+.sk-footer__brand {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-4);
+}
+.sk-footer__lede {
+  max-width: 30ch;
+  font: var(--display-weight) var(--t-lead) / 1.35 var(--font-display);
+  letter-spacing: var(--display-tracking);
+}
+.sk-footer__sos {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 var(--s-4);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--p-danger);
+  color: var(--p-inv-ink);
+  font: 600 var(--t-small) / 1 var(--font-text);
   cursor: pointer;
+  transition:
+    background-color var(--dur-color) var(--ease-base),
+    border-color var(--dur-color) var(--ease-base);
 }
-.footer__button:hover {
-  color: var(--action);
+.sk-footer__sos:hover {
+  background: color-mix(in oklab, var(--p-danger) 86%, var(--p-ink));
 }
-
-/* the close button keeps its height in the flex column (the wordmark must not shrink it) */
-.closing__cta > .btn--xl {
-  flex: 0 0 auto;
+.sk-footer__cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-6) var(--gutter);
 }
-
-/* the close: a calmer wordmark and a tighter stack, so the name never runs into the links */
-@media (min-width: 640px) {
-  .closing__cta {
-    gap: var(--s-5);
+.sk-footer__col h3 {
+  margin: 0 0 var(--s-3);
+  font: 600 var(--t-label) / 1.4 var(--font-text);
+  letter-spacing: 0.04em;
+  color: var(--link);
+}
+.sk-footer__col ul {
+  display: grid;
+  gap: 2px;
+  font-size: var(--t-small);
+}
+.sk-footer__col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  color: var(--ink);
+}
+.sk-footer__col a > svg {
+  flex: none;
+  color: var(--link);
+  transition: color var(--dur-color) var(--ease-base);
+}
+.sk-footer__col a:hover {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.sk-footer :is(a, button):focus-visible {
+  outline: 3px solid var(--p-focus);
+  outline-offset: 3px;
+}
+/* pills keep their own radius; only the text links get a soft ring */
+.sk-footer :is(.sk-footer__col a, .nav__logo):focus-visible {
+  border-radius: 4px;
+}
+.sk-footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line);
+  font-size: var(--t-label);
+  color: var(--muted);
+}
+/* the illustration: the band's own colour fades into the sky, the landscape sits on the bottom edge */
+.sk-footer__art {
+  display: block;
+  margin-top: var(--s-6);
+  /* the lower three quarters of the picture at any width, so Monas is never cut off */
+  aspect-ratio: 1920 / 610;
+  min-height: 200px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+}
+.sk-footer__art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center bottom;
+}
+@media (max-width: 1023px) {
+  .sk-footer__main {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
-.close__word {
-  font-size: clamp(52px, 6.4vw, 92px);
-}
-/* a phone footer keeps the two link lists and the legal line; the brand block is already in the header */
 @media (max-width: 639px) {
-  .closing__links > .grid > :first-child {
-    display: none;
+  .sk-footer {
+    padding-top: var(--s-8);
   }
-}
-
-/* phone close: the name sits between the button and the links with even air around the block */
-@media (max-width: 639px) {
-  .closing__cta {
-    justify-content: space-between;
+  .sk-footer__inner {
+    gap: var(--s-6);
   }
-  .close__word {
-    margin-top: 0;
-    font-size: clamp(56px, 16vw, 72px);
+  .sk-footer__cta {
+    padding-bottom: var(--s-6);
+  }
+  .sk-footer__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sk-footer__legal {
+    flex-direction: column;
   }
 }
 
@@ -2522,10 +2425,10 @@ html[data-ground="sky"] {
 }
 .sk-msg--system {
   max-width: none;
-  border: 1px solid #f0d7b8;
+  border: 1px solid var(--p-warn-line);
   border-radius: 12px;
-  background: #fdf3e8;
-  color: #43260c;
+  background: var(--p-warn-bg);
+  color: var(--p-warn-ink);
   font-size: var(--t-small);
 }
 .sk-msg__body {
@@ -2537,14 +2440,14 @@ html[data-ground="sky"] {
   align-items: center;
   gap: 4px;
   font: 500 var(--t-label) / 1 var(--font-mono);
-  color: var(--p-action);
+  color: var(--p-link);
 }
 .sk-msg--user .sk-msg__badge {
   color: inherit;
 }
 .sk-cite {
   font: 500 var(--t-small) / 1 var(--font-mono);
-  color: var(--p-action);
+  color: var(--p-link);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -2552,8 +2455,9 @@ html[data-ground="sky"] {
   color: inherit;
 }
 .sk-chat__typing {
-  font: 400 var(--t-small) / 1.3 var(--font-mono);
-  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  width: min(220px, 80%);
 }
 .sk-chat__form {
   display: flex;
@@ -2568,14 +2472,14 @@ html[data-ground="sky"] {
   min-width: 0;
   height: 48px;
   padding: 0 14px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--p-input-line);
   border-radius: 12px;
-  background: #ffffff;
+  background: var(--p-card);
   color: var(--p-ink);
   font: inherit;
 }
 .sk-chat__form input:focus-visible {
-  outline: 3px solid var(--p-action);
+  outline: 3px solid var(--p-focus);
   outline-offset: 1px;
 }
 .sk-chat__send {
@@ -2611,7 +2515,6 @@ html[data-ground="sky"] {
   margin: 0 0 6px;
   font: 500 var(--t-label) / 1 var(--font-mono);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 .sk-sources ol {
@@ -2629,7 +2532,7 @@ html[data-ground="sky"] {
 }
 .sk-sources a {
   margin-left: 6px;
-  color: var(--p-action);
+  color: var(--p-link);
 }
 .sk-chat-emergency {
   display: grid;
@@ -2646,7 +2549,7 @@ html[data-ground="sky"] {
   width: 32px;
   height: 32px;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.12);
+  background: color-mix(in srgb, var(--p-inv-ink) 12%, transparent);
 }
 .sk-chat-emergency b {
   font-size: var(--t-body);
@@ -2669,7 +2572,7 @@ html[data-ground="sky"] {
   position: fixed;
   right: 16px;
   bottom: calc(var(--bar, 0px) + 16px);
-  z-index: 35;
+  z-index: var(--z-fab);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -2679,26 +2582,27 @@ html[data-ground="sky"] {
   border-radius: 999px;
   background: var(--p-action);
   color: var(--p-action-ink);
-  box-shadow: 0 12px 28px -16px rgb(11 27 38 / 0.5);
+  box-shadow: 0 12px 28px -16px
+    color-mix(in srgb, var(--p-ink) 50%, transparent);
   font: 500 var(--t-small) / 1 var(--font-text);
   cursor: pointer;
 }
 .sk-chat-fab:hover {
-  background: color-mix(in oklab, var(--p-action) 86%, var(--p-ink));
+  background: color-mix(in oklab, var(--p-action) 80%, var(--p-bg));
 }
 .sk-chat-scrim {
   position: fixed;
   inset: 0;
-  z-index: 44;
+  z-index: var(--z-scrim);
   border: 0;
-  background: rgb(11 27 38 / 0.38);
+  background: color-mix(in srgb, var(--p-ink) 38%, transparent);
   cursor: pointer;
 }
 .sk-chat-widget {
   position: fixed;
   right: 16px;
   bottom: 16px;
-  z-index: 45;
+  z-index: var(--z-sheet);
   display: grid;
   width: min(420px, calc(100vw - 32px));
   height: min(640px, calc(100svh - 96px));
@@ -2706,13 +2610,14 @@ html[data-ground="sky"] {
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   background: var(--p-bg);
-  box-shadow: 0 24px 64px -24px rgb(11 27 38 / 0.55);
+  box-shadow: 0 24px 64px -24px
+    color-mix(in srgb, var(--p-ink) 55%, transparent);
 }
 .sk-chat-widget__close {
   position: absolute;
   top: 8px;
   right: 8px;
-  z-index: 2;
+  z-index: calc(var(--z-raised) + 1);
   display: grid;
   place-items: center;
   width: 36px;
@@ -2785,7 +2690,7 @@ html[data-ground="sky"] {
 }
 .sk-about__index a:hover {
   border-color: var(--p-action);
-  color: var(--p-action);
+  color: var(--p-link);
 }
 .sk-about__grid {
   display: grid;
@@ -2954,20 +2859,20 @@ html[data-ground="sky"] {
 .sk-alert {
   position: sticky;
   top: var(--nav);
-  z-index: 30;
+  z-index: var(--z-sticky);
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px var(--gut);
-  border-bottom: 1px solid #f0d7b8;
-  background: #fff7ed;
-  color: #43260c;
+  border-bottom: 1px solid var(--p-warn-line);
+  background: var(--p-warn-bg-2);
+  color: var(--p-warn-ink);
   font-size: var(--t-small);
 }
 .sk-alert--warning {
-  border-color: #f2c9c9;
-  background: #fdecec;
-  color: #5a1414;
+  border-color: var(--p-danger-line);
+  background: var(--p-danger-bg);
+  color: var(--p-danger-ink);
 }
 .sk-alert p {
   margin: 0;
@@ -3027,7 +2932,7 @@ html[data-ground="sky"] {
   cursor: pointer;
 }
 .sk-watch__results button:hover {
-  color: var(--p-action);
+  color: var(--p-link);
 }
 .sk-watch__results b {
   font-weight: 500;
@@ -3189,7 +3094,7 @@ html[data-ground="sky"] {
   width: 100%;
   min-height: 48px;
   padding: 12px 14px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--p-input-line);
   border-radius: var(--r-btn);
   background: var(--bg);
   color: var(--ink);
@@ -3206,7 +3111,7 @@ html[data-ground="sky"] {
 }
 .sk-field__error {
   margin: 0;
-  color: #9b1c1c;
+  color: var(--p-danger-text);
   font-size: var(--t-small);
   font-weight: 500;
   line-height: 1.5;
@@ -3271,11 +3176,11 @@ html[data-ground="sky"] {
   line-height: 1.5;
 }
 .sk-report-result--rejected {
-  border-color: #f2c9c9;
-  background: #fdecec;
+  border-color: var(--p-danger-line);
+  background: var(--p-danger-bg);
 }
 .sk-report-result--rejected b {
-  color: #5a1414;
+  color: var(--p-danger-ink);
 }
 .sk-report-result__actions {
   display: flex;
@@ -3315,11 +3220,11 @@ html[data-ground="sky"] {
   place-items: center;
   width: 30px;
   height: 30px;
-  border: 2px solid #fff;
+  border: 2px solid var(--p-bg);
   border-radius: 999px;
   background: var(--p-action);
-  color: #fff;
-  box-shadow: 0 2px 8px rgb(11 27 38 / 35%);
+  color: var(--p-action-ink);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--p-ink) 35%, transparent);
 }
 .sk-map-shell--reports {
   margin-bottom: var(--s-8);
@@ -3430,6 +3335,15 @@ html[data-ground="sky"] {
     height: 44px;
     line-height: 44px;
     font-size: 22px;
+  }
+  .sk-footer__col a {
+    min-height: 44px;
+  }
+  /* a 44px hit area around the 26px node (a label, so a tap on it toggles the checkbox) */
+  .sk-timeline__node::before {
+    content: "";
+    position: absolute;
+    inset: calc((var(--sk-node) - 44px) / 2);
   }
 }
 
@@ -3551,9 +3465,9 @@ html[data-ground="sky"] {
 .sk-inline-add input {
   height: 48px;
   padding: 0 12px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--p-input-line);
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--p-card);
   color: var(--p-ink);
   font: inherit;
 }
@@ -3590,7 +3504,7 @@ html[data-ground="sky"] {
   cursor: pointer;
 }
 .sk-choice svg {
-  color: var(--p-action);
+  color: var(--p-link);
 }
 .sk-choice b {
   font-weight: 500;
@@ -3601,9 +3515,9 @@ html[data-ground="sky"] {
   font-size: var(--t-small);
 }
 .sk-choice.is-on {
-  border-color: var(--p-action);
+  border-color: var(--p-blue);
   background: var(--p-surface);
-  box-shadow: inset 0 0 0 1px var(--p-action);
+  box-shadow: inset 0 0 0 1px var(--p-blue);
 }
 .sk-choice-grid--chips {
   display: flex;
@@ -3850,60 +3764,160 @@ html[data-ground="sky"] {
   background: var(--p-ink);
   color: var(--p-inv-ink);
 }
-.sk-checklist {
+/* Go-kit timeline: a rail on the left filled by --sk-fill (0..1), a node per item, a collapsible reason. */
+.sk-timeline {
+  --sk-node: 26px;
+  position: relative;
   display: grid;
-  margin: 0;
+  margin: 4px 0 0;
   padding: 0;
   list-style: none;
 }
-.sk-checklist li {
-  border-top: 1px solid var(--line);
+.sk-timeline::before,
+.sk-timeline::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--sk-node) / 2 + 12px);
+  bottom: calc(var(--sk-node) / 2 + 12px);
+  left: calc(var(--sk-node) / 2 - 1px);
+  width: 2px;
+  border-radius: 2px;
+  background: var(--line-strong);
 }
-.sk-checklist li:first-child {
-  border-top: 0;
+.sk-timeline::after {
+  background: var(--p-action);
+  transform: scaleY(var(--sk-fill, 0));
+  transform-origin: top;
 }
-.sk-checklist label {
+.sk-timeline__item {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   padding: 12px 0;
+}
+.sk-timeline__node {
+  position: relative;
+  z-index: var(--z-raised);
+  display: grid;
+  flex: none;
+  width: var(--sk-node);
+  height: var(--sk-node);
+  place-items: center;
+}
+.sk-timeline__check {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 2px solid var(--p-input-line);
+  border-radius: 999px;
+  background: var(--p-bg);
+}
+input.sk-timeline__check {
   cursor: pointer;
 }
-.sk-checklist input {
-  flex: none;
-  width: 20px;
-  height: 20px;
-  margin-top: 2px;
-  accent-color: var(--p-action);
+.sk-timeline__check:focus-visible {
+  outline: 2px solid var(--p-focus);
+  outline-offset: 2px;
 }
-.sk-checklist b {
+.sk-timeline__node > svg {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  color: var(--p-action-ink);
+  opacity: 0;
+  pointer-events: none;
+}
+.sk-timeline__item.is-done .sk-timeline__check {
+  border-color: var(--p-action);
+  background: var(--p-action);
+}
+.sk-timeline__item.is-done .sk-timeline__node > svg {
+  opacity: 1;
+}
+.sk-timeline__body {
+  min-width: 0;
+  flex: 1;
+}
+.sk-timeline__toggle {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.sk-timeline__toggle:focus-visible {
+  outline: 2px solid var(--p-focus);
+  outline-offset: 2px;
+}
+.sk-timeline__toggle b {
   display: block;
   font-weight: 500;
 }
-.sk-checklist small {
+.sk-timeline__toggle small {
   display: block;
   color: var(--muted);
   font-size: var(--t-label);
 }
-.sk-checklist__reason {
-  display: block;
+.sk-timeline__toggle > svg {
+  flex: none;
   margin-top: 2px;
+  color: var(--muted);
+}
+.sk-timeline__toggle[aria-expanded="true"] > svg {
+  transform: rotate(180deg);
+}
+.sk-timeline__details {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+}
+.sk-timeline__details[data-open] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+.sk-timeline__details > p {
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
   color: var(--muted);
   font-size: var(--t-small);
   line-height: 1.4;
 }
-.sk-progress {
-  height: 8px;
-  margin-top: 12px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--p-surface);
+.sk-timeline__details[data-open] > p {
+  padding-top: 6px;
 }
-.sk-progress i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--p-action);
+@media (prefers-reduced-motion: no-preference) {
+  .sk-timeline::after {
+    transition: transform var(--dur-move) var(--ease-base);
+  }
+  .sk-timeline__check,
+  .sk-timeline__node > svg,
+  .sk-timeline__toggle > svg {
+    transition:
+      background-color var(--dur-color) var(--ease-base),
+      border-color var(--dur-color) var(--ease-base),
+      opacity var(--dur-color) var(--ease-base),
+      transform var(--dur-color) var(--ease-base);
+  }
+  .sk-timeline__details {
+    transition:
+      grid-template-rows var(--dur-color) var(--ease-base),
+      visibility var(--dur-color);
+  }
+  .sk-timeline__details > p {
+    transition: padding-top var(--dur-color) var(--ease-base);
+  }
 }
 .sk-plan-steps {
   display: grid;
@@ -3958,7 +3972,6 @@ html[data-ground="sky"] {
   color: var(--muted);
   font-size: var(--t-small);
 }
-.sk-plan-safe li,
 .sk-plan-contacts li {
   display: flex;
   align-items: center;
@@ -3967,14 +3980,31 @@ html[data-ground="sky"] {
   padding: 12px 0;
   border-top: 1px solid var(--line);
 }
-.sk-plan-safe li:first-child,
 .sk-plan-contacts li:first-child {
   border-top: 0;
 }
+/* Safe points are separate row cards with a pin; the recommended ones are tinted. */
+.sk-plan-safe > ul {
+  gap: 8px;
+}
+.sk-plan-safe li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.sk-plan-safe li > div {
+  min-width: 0;
+  flex: 1;
+}
+.sk-plan-safe__pin {
+  flex: none;
+  color: var(--p-link);
+}
 .sk-plan-safe li.is-on {
-  margin-inline: -8px;
-  padding-inline: 8px;
-  border-radius: 8px;
+  border-color: transparent;
   background: var(--p-surface);
 }
 .sk-plan-safe li div,
@@ -3996,7 +4026,7 @@ html[data-ground="sky"] {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--p-action);
+  color: var(--p-link);
   font-weight: 500;
   text-decoration: none;
 }
@@ -4006,7 +4036,7 @@ html[data-ground="sky"] {
 
 @media print {
   .nav,
-  footer.closing,
+  .sk-footer,
   .sk-actionbar,
   .sk-chat-fab,
   .sk-share,
@@ -4017,9 +4047,6 @@ html[data-ground="sky"] {
   }
   .sk-page {
     padding: 0 !important;
-  }
-  .sk-plan-head {
-    margin-bottom: 16px;
   }
   .sk-plan-grid {
     display: block;
@@ -4034,12 +4061,24 @@ html[data-ground="sky"] {
     box-shadow: none !important;
     break-inside: avoid;
   }
-  .sk-checklist {
+  .sk-timeline {
+    display: block;
     columns: 2;
     column-gap: 24px;
   }
-  .sk-checklist li {
+  .sk-timeline::before,
+  .sk-timeline::after {
+    display: none;
+  }
+  .sk-timeline__item {
     break-inside: avoid;
+  }
+  .sk-timeline__details {
+    grid-template-rows: 1fr;
+    visibility: visible;
+  }
+  .sk-timeline__toggle > svg {
+    display: none;
   }
   .sk-tabs {
     display: none;
@@ -4074,4 +4113,1406 @@ html[data-ground="sky"] {
   .sk-share {
     width: 100%;
   }
+}
+
+/* ------------------------------------------------------------------ scrolling + skeletons
+   Section links glide only when motion is welcome (the taste system keeps `auto` otherwise), and
+   land below the fixed header. */
+html {
+  scroll-padding-top: var(--nav);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+/* Skeletons share one translucent block, so they read on any surface; the shimmer is a transform on
+   a pseudo-element and stays off under reduced motion. In the components layer, so size and radius
+   utilities on a <Skeleton> win. */
+@layer components {
+  .sk-skeleton {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    min-height: 1em;
+    border-radius: 8px;
+    background: color-mix(in oklab, var(--ink) 8%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sk-skeleton::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in oklab, white 55%, transparent),
+        transparent
+      );
+      animation: sk-shimmer 1.6s ease-in-out infinite;
+    }
+  }
+}
+@keyframes sk-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ------------------------------------------------------------------ landing motion (GSAP)
+   The server renders each feature mock's finished frame (also the no-JS and reduced-motion frame);
+   src/components/site/feature-demo.tsx rewinds it and loops when motion is allowed. */
+.sk-magnet {
+  display: grid;
+}
+.sk-demo {
+  position: relative;
+  overflow: clip;
+}
+.sk-demo__cursor,
+.sk-demo__ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: calc(var(--z-raised) + 2);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+.sk-demo__cursor {
+  color: var(--p-ink);
+  filter: drop-shadow(
+    0 2px 3px color-mix(in srgb, var(--p-ink) 25%, transparent)
+  );
+  transform-origin: 43% 8%;
+}
+.sk-demo__ripple {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--p-action);
+}
+.sk-demo__host {
+  position: relative;
+  isolation: isolate;
+}
+.sk-demo__hl {
+  position: absolute;
+  inset: 0 -8px;
+  z-index: var(--z-behind);
+  border-radius: 6px;
+  background: color-mix(in oklab, var(--p-action) 12%, transparent);
+}
+.sk-feature__upload > .sk-demo__hl {
+  inset: -1px;
+  border-radius: inherit;
+}
+.sk-demo__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--p-ink);
+  color: var(--p-inv-ink);
+  font: 500 var(--t-label) / 1.5 var(--font-mono);
+  font-style: normal;
+  white-space: nowrap;
+}
+.sk-demo__chip > i {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--risk-high);
+}
+.sk-demo__check {
+  position: relative;
+}
+.sk-demo__tick {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+}
+.sk-demo__count {
+  display: inline-grid;
+  overflow: clip;
+}
+.sk-demo__count > * {
+  grid-area: 1 / 1;
+  text-align: right;
+}
+.sk-demo__from {
+  opacity: 0;
+  visibility: hidden;
+}
+.sk-demo__suggest {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  max-width: 92%;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--p-bg);
+  color: var(--p-link);
+  font-size: var(--t-small);
+  line-height: 1.4;
+  opacity: 0;
+  visibility: hidden;
+}
+.sk-demo__type {
+  display: block;
+}
+.sk-demo__ref {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--p-inv-ink) 14%, transparent);
+  color: var(--p-inv-ink);
+  font: 500 var(--t-label) / 1.3 var(--font-mono);
+}
+
+/* landing icons: a step's title, a FAQ question and a feature card's heading lead with an icon */
+.sk-steps b.sk-heading-icon,
+.faq summary.sk-heading-icon {
+  display: flex;
+}
+.faq summary.sk-heading-icon {
+  align-items: flex-start;
+}
+.faq summary.sk-heading-icon > svg {
+  margin-top: 0.2em;
+}
+.card > h3.sk-heading-icon {
+  display: flex;
+}
+.card > h3.sk-heading-icon .sk-card-index {
+  margin-right: 0;
+}
+
+/* the #fitur loops' one pause control (WCAG 2.2.2), in the hero pause disc's colours, as a labelled pill */
+.sk-demo-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid color-mix(in oklab, var(--ink) 16%, transparent);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 500 var(--t-small) / 1 var(--font-text);
+  cursor: pointer;
+}
+.sk-demo-toggle svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk-demo-toggle {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ redesign: base components
+   Primary = royal blue fill with ivory text; secondary = outline; links are royal blue.
+   Cards are white on the grey surface with a soft neutral shadow. Focus is a blue ring on light
+   grounds (--p-inv-link in dark bands). */
+:root {
+  --link: var(--p-link);
+}
+.ground-inverse,
+.sk-footer,
+.sk-call,
+.sk-tanya__call,
+.sk-chat-emergency {
+  --link: var(--p-inv-link);
+  --p-focus: var(--p-inv-link);
+}
+:focus-visible {
+  outline-color: var(--p-focus);
+}
+/* hover steps toward ink: the fill darkens a little under its ivory text */
+.btn--primary:hover {
+  background: color-mix(in oklab, var(--action) 86%, var(--p-ink));
+}
+.btn--secondary {
+  background: transparent;
+  border-color: var(--line-strong);
+}
+.btn--secondary:hover {
+  background: color-mix(in oklab, var(--action) 10%, var(--bg));
+  border-color: var(--action);
+}
+.link {
+  color: var(--link);
+  text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+}
+.card {
+  --c-border: color-mix(in oklab, var(--p-blue) 14%, transparent);
+  box-shadow: var(--p-shadow);
+}
+
+/* ------------------------------------------------------------------ redesign: header
+   A light glass bar on Cloudy White. The glass sits on a pseudo-element: a backdrop-filter on the
+   fixed bar itself would trap the phone sheet (position: fixed) inside the bar's box. */
+.nav {
+  background: transparent;
+  border-bottom-color: color-mix(in oklab, var(--p-blue) 16%, transparent);
+}
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-behind);
+  background: color-mix(in srgb, var(--p-bg) 84%, transparent);
+  -webkit-backdrop-filter: saturate(1.6) blur(14px);
+  backdrop-filter: saturate(1.6) blur(14px);
+}
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .nav::before {
+    background: var(--p-bg);
+  }
+}
+.nav .nav__logo {
+  font-weight: 700;
+}
+.nav__link:hover {
+  color: var(--p-link);
+}
+.nav__link::before {
+  background: var(--p-blue);
+}
+/* the page you are on: ink word, a thicker sky-ink bar under it (3:1 on the light header) (aria-current, set by the header) */
+.nav__link[aria-current="page"] {
+  color: var(--p-ink);
+  font-weight: 700;
+}
+.nav__link[aria-current="page"]::after {
+  height: 3px;
+  background: var(--p-blue);
+}
+.nav {
+  z-index: var(--z-header);
+}
+/* 112 stays red and stays a button, never a plain word in the row */
+.nav__sos {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--p-danger-line);
+  border-radius: 999px;
+  background: var(--p-danger-bg);
+  color: var(--p-danger);
+  font: 600 var(--t-small) / 1 var(--font-text);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-color) var(--ease-base),
+    border-color var(--dur-color) var(--ease-base);
+}
+.nav__sos:hover {
+  background: var(--p-danger-bg-2);
+  border-color: var(--p-danger);
+}
+.nav__sos:focus-visible {
+  outline-color: var(--p-danger);
+}
+@media (max-width: 1023px) {
+  .nav__toggle {
+    border-color: var(--p-line);
+    background: var(--p-card);
+    border-radius: 12px;
+  }
+  .nav.is-open .nav__links,
+  .nav.is-open .nav__actions {
+    background: var(--p-bg);
+  }
+  .nav.is-open .nav__link:hover {
+    color: var(--p-link);
+  }
+  .nav.is-open .nav__sos {
+    width: 100%;
+    min-height: 48px;
+    font-size: var(--t-body);
+  }
+}
+
+/* ------------------------------------------------------------------ redesign: landing sections
+   Bands under the hero: #cek and #data on the sky tint (.ground-surface), #fitur and #tanya on
+   Cloudy White (.ground-base), #cara the one navy band (.ground-inverse). */
+/* a light card inside the navy band takes the light ground's link and focus colours back */
+.ground-inverse .ground-base {
+  --link: var(--p-link);
+  --p-focus: var(--p-blue);
+}
+/* #cek's map link keeps its own width beside (or under) the heading */
+.section-head--split > .btn {
+  justify-self: start;
+}
+/* #cek: today's highest scores, two columns of the /peta list; skeleton rows keep the same height */
+.sk-rank > li {
+  display: grid;
+  min-height: 76px;
+}
+.sk-rank .sk-district-list__name b {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sk-rank__n {
+  min-width: 2ch;
+  color: var(--muted);
+}
+.sk-rank__ghost {
+  display: grid;
+  align-items: center;
+  border-top: 1px solid var(--line);
+}
+/* the #cara and #data cards drift a little against the scroll; static without motion */
+@keyframes sk-depth {
+  from {
+    transform: translate3d(0, 24px, 0);
+  }
+  to {
+    transform: translate3d(0, -24px, 0);
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="off"]) .sk-depth {
+      animation: sk-depth linear both;
+      animation-timeline: view();
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ redesign: inner pages
+   Every (site) page opens on a full-bleed sky-tint band behind the crumbs, eyebrow, title and lede
+   (.sk-page-head, or the district and plan heads); the content follows on Cloudy White. The band is
+   a border-image painted outside the head (up to the page top, out to both edges): ink overflow, so
+   it never adds a horizontal scroll and needs no extra markup. Skeletons reuse the same classes. */
+.sk-page-head,
+.sk-detail-head,
+.sk-plan-head {
+  padding-bottom: var(--s-7);
+  margin-bottom: var(--s-7);
+  border-image: linear-gradient(
+      var(--p-surface) calc(100% - 1px),
+      var(--p-line) 0
+    )
+    fill 0 / /100vh 100vmax 0;
+}
+.sk-page-head .sk-eyebrow,
+.sk-detail-head .sk-eyebrow,
+.sk-plan-head .sk-eyebrow {
+  color: var(--p-link);
+}
+.sk-crumbs {
+  margin-bottom: var(--s-5);
+}
+/* cards on these pages: white on the page and on tinted panels, lifted by the soft sky shadow */
+:is(
+    .sk-peta,
+    .sk-detail,
+    .sk-rencana,
+    .sk-plan-page,
+    .sk-tanya,
+    .sk-alert-page,
+    .sk-lapor-page,
+    .sk-laporan-page,
+    .sk-about
+  )
+  .sk-card,
+.sk-detail-score,
+.sk-wizard__panel {
+  background: var(--p-card);
+  box-shadow: var(--p-shadow);
+}
+.sk-detail-score {
+  border: 1px solid var(--line);
+}
+/* /peta: the district picker gets a 3:1 boundary like every other input */
+.sk-dash__chip {
+  border-color: var(--p-input-line);
+}
+/* /wilayah and the part-2 pages: card grids sit on a tinted panel like the /peta dashboard */
+.sk-detail-grid,
+.sk-tanya__grid,
+.sk-alert-grid,
+.sk-lapor-grid,
+.sk-about__grid,
+.sk-report-feed {
+  padding: clamp(12px, 1.6vw, 20px);
+  border-radius: var(--r-lg);
+  background: var(--p-surface);
+}
+/* the floating "Tanya" button never hides the page's last lines */
+.sk-page.sk-detail {
+  padding-bottom: calc(var(--s-9) + 64px);
+}
+@media (max-width: 639px) {
+  .sk-page.sk-detail {
+    padding-bottom: calc(var(--bar, 0px) + 160px);
+  }
+}
+/* /rencana: the current step is the active state (jade number, ink), done steps keep a sky tick */
+.sk-wizard__step {
+  background: var(--p-card);
+}
+.sk-wizard__step.is-current {
+  border-color: var(--p-blue);
+  box-shadow: var(--p-shadow-sm);
+}
+.sk-wizard__step.is-current .sk-wizard__num {
+  background: var(--p-tint);
+  color: var(--p-ink);
+}
+.sk-wizard__step.is-done .sk-wizard__num {
+  border-color: transparent;
+  background: var(--p-surface-2);
+}
+/* skeleton titles take the real heading's line height, so the band does not jump when the page lands */
+.sk-page-head > .sk-skel-title {
+  height: calc(var(--t-h1) * 1.04);
+}
+.sk-detail-head__copy > .sk-skel-title {
+  height: clamp(38px, 5vw, 72px);
+}
+/* /rencana/[slug]: step numbers are jade badges with ink, like the landing's how-it-works steps */
+.sk-plan-steps__num {
+  background: var(--p-tint);
+  color: var(--p-ink);
+}
+/* the saved plan's title: the real h1 is clamp(34px, 4vw, 52px) at line-height 1.05, 8px above and below */
+.sk-plan-head .sk-skel-title {
+  height: calc(clamp(34px, 4vw, 52px) * 1.05);
+  margin: 8px 0;
+}
+/* /tanya: the chat is the page's main card; the emergency card stays dark (sky focus ring) */
+.sk-tanya .sk-chat {
+  background: var(--p-card);
+  box-shadow: var(--p-shadow);
+}
+.sk-tanya .sk-chat__form {
+  background: var(--p-card);
+}
+.sk-tanya .sk-tanya__call {
+  background: var(--p-ink);
+}
+/* /tentang: the section index reads as white chips on the band's edge */
+.sk-about__index a {
+  background: var(--p-card);
+}
+.sk-about__index a:hover {
+  border-color: var(--p-blue);
+  background: var(--p-surface);
+}
+/* /lapor: the photo picker is the form's first control, so its dashed edge gets the 3:1 boundary */
+.sk-photo {
+  border-color: var(--p-input-line);
+}
+/* /laporan: report cards and the empty state are white on the feed's tinted panel */
+.sk-report-card {
+  background: var(--p-card);
+  box-shadow: var(--p-shadow);
+}
+.sk-report-empty {
+  border-color: var(--p-input-line);
+  background: var(--p-card);
+}
+/* 404 and error pages: the message sits on the same sky band as every page head */
+.sk-missing > .wrap {
+  padding-bottom: var(--s-8);
+  border-image: linear-gradient(
+      var(--p-surface) calc(100% - 1px),
+      var(--p-line) 0
+    )
+    fill 0 / /100vh 100vmax 0;
+}
+.sk-missing .sk-eyebrow {
+  color: var(--p-link);
+}
+.sk-missing .sk-detail-lede {
+  margin-top: var(--s-4);
+}
+@media print {
+  /* after the band rules, so the band never prints and the heads keep the print spacing */
+  .sk-page-head,
+  .sk-detail-head,
+  .sk-plan-head {
+    border-image: none;
+    padding-bottom: 0;
+    margin-bottom: 16px;
+  }
+  .sk-missing > .wrap {
+    border-image: none;
+  }
+}
+
+/* the root error boundary renders without the header, so no header allowance on top */
+.sk-page--bare {
+  --nav: 0px;
+}
+
+/* ------------------------------------------------------------------ landing hero
+   One full screen on ivory: the words and the district search on the left, a tilted laptop and phone on
+   the right (under the words on small screens, cut by the hero edge). The phones drift at
+   different speeds on scroll (scroll-driven, no JS; still where unsupported) and their screens
+   loop a short product preview. All of it stops under reduced motion and data-motion="off". */
+main > .hero.sk-hero {
+  --pw: clamp(170px, 15.5vw, 225px);
+  display: grid;
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-bottom: 0;
+  overflow: clip;
+  background:
+    radial-gradient(48% 56% at 76% 58%, var(--p-tint), transparent 70%),
+    var(--p-bg);
+}
+main > .hero.sk-hero > .wrap.sk-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-rows: none;
+  gap: var(--s-7);
+  align-items: center;
+  height: auto;
+}
+.sk-hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+  padding-bottom: var(--s-8);
+}
+.sk-hero__copy > h1 {
+  max-width: 13ch;
+  font-weight: 600;
+}
+.sk-hero__copy > h1 em {
+  font-style: normal;
+  color: var(--p-blue);
+}
+.sk-hero__copy > .hero__lead {
+  margin: 0;
+  color: var(--p-muted);
+}
+.sk-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-small);
+  color: var(--p-muted);
+}
+.sk-hero__stats li + li::before {
+  content: "·" / "";
+  margin-inline: 10px;
+}
+.sk-hero__stats b {
+  font-weight: 600;
+  color: var(--p-ink);
+}
+
+.sk-devices {
+  position: relative;
+  justify-self: center;
+  width: calc(var(--pw) * 2.4);
+  height: calc(var(--pw) * 3);
+}
+.sk-device {
+  position: absolute;
+}
+.sk-laptop {
+  left: 0;
+  top: 0;
+  width: calc(var(--pw) * 1.78);
+  --drift: 10vh;
+}
+.sk-phone {
+  right: 0;
+  top: 27%;
+  z-index: var(--z-raised);
+  width: var(--pw);
+  --drift: -16vh;
+}
+.sk-laptop__tilt {
+  transform: perspective(1400px) rotateY(14deg) rotateX(6deg) rotate(-4deg);
+}
+.sk-laptop__lid {
+  aspect-ratio: 16 / 10.4;
+  padding: calc(var(--pw) * 0.03);
+  border-radius: calc(var(--pw) * 0.06);
+  background: var(--p-ink);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--p-inv-ink) 22%, transparent),
+    0 40px 70px -30px color-mix(in srgb, var(--p-ink) 55%, transparent);
+}
+.sk-laptop__base {
+  width: 112%;
+  height: calc(var(--pw) * 0.045);
+  margin-left: -6%;
+  border-radius: 2px 2px calc(var(--pw) * 0.05) calc(var(--pw) * 0.05);
+  background: linear-gradient(to bottom, var(--p-inv-muted), var(--p-ink) 70%);
+}
+.sk-laptop__screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: calc(var(--pw) * 0.035);
+  background: var(--p-surface);
+  color: var(--p-ink);
+  font-size: calc(var(--pw) * 0.036);
+  line-height: 1.3;
+}
+.sk-laptop__screen p,
+.sk-phone__screen p {
+  margin: 0;
+}
+.sk-pv-chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.5em 0.8em;
+  background: var(--p-bg);
+  border-bottom: 1px solid var(--p-line);
+}
+.sk-pv-chrome i {
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: var(--p-surface-2);
+}
+.sk-pv-chrome span {
+  margin-left: 0.6em;
+  padding: 0.15em 0.9em;
+  border-radius: 999px;
+  background: var(--p-surface);
+  color: var(--p-muted);
+}
+.sk-pv-dash {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+  gap: 0.7em;
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 0.7em;
+}
+.sk-pv-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  min-height: 0;
+}
+.sk-pv-card {
+  display: grid;
+  gap: 0.25em;
+  padding: 0.7em;
+  border-radius: 0.8em;
+  background: var(--p-card);
+  box-shadow: var(--p-shadow-sm);
+}
+.sk-pv-card--fill {
+  flex: 1 1 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+}
+.sk-pv-big {
+  font-size: 1.9em;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: var(--display-tracking);
+}
+.sk-pv-day {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.25em;
+  border-top: 1px solid var(--p-line);
+}
+.sk-pv-day b {
+  font-weight: 500;
+}
+.sk-pv-day span {
+  color: var(--p-muted);
+}
+/* the map: a pale ground, the bay along the top, a few roads, and the districts' risk dots */
+.sk-pv-map {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.8em;
+  background:
+    linear-gradient(172deg, var(--p-tint) 0 20%, transparent calc(20% + 1px)),
+    linear-gradient(
+      58deg,
+      transparent 49.4%,
+      var(--p-card) 49.5% 50.5%,
+      transparent 50.6%
+    ),
+    linear-gradient(
+      -32deg,
+      transparent 49.4%,
+      var(--p-card) 49.5% 50.5%,
+      transparent 50.6%
+    ),
+    linear-gradient(
+      94deg,
+      transparent 61.4%,
+      var(--p-card) 61.5% 62.5%,
+      transparent 62.6%
+    ),
+    var(--p-surface-2);
+}
+.sk-pv-map i {
+  position: absolute;
+  width: 1.15em;
+  height: 1.15em;
+  margin: -0.575em 0 0 -0.575em;
+  border: 0.14em solid var(--p-card);
+  border-radius: 50%;
+  background: var(--c);
+}
+.sk-pv-map i.is-selected {
+  border-color: var(--p-ink);
+}
+.sk-pv-map i.is-selected::after {
+  content: "";
+  position: absolute;
+  inset: -0.14em;
+  border-radius: 50%;
+  background: var(--c);
+  opacity: 0;
+}
+.sk-pv-chip {
+  position: absolute;
+  top: 0.6em;
+  right: 0.6em;
+  padding: 0.25em 0.8em;
+  border-radius: 999px;
+  background: var(--p-card);
+  box-shadow: var(--p-shadow-sm);
+  font-weight: 500;
+}
+.sk-pv-rain {
+  display: flex;
+  align-items: flex-end;
+  gap: 5%;
+  min-height: 0;
+  padding: 6%;
+  border-radius: 0.6em;
+  background: var(--p-blue);
+}
+.sk-pv-rain i {
+  flex: 1 1 0;
+  height: var(--h);
+  border-radius: 0.2em;
+  background: var(--p-bg);
+  transform-origin: bottom;
+}
+.sk-pv-rain i:nth-child(5) {
+  background: var(--p-ink);
+}
+
+.sk-phone__body {
+  aspect-ratio: 9 / 18.5;
+  padding: calc(var(--pw) * 0.035);
+  border-radius: calc(var(--pw) * 0.17);
+  background: var(--p-ink);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--p-inv-ink) 22%, transparent),
+    0 40px 70px -30px color-mix(in srgb, var(--p-ink) 55%, transparent);
+  transform: perspective(1400px) rotateY(-16deg) rotateX(8deg) rotate(9deg);
+}
+.sk-phone__screen {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--pw) * 0.04);
+  height: 100%;
+  padding: calc(var(--pw) * 0.065);
+  overflow: hidden;
+  border-radius: calc(var(--pw) * 0.135);
+  background: var(--p-bg);
+  color: var(--p-ink);
+  font-size: calc(var(--pw) * 0.05);
+  line-height: 1.35;
+}
+.sk-phone__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+}
+.sk-phone__bar i {
+  width: 22%;
+  height: calc(var(--pw) * 0.05);
+  border-radius: 999px;
+  background: var(--p-ink);
+}
+.sk-pv-kicker {
+  color: var(--p-muted);
+}
+.sk-phone__screen .sk-pv-title {
+  margin-top: calc(var(--pw) * -0.03);
+  font-size: 1.9em;
+  font-weight: 600;
+  letter-spacing: var(--display-tracking);
+}
+.sk-pv-meter {
+  flex: 0 0 auto;
+  height: calc(var(--pw) * 0.03);
+  border-radius: 999px;
+  background: var(--p-surface-2);
+  overflow: hidden;
+}
+.sk-pv-meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--p-blue);
+  transform-origin: left;
+}
+.sk-pv-kit {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  justify-content: space-between;
+  min-height: 0;
+  margin: 0;
+  padding: 0.3em 0.9em;
+  list-style: none;
+  border-radius: calc(var(--pw) * 0.06);
+  background: var(--p-surface);
+}
+.sk-pv-kit li {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding-block: 0.55em;
+  font-weight: 500;
+}
+.sk-pv-kit li + li {
+  border-top: 1px solid var(--p-line);
+}
+.sk-pv-kit i {
+  position: relative;
+  flex: none;
+  width: 1.3em;
+  height: 1.3em;
+  border: 0.12em solid var(--p-input-line);
+  border-radius: 0.35em;
+}
+/* the tick: a blue fill (::before) and an ivory check mark (::after), animated as one */
+.sk-pv-kit i::before,
+.sk-pv-kit i::after {
+  content: "";
+  position: absolute;
+}
+.sk-pv-kit i::before {
+  inset: -0.12em;
+  border-radius: inherit;
+  background: var(--p-blue);
+}
+.sk-pv-kit i::after {
+  left: 34%;
+  top: 10%;
+  width: 30%;
+  height: 58%;
+  border: solid var(--p-bg);
+  border-width: 0 0.16em 0.16em 0;
+  rotate: 45deg;
+}
+.sk-pv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em;
+  padding: 0.8em 0.9em;
+  border-radius: calc(var(--pw) * 0.05);
+  background: var(--p-surface);
+}
+.sk-pv-row b {
+  font-weight: 600;
+}
+.sk-pv-row span {
+  color: var(--p-muted);
+  white-space: nowrap;
+}
+
+/* Every loop rests on the finished look (all ticked, bars full), so without animation each screen
+   is whole. The three ticks and the meter share one 8s clock, so they reset together. */
+@keyframes sk-hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+}
+@keyframes sk-device-drift {
+  to {
+    transform: translate3d(0, var(--drift), 0);
+  }
+}
+@keyframes sk-pv-grow-y {
+  0%,
+  6% {
+    transform: scaleY(0.12);
+  }
+  22%,
+  100% {
+    transform: scaleY(1);
+  }
+}
+@keyframes sk-pv-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  7%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sk-pv-ping {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+@keyframes sk-pv-tick-1 {
+  0%,
+  14% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  18%,
+  94% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes sk-pv-tick-2 {
+  0%,
+  34% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  38%,
+  94% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes sk-pv-tick-3 {
+  0%,
+  54% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  58%,
+  94% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes sk-pv-fill {
+  0%,
+  14% {
+    transform: scaleX(0.5);
+  }
+  20%,
+  34% {
+    transform: scaleX(0.667);
+  }
+  40%,
+  54% {
+    transform: scaleX(0.833);
+  }
+  60%,
+  94% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0.5);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* one entrance per group: the words in a short stagger, then the devices */
+  :root:not([data-motion="off"]) .sk-hero__copy > *,
+  :root:not([data-motion="off"]) .sk-devices {
+    animation: sk-hero-in 600ms var(--ease-base) backwards;
+  }
+  :root:not([data-motion="off"]) .sk-hero__copy > :nth-child(2) {
+    animation-delay: 40ms;
+  }
+  :root:not([data-motion="off"]) .sk-hero__copy > :nth-child(3) {
+    animation-delay: 80ms;
+  }
+  :root:not([data-motion="off"]) .sk-hero__copy > :nth-child(n + 4) {
+    animation-delay: 110ms;
+  }
+  :root:not([data-motion="off"]) .sk-devices {
+    animation-delay: 150ms;
+  }
+  /* the previews: explanatory marketing motion, so they may loop and run long */
+  :root:not([data-motion="off"]) .sk-pv-rain i {
+    animation: sk-pv-grow-y 8s var(--ease-base) calc(var(--i) * 60ms) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-map i {
+    animation: sk-pv-pop 8s var(--ease-base) calc(var(--i) * 90ms) backwards
+      infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-map i.is-selected::after {
+    animation: sk-pv-ping 2s var(--ease-base) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-meter i {
+    animation: sk-pv-fill 8s var(--ease-base) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(4) i::before,
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(4) i::after {
+    animation: sk-pv-tick-1 8s var(--ease-base) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(5) i::before,
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(5) i::after {
+    animation: sk-pv-tick-2 8s var(--ease-base) infinite;
+  }
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(6) i::before,
+  :root:not([data-motion="off"]) .sk-pv-kit li:nth-child(6) i::after {
+    animation: sk-pv-tick-3 8s var(--ease-base) infinite;
+  }
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="off"]) .sk-device {
+      animation: sk-device-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+      will-change: transform;
+    }
+  }
+}
+@media (max-width: 899px) {
+  main > .hero.sk-hero {
+    --pw: clamp(112px, 30vw, 170px);
+    background:
+      radial-gradient(70% 40% at 50% 82%, var(--p-tint), transparent 70%),
+      var(--p-bg);
+  }
+  main > .hero.sk-hero > .wrap.sk-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  .sk-hero__copy {
+    padding-bottom: 0;
+  }
+  /* the phones run off the bottom edge of the hero */
+  .sk-devices {
+    height: calc(var(--pw) * 2.2);
+  }
+}
+
+/* ------------------------------------------------------------------ flood frequency map (#cek)
+   Under the ranking: the words on the left, the district shapes on the right (stacked on small
+   screens). Five shades from white to red; the whole row (words and map) sits on a pale blue panel, so the white districts still read; the active district gets an ink outline. */
+/* the ranking plus the map is taller than one screen, so #cek grows with its content */
+main > section#cek {
+  height: auto;
+}
+.sk-flood {
+  display: grid;
+  gap: var(--s-6);
+  align-items: center;
+  margin-top: var(--s-8);
+  padding: clamp(20px, 4vw, 48px);
+  border-radius: var(--r-lg);
+  background: var(--p-tint);
+}
+.sk-flood__text {
+  display: grid;
+  gap: var(--s-3);
+  max-width: 44ch;
+}
+.sk-flood__text p {
+  margin: 0;
+}
+.sk-flood__note {
+  font-size: var(--t-small);
+}
+.sk-flood__ghost {
+  height: 420px;
+  margin-top: var(--s-8);
+}
+.sk-floodmap {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  justify-self: center;
+}
+.sk-floodmap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.sk-floodmap path {
+  stroke: var(--p-tint);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: fill 150ms ease;
+}
+.sk-floodmap [data-shade="0"] {
+  --shade: var(--p-card);
+}
+.sk-floodmap [data-shade="1"] {
+  --shade: color-mix(in oklab, var(--p-danger) 22%, var(--p-card));
+}
+.sk-floodmap [data-shade="2"] {
+  --shade: color-mix(in oklab, var(--p-danger) 46%, var(--p-card));
+}
+.sk-floodmap [data-shade="3"] {
+  --shade: color-mix(in oklab, var(--p-danger) 72%, var(--p-card));
+}
+.sk-floodmap [data-shade="4"] {
+  --shade: var(--p-danger);
+}
+.sk-floodmap path[data-shade] {
+  fill: var(--shade);
+}
+.sk-floodmap a {
+  outline: none;
+}
+.sk-floodmap path.sk-floodmap__active {
+  fill: none;
+  stroke: var(--p-ink);
+  stroke-width: 2.5;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sk-floodmap a:hover path {
+    fill: color-mix(in oklab, var(--shade) 86%, var(--p-ink));
+  }
+}
+.sk-floodmap__tip {
+  position: absolute;
+  z-index: var(--z-raised);
+  display: grid;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: var(--r-btn);
+  background: var(--p-ink);
+  color: var(--p-inv-ink);
+  font-size: var(--t-label);
+  line-height: 1.35;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 10px));
+}
+.sk-floodmap__tip b {
+  font-weight: 600;
+}
+.sk-floodmap__tip span {
+  color: var(--p-inv-muted);
+}
+.sk-floodmap__legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: var(--s-4) 0 0;
+  font-size: var(--t-label);
+  color: var(--p-ink);
+}
+.sk-floodmap__legend i {
+  width: 28px;
+  height: 10px;
+  background: var(--shade);
+  box-shadow: inset 0 0 0 1px var(--p-line);
+}
+.sk-floodmap__legend i:first-of-type {
+  margin-left: 6px;
+  border-radius: 999px 0 0 999px;
+}
+.sk-floodmap__legend i:last-of-type {
+  margin-right: 6px;
+  border-radius: 0 999px 999px 0;
+}
+@media (min-width: 900px) {
+  .sk-flood {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: var(--s-8);
+  }
+}
+
+/* ------------------------------------------------------------------ /peta district list
+   Search on top, the highest scores first, the rest behind one button. */
+.sk-district-browse {
+  display: grid;
+  gap: var(--s-4);
+}
+.sk-district-browse > .sk-search {
+  max-width: 420px;
+}
+.sk-district-browse > .btn {
+  justify-self: center;
+}
+
+/* ------------------------------------------------------------------ score breakdown extras
+   Under the two bars: the sum worked out, the level scale with a marker at the score, and what
+   heavier rain would do. */
+.sk-sum {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+.sk-sum p {
+  display: grid;
+  flex: 1 1 0;
+  gap: 2px;
+  min-width: 84px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--p-surface);
+}
+.sk-sum span {
+  color: var(--muted);
+  font-size: var(--t-label);
+}
+.sk-sum b {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.sk-sum i {
+  color: var(--muted);
+  font-style: normal;
+}
+.sk-sum p.sk-sum__total {
+  background: var(--p-ink);
+  color: var(--p-inv-ink);
+}
+.sk-sum__total span {
+  color: var(--p-inv-muted);
+}
+.sk-scale {
+  display: grid;
+  gap: 6px;
+}
+.sk-scale__track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  height: 10px;
+}
+.sk-scale__track i {
+  border-radius: 999px;
+}
+.sk-scale__track i[data-level="low"] {
+  background: var(--risk-low);
+}
+.sk-scale__track i[data-level="moderate"] {
+  background: var(--risk-moderate);
+}
+.sk-scale__track i[data-level="high"] {
+  background: var(--risk-high);
+}
+.sk-scale__track i[data-level="very_high"] {
+  background: var(--risk-very-high);
+}
+/* the marker: an ink pin with an ivory ring, centred on the score */
+.sk-scale__track b {
+  position: absolute;
+  top: 50%;
+  left: var(--at);
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--p-bg);
+  border-radius: 50%;
+  background: var(--p-ink);
+  box-shadow: var(--p-shadow-sm);
+  transform: translate(-50%, -50%);
+}
+.sk-scale__labels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: var(--t-label);
+  line-height: 1.3;
+}
+.sk-scale__labels li {
+  display: grid;
+}
+.sk-scale__labels li[aria-current] {
+  color: var(--p-ink);
+  font-weight: 600;
+}
+.sk-breakdown__action {
+  margin: 0;
+  font-size: var(--t-small);
+}
+.sk-whatif {
+  display: grid;
+  gap: var(--s-2);
+}
+.sk-whatif ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-whatif li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto 3ch;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--t-small);
+}
+.sk-whatif li > :first-child {
+  display: grid;
+  font-weight: 500;
+}
+.sk-whatif small {
+  color: var(--muted);
+  font-size: var(--t-label);
+  font-weight: 400;
+}
+.sk-whatif b {
+  justify-self: end;
 }

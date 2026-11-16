@@ -6,7 +6,8 @@ import {
   useSyncExternalStore,
   type FormEvent,
 } from "react";
-import { Search } from "lucide-react";
+import { MapPinned, Search } from "lucide-react";
+import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
 import {
   parseSubdistricts,
   toAlertInfo,
@@ -37,9 +38,10 @@ export function WatchArea({ districtName }: { districtName?: string }) {
   const [results, setResults] = useState<Subdistrict[]>([]);
   const [searching, setSearching] = useState(false);
   const [message, setMessage] = useState("");
-  const [state, setState] = useState<{ kode: string; data: AlertInfo | null } | null>(
-    null,
-  );
+  const [state, setState] = useState<{
+    kode: string;
+    data: AlertInfo | null;
+  } | null>(null);
 
   useEffect(() => {
     if (!kode) return;
@@ -70,7 +72,9 @@ export function WatchArea({ districtName }: { districtName?: string }) {
     setSearching(true);
     setMessage("");
     try {
-      const response = await fetch(`/api/subdistricts?q=${encodeURIComponent(term)}`);
+      const response = await fetch(
+        `/api/subdistricts?q=${encodeURIComponent(term)}`,
+      );
       if (!response.ok) throw new Error("not ready");
       const list = parseSubdistricts(await response.json());
       const inDistrict = districtName
@@ -103,7 +107,10 @@ export function WatchArea({ districtName }: { districtName?: string }) {
   return (
     <section className="sk-card sk-watch" aria-labelledby="pantau-h">
       <div className="sk-card__head">
-        <h2 id="pantau-h">{watched ? "Wilayah dipantau" : "Pantau wilayah"}</h2>
+        <h2 id="pantau-h" className="sk-heading-icon">
+          <MapPinned size={18} aria-hidden="true" />
+          {watched ? "Wilayah dipantau" : "Pantau wilayah"}
+        </h2>
         <span className="sk-mono">{watched ? watched.kode : "BMKG"}</span>
       </div>
 
@@ -113,21 +120,31 @@ export function WatchArea({ districtName }: { districtName?: string }) {
             <b>{watched.nama}</b>
             {(watched.kecamatan ?? watched.kecamatanSlug) ? (
               <span>{watched.kecamatan ?? watched.kecamatanSlug}</span>
-            ) : null}          </div>
+            ) : null}
+          </div>
 
           <div className="sk-watch__status" aria-live="polite">
             {loading ? (
-              <p className="sk-field__hint">Memuat status…</p>
+              <>
+                <LoadingStatus />
+                <Skeleton className="h-6 w-24 rounded-full" />
+                <Skeleton className="h-4 w-3/5" />
+                <Skeleton className="h-4 w-2/5" />
+              </>
             ) : status ? (
               <>
-                <span className={`sk-status sk-status--${status.toLowerCase()}`}>
+                <span
+                  className={`sk-status sk-status--${status.toLowerCase()}`}
+                >
                   {status}
                 </span>
                 {data?.category ? <p>Prakiraan: {data.category}</p> : null}
                 {data?.rainfallMm != null ? (
                   <p>Hujan 24 jam: {data.rainfallMm} mm</p>
                 ) : null}
-                {data?.windowLabel ? <p>Jendela hujan: {data.windowLabel}</p> : null}
+                {data?.windowLabel ? (
+                  <p>Jendela hujan: {data.windowLabel}</p>
+                ) : null}
               </>
             ) : (
               <p className="sk-field__hint">
@@ -167,7 +184,11 @@ export function WatchArea({ districtName }: { districtName?: string }) {
                 autoComplete="off"
               />
             </div>
-            <button type="submit" className="btn btn--primary" disabled={searching}>
+            <button
+              type="submit"
+              className="btn btn--primary"
+              disabled={searching}
+            >
               {searching ? "Mencari…" : "Cari"}
             </button>
           </form>
@@ -179,8 +200,9 @@ export function WatchArea({ districtName }: { districtName?: string }) {
                   <button type="button" onClick={() => choose(item)}>
                     <b>{item.nama}</b>
                     <span>
-                      {[item.kecamatan, item.kota].filter(Boolean).join(" · ") ||
-                        item.kode}
+                      {[item.kecamatan, item.kota]
+                        .filter(Boolean)
+                        .join(" · ") || item.kode}
                     </span>
                   </button>
                 </li>

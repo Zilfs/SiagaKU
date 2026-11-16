@@ -30,7 +30,10 @@ export function FloodHistory({ events }: { events: FloodEvent[] }) {
   return (
     <section className="sk-card sk-history" aria-labelledby="riwayat-h">
       <div className="sk-card__head">
-        <h2 id="riwayat-h">Riwayat genangan</h2>
+        <h2 id="riwayat-h" className="sk-heading-icon">
+          <Waves size={18} aria-hidden="true" />
+          Riwayat genangan
+        </h2>
         <span className="sk-mono">data terbuka</span>
       </div>
       <ul className="sk-history__list">

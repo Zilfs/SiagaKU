@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import { BookOpenCheck, Siren } from "lucide-react";
 import { ChatPanel } from "@/features/chat/components/chat-panel";
 import { findDistrict } from "@/features/risk/server/risk-repository";
 
@@ -46,15 +47,15 @@ export default async function TanyaPage({ searchParams }: PageProps<"/tanya">) {
         </header>
 
         <div className="sk-tanya__grid">
-          <ChatPanel
-            kecamatanId={context?.id}
-            kecamatanName={context?.name}
-          />
+          <ChatPanel kecamatanId={context?.id} kecamatanName={context?.name} />
 
           <aside className="sk-tanya__aside" aria-label="Tentang jawaban">
             <div className="sk-card">
               <div className="sk-card__head">
-                <h2>Dari mana jawabannya</h2>
+                <h2 className="sk-heading-icon">
+                  <BookOpenCheck size={18} aria-hidden="true" />
+                  Dari mana jawabannya
+                </h2>
               </div>
               <p>
                 Setiap jawaban diambil dari pedoman resmi BNPB dan BPBD DKI
@@ -68,7 +69,10 @@ export default async function TanyaPage({ searchParams }: PageProps<"/tanya">) {
 
             <div className="sk-card sk-tanya__call">
               <div className="sk-card__head">
-                <h2>Darurat</h2>
+                <h2 className="sk-heading-icon">
+                  <Siren size={18} aria-hidden="true" />
+                  Darurat
+                </h2>
                 <span className="sk-mono">24 jam</span>
               </div>
               <p>

@@ -3,6 +3,9 @@ import type { SafePoint } from "@/features/risk/types";
 import { distanceKm, formatDistance } from "@/lib/geo";
 import { safePointTypeLabel } from "@/lib/safe-point-label";
 
+/** Rows shown before the "more" disclosure, the same count as the flood history beside it. */
+const NEAREST = 5;
+
 /**
  * The nearest safe points in the Task 7 shape; the distance is computed from the point's lat/lng,
  * so the component stays the same when the list comes from the database.
@@ -25,6 +28,28 @@ export function SafePoints({
     }))
     .sort((a, b) => (a.km ?? Infinity) - (b.km ?? Infinity));
 
+  const row = ({ point, km }: (typeof sorted)[number]) => {
+    const distance = km === null ? "—" : formatDistance(km);
+    return (
+      <li key={point.id}>
+        <span className="sk-safepoints__icon" aria-hidden="true">
+          <MapPin size={18} />
+        </span>
+        <span className="sk-safepoints__name">
+          <b>{point.name}</b>
+          <span>
+            {safePointTypeLabel(point.type)} ·{" "}
+            {point.isVerified ? "Terverifikasi" : "Belum diverifikasi"}
+          </span>
+        </span>
+        <span className="sk-safepoints__dist">
+          <Route size={13} aria-hidden="true" />
+          {distance}
+        </span>
+      </li>
+    );
+  };
+
   return (
     <section className="sk-card sk-safepoints" aria-labelledby="aman-h">
       <div className="sk-card__head">
@@ -36,29 +61,21 @@ export function SafePoints({
           Belum ada titik aman yang tercatat untuk kecamatan ini.
         </p>
       ) : (
-        <ul className="sk-safepoints__list">
-          {sorted.map(({ point, km }) => {
-            const distance = km === null ? "—" : formatDistance(km);
-            return (
-              <li key={point.id}>
-                <span className="sk-safepoints__icon" aria-hidden="true">
-                  <MapPin size={18} />
-                </span>
-                <span className="sk-safepoints__name">
-                  <b>{point.name}</b>
-                  <span>
-                    {safePointTypeLabel(point.type)} ·{" "}
-                    {point.isVerified ? "Terverifikasi" : "Belum diverifikasi"}
-                  </span>
-                </span>
-                <span className="sk-safepoints__dist">
-                  <Route size={13} aria-hidden="true" />
-                  {distance}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          <ul className="sk-safepoints__list">
+            {sorted.slice(0, NEAREST).map(row)}
+          </ul>
+          {sorted.length > NEAREST ? (
+            <details className="sk-safepoints__more">
+              <summary>
+                Lihat {sorted.length - NEAREST} titik aman lainnya
+              </summary>
+              <ul className="sk-safepoints__list">
+                {sorted.slice(NEAREST).map(row)}
+              </ul>
+            </details>
+          ) : null}
+        </>
       )}
     </section>
   );

@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, Siren, X } from "lucide-react";
 import { Mark } from "@/components/site/mark";
 import { EmergencyButton } from "./emergency-button";
 
 const LINKS: { href: string; label: string; optional?: boolean }[] = [
-  { href: "/#cek", label: "Cek risiko" },
+  { href: "/#cari", label: "Cek risiko" },
   { href: "/peta", label: "Peta" },
   { href: "/rencana", label: "Rencana" },
   { href: "/#cara", label: "Cara kerja", optional: true },
@@ -16,12 +17,19 @@ const LINKS: { href: string; label: string; optional?: boolean }[] = [
   { href: "/lapor", label: "Lapor" },
 ];
 
+/** Route links only: a hash link on the landing (/#cari) is a section, not a page. */
+export function isCurrent(pathname: string, href: string): boolean {
+  if (href.includes("#")) return false;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 /**
- * One fixed, opaque bar on the page's .wrap (nav-centre): the words in the middle, the one primary
- * action on the right line, and a sheet on a phone.
+ * One fixed, light glass bar on the page's .wrap (nav-centre): the words in the middle, the red 112
+ * button and the one primary action on the right line, and a sheet on a phone.
  */
 export function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     document.body.classList.toggle("nav-locked", open);
@@ -40,10 +48,18 @@ export function Header() {
         </Link>
         <nav className="nav__links" id="menu-utama" aria-label="Utama">
           {LINKS.map((link) => (
-            <div className={link.optional ? "nav__item nav__item--optional" : "nav__item"} key={link.href}>
+            <div
+              className={
+                link.optional ? "nav__item nav__item--optional" : "nav__item"
+              }
+              key={link.href}
+            >
               <Link
                 className="nav__link"
                 href={link.href}
+                aria-current={
+                  isCurrent(pathname, link.href) ? "page" : undefined
+                }
                 onClick={() => setOpen(false)}
               >
                 {link.label}
@@ -52,13 +68,19 @@ export function Header() {
           ))}
         </nav>
         <div className="nav__actions">
-          <EmergencyButton />
+          <EmergencyButton className="nav__sos">
+            <Siren size={16} aria-hidden="true" />
+            Darurat 112
+          </EmergencyButton>
           <Link
             className="btn btn--primary"
-            href="/#cek"
+            href="/#cari"
             onClick={() => setOpen(false)}
           >
-            Cek risiko wilayah
+            {/* one flex item, so the button's gap doesn't widen the space before "wilayah" */}
+            <span>
+              Cek risiko<span className="nav__cta-more"> wilayah</span>
+            </span>
           </Link>
         </div>
         <button

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sparkles } from "lucide-react";
+import { Lightbulb, Sparkles } from "lucide-react";
+import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
 
 type ExplanationResponse = {
   explanation?: string;
@@ -55,7 +56,9 @@ export function AiExplanation({
 
   const data = state.id === districtId ? state.data : null;
   const loading = state.id !== districtId || state.loading;
-  const isAi = Boolean(data?.meta?.provider && data.meta.provider !== "template");
+  const isAi = Boolean(
+    data?.meta?.provider && data.meta.provider !== "template",
+  );
 
   return (
     <section
@@ -64,7 +67,10 @@ export function AiExplanation({
       aria-busy={loading}
     >
       <div className="sk-card__head">
-        <h2 id="jelas-h">Kenapa {districtName}?</h2>
+        <h2 id="jelas-h" className="sk-heading-icon">
+          <Lightbulb size={18} aria-hidden="true" />
+          Kenapa {districtName}?
+        </h2>
         {isAi ? (
           <span className="sk-tag sk-tag--ai">
             <Sparkles size={12} aria-hidden="true" />
@@ -74,9 +80,19 @@ export function AiExplanation({
           <span className="sk-mono">Penjelasan</span>
         )}
       </div>
-      <p aria-live="polite">
-        {data?.explanation ?? (loading ? "Menyusun penjelasan…" : fallback)}
-      </p>
+      {/* one live region across both states, so the explanation is announced when it lands */}
+      <div aria-live="polite">
+        {loading ? (
+          <div className="flex flex-col gap-2">
+            <LoadingStatus />
+            <Skeleton className="h-4 w-full max-w-[70ch]" />
+            <Skeleton className="h-4 w-11/12 max-w-[70ch]" />
+            <Skeleton className="h-4 w-3/5" />
+          </div>
+        ) : (
+          <p>{data?.explanation ?? fallback}</p>
+        )}
+      </div>
     </section>
   );
 }

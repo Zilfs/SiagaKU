@@ -2,10 +2,20 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
-import { Camera, LoaderCircle, LocateFixed, RotateCcw, Send } from "lucide-react";
+import {
+  Camera,
+  LoaderCircle,
+  LocateFixed,
+  RotateCcw,
+  Send,
+} from "lucide-react";
 import { findNearestDistrict } from "@/lib/geo";
 import { compressImage } from "../compress-image";
-import { toReportResult, type RawReportCreated, type ReportResult } from "../report-point";
+import {
+  toReportResult,
+  type RawReportCreated,
+  type ReportResult,
+} from "../report-point";
 import type { ReportDistrict } from "../types";
 
 type Step = "idle" | "compressing" | "uploading" | "analyzing";
@@ -14,7 +24,9 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
   const [photo, setPhoto] = useState<{ blob: Blob; url: string } | null>(null);
   const [description, setDescription] = useState("");
   const [districtId, setDistrictId] = useState<number | "">("");
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
+    null,
+  );
   const [locating, setLocating] = useState(false);
   const [step, setStep] = useState<Step>("idle");
   const [message, setMessage] = useState("");
@@ -39,7 +51,9 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
     } catch (error) {
       setPhoto(null);
       setMessage(
-        error instanceof Error ? error.message : "Foto gagal diproses. Coba lagi.",
+        error instanceof Error
+          ? error.message
+          : "Foto gagal diproses. Coba lagi.",
       );
     } finally {
       setStep("idle");
@@ -55,7 +69,9 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
 
   const locate = () => {
     if (!("geolocation" in navigator)) {
-      setMessage("Perangkat ini tidak mendukung lokasi. Pilih kecamatan dari daftar.");
+      setMessage(
+        "Perangkat ini tidak mendukung lokasi. Pilih kecamatan dari daftar.",
+      );
       return;
     }
     setLocating(true);
@@ -69,7 +85,9 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
         setLocating(false);
         const nearest = findNearestDistrict(point, districts);
         if (!nearest && districts.length > 0) {
-          setMessage("Lokasimu di luar DKI Jakarta. SiagaKU hanya untuk DKI Jakarta.");
+          setMessage(
+            "Lokasimu di luar DKI Jakarta. SiagaKU hanya untuk DKI Jakarta.",
+          );
           return;
         }
         setDistrictId(nearest?.id ?? "");
@@ -153,7 +171,9 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
             : "Laporan belum bisa dikirim. Coba lagi sebentar lagi.",
         );
       }
-      setResult(toReportResult((await reportResponse.json()) as RawReportCreated));
+      setResult(
+        toReportResult((await reportResponse.json()) as RawReportCreated),
+      );
     } catch (error) {
       setMessage(
         error instanceof Error
@@ -170,7 +190,10 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
   return (
     <section className="sk-card sk-report" aria-labelledby="lapor-h">
       <div className="sk-card__head">
-        <h2 id="lapor-h">Lapor genangan</h2>
+        <h2 id="lapor-h" className="sk-heading-icon">
+          <Camera size={18} aria-hidden="true" />
+          Lapor genangan
+        </h2>
         <span className="sk-mono">foto · lokasi</span>
       </div>
 
@@ -183,17 +206,23 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
           </b>
           {result.summary ? <p>{result.summary}</p> : null}
           {result.waterHeight ? (
-            <p className="sk-mono">Perkiraan tinggi air: {result.waterHeight}</p>
+            <p className="sk-mono">
+              Perkiraan tinggi air: {result.waterHeight}
+            </p>
           ) : null}
           <p className="sk-field__hint">
-            Laporan warga belum diverifikasi petugas. Laporan tampil di peta setelah
-            AI memastikan ada genangan.
+            Laporan warga belum diverifikasi petugas. Laporan tampil di peta
+            setelah AI memastikan ada genangan.
           </p>
           <div className="sk-report-result__actions">
             <Link className="btn btn--primary" href="/laporan">
               Lihat laporan warga
             </Link>
-            <button type="button" className="btn btn--secondary" onClick={reset}>
+            <button
+              type="button"
+              className="btn btn--secondary"
+              onClick={reset}
+            >
               <RotateCcw size={16} aria-hidden="true" />
               Lapor lagi
             </button>
@@ -202,11 +231,14 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
       ) : null}
 
       {rejected ? (
-        <div className="sk-report-result sk-report-result--rejected" role="alert">
+        <div
+          className="sk-report-result sk-report-result--rejected"
+          role="alert"
+        >
           <b>Foto ini belum bisa kami tampilkan.</b>
           <p>
-            Sepertinya bukan genangan atau banjir. Coba foto lain yang memperlihatkan
-            air dan patokan jalan.
+            Sepertinya bukan genangan atau banjir. Coba foto lain yang
+            memperlihatkan air dan patokan jalan.
           </p>
           <button type="button" className="btn btn--secondary" onClick={reset}>
             <RotateCcw size={16} aria-hidden="true" />
@@ -244,8 +276,8 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
             />
           </label>
           <p className="sk-field__hint" id="lapor-foto-hint">
-            Foto genangan dengan patokan jalan. Jangan sertakan wajah orang lain atau
-            data pribadi.
+            Foto genangan dengan patokan jalan. Jangan sertakan wajah orang lain
+            atau data pribadi.
           </p>
         </div>
 
