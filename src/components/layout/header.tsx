@@ -77,7 +77,10 @@ export function Header() {
             href="/#cari"
             onClick={() => setOpen(false)}
           >
-            Cek risiko wilayah
+            {/* one flex item, so the button's gap doesn't widen the space before "wilayah" */}
+            <span>
+              Cek risiko<span className="nav__cta-more"> wilayah</span>
+            </span>
           </Link>
         </div>
         <button

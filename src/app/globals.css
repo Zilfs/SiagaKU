@@ -1181,6 +1181,12 @@ main > section#fitur {
   font: 500 var(--t-body) / 1 var(--font-text);
   letter-spacing: 0;
 }
+/* below 420px logo + "Cek risiko wilayah" + menu toggle overflow the row: drop the last word */
+@media (max-width: 419px) {
+  .nav:not(.is-open) .nav__cta-more {
+    display: none;
+  }
+}
 /* the close's one large action keeps the kit's size: a 640 box, taller than the 48px row buttons */
 .btn--xl {
   width: min(100%, 640px);
