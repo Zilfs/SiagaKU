@@ -13,6 +13,9 @@ const COLOR: Record<MapDistrict["level"], string> = {
   very_high: "#c62828",
 };
 
+// stable default: a fresh [] per render would rebuild the map on every parent render
+const NO_REPORTS: MapReport[] = [];
+
 const escape = (value: string) =>
   value
     .replace(/&/g, "&amp;")
@@ -29,7 +32,7 @@ const CAMERA = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stro
  */
 export default function RiskMapInner({
   items,
-  reports = [],
+  reports = NO_REPORTS,
   label = "Peta risiko banjir per kecamatan di Jakarta",
   onSelect,
   selectedSlug,
