@@ -41,6 +41,12 @@ const AA_PAIRS: [PaletteKey, PaletteKey][] = [
   ["invMuted", "invBand"],
   ["invLink", "invBg"],
   ["invLink", "invBand"],
+  // the landing hero: ink over every sky layer, muted (eyebrow) on the sky's top
+  ["ink", "skyTop"],
+  ["ink", "cityFar"],
+  ["ink", "city"],
+  ["ink", "water"],
+  ["muted", "skyTop"],
 ];
 
 describe("palette contrast", () => {
@@ -63,6 +69,7 @@ describe("palette contrast", () => {
     ["inputLine", "card"],
     ["inputLine", "surface"],
     ["inputLine", "surface2"],
+    ["skyInk", "skyTop"], // the hero's focus rings on the sky
   ];
   it.each(NON_TEXT_PAIRS)("%s on %s is at least 3:1", (fg, ground) => {
     expect(contrastRatio(PALETTE[fg], PALETTE[ground])).toBeGreaterThanOrEqual(

@@ -34,6 +34,11 @@
   --p-inv-link: #66c2ff;
   --p-danger: #c62828;
   --p-danger-bg: #fdecec;
+  /* the landing sky's layers, light enough that ink text reads over any of them */
+  --p-sky-top: #cbe8ff;
+  --p-city-far: #b3dcfb;
+  --p-city: #8cc8f3;
+  --p-water: #5cb3ee;
 
   /* roles */
   --p-link: var(--p-sky-ink);
@@ -71,7 +76,6 @@
   --p-ai-ink-2: #104a46;
   --p-ok-bg: #e3f2e8;
   --p-ok-ink: #1c6b3e;
-  --p-decor-teal: #7fd8cf;
 
   --font-display:
     var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
@@ -257,294 +261,184 @@ html[data-ground="sky"] {
   vector-effect: non-scaling-stroke;
 }
 
-/* ------------------------------------------------------------------ hero collage pieces
-   The triptych's three columns; the collage holds the product's own screens, sized in
-   container units so the phone shows the same picture smaller. */
-.sk-hero .ly-collage {
-  container-type: inline-size;
-}
-.sk-hero .ly-piece {
+/* ------------------------------------------------------------------ the landing sky
+   A full-screen sky: gradient, clouds (slow), the skyline with Monas (medium), the water line
+   (fast). The words sit above the skyline (the hero's bottom padding is the layers' height), so
+   they only ever lie on the sky and the white clouds. Scroll-driven, no JS; still elsewhere. */
+main > .hero.sk-sky {
+  --sky-water: clamp(44px, 8svh, 88px);
+  --sky-city: clamp(150px, 30svh, 320px);
   display: grid;
-  gap: 1.4cqw;
-  padding: 2.6cqw;
-  font: 400 max(12px, 1.55cqw) / 1.35 var(--font-text);
-  border: 1px solid color-mix(in srgb, var(--p-ink) 6%, transparent);
-  /* the kit clips a piece with overflow; clip-path does the same without a fake scroll window
-     (the row check reads any overflow clip with wider content as a cut carousel) */
-  overflow: visible;
-  clip-path: inset(0 round var(--r-md));
-  /* rows keep their own height: the card's few lines sit under each other, not spread over it */
-  align-content: start;
-}
-.sk-hero .ly-piece h4,
-.sk-hero .ly-piece p {
-  margin: 0;
-}
-.sk-hero .ly-piece strong {
-  font-weight: 500;
-}
-
-/* the risk card, the hero's main piece */
-.sk-card-risk {
-  background: var(--p-bg);
-  color: var(--p-ink);
-}
-.sk-card-risk .sk-piece-head {
-  display: flex;
-  align-items: center;
-  gap: 1.2cqw;
-  min-width: 0;
-}
-.sk-card-risk .sk-piece-head .sk-mono {
-  font-size: max(11px, 1.3cqw);
-  color: var(--p-muted);
-}
-.sk-card-risk .sk-piece-title {
-  font-size: max(13px, 2.1cqw);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-.sk-card-risk .sk-piece-score {
-  display: flex;
-  align-items: flex-end;
-  gap: 2cqw;
-  margin: 1cqw 0 0.4cqw;
-}
-.sk-card-risk .sk-piece-score b {
-  font: 500 9cqw/0.9 var(--font-mono);
-  letter-spacing: -0.04em;
-}
-.sk-card-risk .sk-piece-score span {
-  padding-bottom: 0.9cqw;
-}
-.sk-card-risk .sk-piece-copy {
-  color: var(--p-muted);
-  line-height: 1.45;
-}
-.sk-card-risk .sk-piece-action {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2cqw;
-  margin-top: 0.6cqw;
-  padding-top: 1.8cqw;
-  border-top: 1px solid var(--line);
-  font-weight: 500;
-  color: var(--p-link);
-}
-
-/* the day's count, top right */
-.sk-card-counts {
-  background: var(--p-ink);
-  color: var(--p-inv-ink);
-  border-color: transparent;
-}
-.sk-card-counts .sk-piece-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1cqw;
-}
-.sk-card-counts .sk-piece-head span:last-child {
-  color: var(--p-inv-muted);
-  font-size: max(10px, 1.2cqw);
-}
-.sk-card-counts ul {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.2cqw 2cqw;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sk-card-counts li {
-  display: flex;
-  align-items: center;
-  gap: 1cqw;
-  font-size: max(11px, 1.35cqw);
-  color: var(--p-inv-muted);
-}
-.sk-card-counts li b {
-  margin-left: auto;
-  font: 500 max(13px, 1.9cqw)/1 var(--font-mono);
-  color: var(--p-inv-ink);
-}
-.sk-card-counts .sk-dot {
-  width: 1.4cqw;
-  height: 1.4cqw;
-  min-width: 7px;
-  min-height: 7px;
-}
-
-/* the plan checklist, set two's main piece */
-.sk-card-plan {
-  background: var(--p-bg);
-  color: var(--p-ink);
-}
-.sk-card-plan .sk-piece-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 2cqw;
-}
-.sk-card-plan .sk-piece-title {
-  font-size: max(13px, 2.1cqw);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-.sk-card-plan .sk-track {
-  height: 0.9cqw;
-  min-height: 5px;
-  border-radius: 999px;
-  background: var(--risk-track);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 1fr;
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-bottom: calc(var(--sky-city) + var(--sky-water) / 2 + var(--s-5));
   overflow: hidden;
+  background: linear-gradient(to bottom, var(--p-sky-top), var(--p-bg) 78%);
 }
-.sk-card-plan .sk-track > i {
+.sk-sky__layers {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.sk-sky__layer {
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+.sk-sky__clouds {
+  top: var(--nav);
+  height: 60%;
+  fill: var(--p-card);
+  opacity: 0.9;
+}
+.sk-sky__city {
+  bottom: calc(var(--sky-water) / 2);
+  height: var(--sky-city);
+}
+.sk-sky__far {
+  fill: var(--p-city-far);
+}
+.sk-sky__near {
+  fill: var(--p-city);
+}
+/* runs 12vh under the hero, so rising on scroll never opens a gap at its foot */
+.sk-sky__water {
+  bottom: -12vh;
+  height: calc(var(--sky-water) + 12vh);
+  background: linear-gradient(to bottom, transparent 24px, var(--p-water) 24px);
+}
+.sk-sky__water svg {
   display: block;
-  height: 100%;
-  width: 36%;
-  border-radius: inherit;
-  background: var(--p-action);
+  width: 100%;
+  height: 48px;
 }
-.sk-card-plan ul {
-  display: grid;
-  gap: 1.2cqw;
+.sk-sky__sea {
+  fill: var(--p-water);
+}
+.sk-sky__crest {
+  fill: none;
+  stroke: var(--p-sky);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+/* speed against the page over the first screen of scroll: clouds 0.55x, skyline 0.82x, water 1.08x */
+.sk-sky__clouds {
+  --sky-shift: 45vh;
+}
+.sk-sky__city {
+  --sky-shift: 18vh;
+}
+.sk-sky__water {
+  --sky-shift: -8vh;
+}
+@keyframes sk-sky-drift {
+  to {
+    transform: translate3d(0, var(--sky-shift), 0);
+  }
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="off"]) .sk-sky__layer {
+      animation: sk-sky-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+      will-change: transform;
+    }
+  }
+}
+
+.sk-sky__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-4);
+  text-align: center;
+}
+.sk-sky__copy > h1 {
+  max-width: 18ch;
+}
+.sk-sky__copy > .hero__lead {
+  margin: 0;
+  color: var(--p-ink);
+}
+.sk-sky__stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   margin: 0;
   padding: 0;
   list-style: none;
+  font-size: var(--t-small);
+  color: var(--p-ink);
 }
-.sk-card-plan li {
-  display: flex;
-  align-items: center;
-  gap: 1.2cqw;
-  padding-top: 1.2cqw;
-  border-top: 1px solid var(--line);
-  line-height: 1.3;
+.sk-sky__stats li + li::before {
+  content: "·" / "";
+  margin-inline: 10px;
 }
-.sk-card-plan li .sk-check {
-  width: 2.2cqw;
-  height: 2.2cqw;
-  min-width: 13px;
-  min-height: 13px;
-  border-radius: 3px;
-  border: 1px solid var(--line-strong);
+.sk-sky__stats b {
+  font-weight: 600;
+}
+
+/* the hero search: one 56px row; matches float under it, so typing never moves the hero */
+.sk-hero-search {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 560px);
+  margin-block: var(--s-2);
+  text-align: left;
+}
+.sk-hero-search__field {
+  height: 56px;
+  border-radius: var(--r-btn);
+}
+.sk-search.sk-hero-search__field {
+  padding-right: 4px;
+  background: var(--p-card);
+  box-shadow: var(--p-shadow);
+}
+.sk-hero-search__field .btn {
   flex: 0 0 auto;
+  height: 46px;
+  padding-inline: var(--s-4);
 }
-.sk-card-plan li.is-done .sk-check {
-  background: var(--p-action);
-  border-color: var(--p-action);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='%230b1b2e' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size: 80%;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* chat answer, set two's second piece */
-.sk-card-chat {
-  background: var(--p-inv-surface);
-  color: var(--p-inv-ink);
-  border-color: transparent;
-}
-.sk-card-chat .sk-piece-q {
-  display: flex;
-  gap: 1.2cqw;
-  align-items: flex-start;
-  color: var(--p-inv-muted);
-}
-.sk-card-chat .sk-piece-q b {
-  color: var(--p-inv-ink);
-  font-weight: 500;
-}
-.sk-card-chat .sk-piece-a {
-  padding-top: 1.4cqw;
-  border-top: 1px solid color-mix(in srgb, var(--p-inv-ink) 16%, transparent);
-  line-height: 1.4;
-}
-.sk-card-chat .sk-piece-src {
-  display: flex;
-  align-items: center;
-  gap: 0.8cqw;
-  color: var(--p-inv-muted);
-  font-size: max(10px, 1.15cqw);
-}
-
-/* alert + weather strip, the pieces that end at 96% x 96% so the pause disc sits on them */
-.sk-card-alert {
-  background: var(--p-warn-bg);
-  color: var(--p-warn-ink);
-  border-color: var(--p-warn-line);
-}
-.sk-card-alert .sk-piece-head {
-  display: flex;
-  align-items: center;
-  gap: 1.2cqw;
-  font-weight: 500;
-}
-.sk-card-alert p {
-  color: var(--p-warn-muted);
-  line-height: 1.4;
-}
-.sk-card-weather {
-  background: var(--p-bg);
-  color: var(--p-ink);
-}
-.sk-card-weather .sk-piece-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1cqw;
-}
-.sk-card-weather .sk-piece-head span:first-child {
-  font-weight: 500;
-}
-.sk-card-weather ol {
+.sk-hero-search__results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1cqw;
   margin: 0;
-  padding: 0;
+  padding: 6px;
   list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--p-card);
+  box-shadow: var(--p-shadow-lg);
 }
-.sk-card-weather li {
-  display: grid;
-  justify-items: start;
-  gap: 0.4cqw;
-  font-size: max(10px, 1.15cqw);
-  color: var(--p-muted);
-}
-.sk-card-weather li b {
-  font: 500 max(12px, 1.6cqw)/1 var(--font-mono);
+.sk-hero-search__results a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
   color: var(--p-ink);
+  text-decoration: none;
 }
-.sk-card-weather .sk-rain {
-  width: 1.8cqw;
-  height: 1.8cqw;
-  min-width: 11px;
-  min-height: 11px;
-  color: var(--p-link);
+.sk-hero-search__results a:hover {
+  background: var(--p-surface);
 }
-
-@media (max-width: 639px) {
-  .sk-hero .ly-piece {
-    padding: 14px;
-    font-size: 12px;
-  }
-  .sk-hero .sk-piece--aside {
-    display: none;
-  }
-  .sk-hero .sk-piece--main {
-    left: 0 !important;
-    top: 0 !important;
-    width: 96% !important;
-    height: 100% !important;
-  }
-  .sk-hero .ly-collage > button.loop-pause.loop-pause {
-    right: 8px;
-    bottom: 8px;
-  }
+.sk-hero-search__results .sk-list__name {
+  flex: 1 1 auto;
 }
-
+.sk-hero-search__results .sk-list__empty {
+  padding: 12px 10px;
+}
 /* ------------------------------------------------------------------ the app frame
    #cek: search + district list + the selected district's score. The section shows the
    product itself, not a picture of it. */
@@ -660,21 +554,21 @@ html[data-ground="sky"] {
 .sk-list button[aria-current="true"] {
   background: var(--p-surface-2);
 }
-.sk-list .sk-list__name {
+:is(.sk-list, .sk-hero-search__results) .sk-list__name {
   display: grid;
   gap: 1px;
   min-width: 0;
 }
-.sk-list .sk-list__name b {
+:is(.sk-list, .sk-hero-search__results) .sk-list__name b {
   font-weight: 500;
   font-size: var(--t-body);
   line-height: 1.3;
 }
-.sk-list .sk-list__name span {
+:is(.sk-list, .sk-hero-search__results) .sk-list__name span {
   font-size: var(--t-small);
   color: var(--muted);
 }
-.sk-list .sk-list__score {
+:is(.sk-list, .sk-hero-search__results) .sk-list__score {
   font: 500 var(--t-small)/1 var(--font-mono);
   color: var(--muted);
 }
@@ -1171,92 +1065,6 @@ html[data-ground="sky"] {
   height: 100%;
 }
 
-/* the hero's action column: the one button and the line of facts under it */
-.sk-hero__cta {
-  display: grid;
-  gap: 12px;
-  justify-items: end;
-  width: min(100%, 320px);
-  margin-left: auto;
-}
-
-/* ------------------------------------------------------------------ hero extras
-   The collage is the product itself: three sets of screens, each set a finished state. The pieces
-   carry the same shadow as a screenshot lifted off the page, and the main piece takes the phone. */
-.sk-hero .ly-piece {
-  box-shadow:
-    0 1px 2px color-mix(in srgb, var(--p-ink) 8%, transparent),
-    0 18px 40px -20px color-mix(in srgb, var(--p-ink) 40%, transparent);
-}
-.sk-hero .ly-collage > button.loop-pause.loop-pause {
-  background: color-mix(in srgb, var(--p-bg) 90%, transparent);
-  border-color: color-mix(in srgb, var(--p-ink) 14%, transparent);
-  color: var(--p-ink);
-  backdrop-filter: blur(6px);
-}
-.sk-hero__note {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-
-/* the popover heads in the mocks */
-.sk-piece-head__dot {
-  width: 1.5cqw;
-  height: 1.5cqw;
-  min-width: 8px;
-  min-height: 8px;
-  border-radius: 999px;
-  flex: 0 0 auto;
-}
-
-/* the report rows of set three */
-.sk-card-report {
-  background: var(--p-bg);
-  color: var(--p-ink);
-}
-.sk-card-report .sk-piece-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1cqw;
-  font-weight: 500;
-}
-.sk-card-report .sk-piece-head span:last-child {
-  color: var(--p-muted);
-  font-size: max(10px, 1.2cqw);
-  font-weight: 400;
-}
-.sk-card-report ul {
-  display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.sk-card-report li {
-  display: flex;
-  align-items: center;
-  gap: 1.2cqw;
-  padding: 1.2cqw 0;
-  border-top: 1px solid var(--line);
-  font-size: max(11px, 1.4cqw);
-  line-height: 1.3;
-}
-.sk-card-report li:first-child {
-  border-top: 0;
-}
-.sk-card-report li > span:first-of-type {
-  min-width: 0;
-}
-.sk-card-report li b {
-  margin-left: auto;
-  font: 500 max(11px, 1.35cqw) / 1 var(--font-mono);
-  color: var(--p-muted);
-  white-space: nowrap;
-}
-
 /* ------------------------------------------------------------------ section furniture */
 .sk-section-lead {
   max-width: 58ch;
@@ -1497,7 +1305,6 @@ html[data-ground="sky"] {
 }
 .nav__actions .btn,
 .nav:not(.is-open) .nav__actions .btn,
-.hero--triptych .hero__cta .btn,
 .sk-call .btn {
   height: var(--btn-h);
   padding-inline: var(--s-5);
@@ -1558,10 +1365,6 @@ html[data-ground="sky"] {
   :root {
     --display-tracking: -0.03em;
   }
-  /* the hero ends on the fold: its last line sits 24 above the screen's foot */
-  main > .hero {
-    padding-bottom: calc(var(--hpadb) + var(--bar));
-  }
   /* stacking needs the second screen: nothing overlaps, the air goes under the last row */
   section#cara,
   section#data,
@@ -1577,10 +1380,6 @@ html[data-ground="sky"] {
   .sk-steps li::before {
     width: 28px;
     height: 28px;
-  }
-  .sk-hero__cta {
-    justify-items: stretch;
-    width: 100%;
   }
   .sk-app__foot {
     justify-content: flex-start;
@@ -1653,15 +1452,6 @@ html[data-ground="sky"] {
   }
   .sk-steps li:first-child::before {
     top: 0;
-  }
-}
-
-/* the hero's action follows the words on a stacked hero (640-1023): same left line, full width */
-@media (max-width: 1023px) {
-  .sk-hero__cta {
-    width: 100%;
-    margin-left: 0;
-    justify-items: stretch;
   }
 }
 
@@ -2528,14 +2318,6 @@ html[data-ground="sky"] {
   }
 }
 
-/* a tablet keeps the hero's button a button, not a full-width band */
-@media (min-width: 640px) and (max-width: 1023px) {
-  .sk-hero__cta {
-    max-width: 360px;
-    justify-items: start;
-  }
-}
-
 /* the location button under the map's legend */
 .sk-geo {
   display: flex;
@@ -2574,90 +2356,14 @@ html[data-ground="sky"] {
   }
 }
 
-/* the hero pieces: the kit gives every .ly-piece a surface ground, which beat the piece's own
-   dark/light ground and left light text on a light card. These keep the piece's own ground. */
-.sk-hero .ly-piece.sk-card-risk,
-.sk-hero .ly-piece.sk-card-plan,
-.sk-hero .ly-piece.sk-card-weather,
-.sk-hero .ly-piece.sk-card-report {
-  background: var(--p-bg);
-}
-.sk-hero .ly-piece.sk-card-counts {
-  background: var(--p-ink);
-}
-.sk-hero .ly-piece.sk-card-chat {
-  background: var(--p-inv-surface);
-}
-.sk-hero .ly-piece.sk-card-alert {
-  background: var(--p-warn-bg);
-}
-
 /* the source line inside the dark answer bubble reads as light, not as body grey */
 .sk-feature__answer .sk-feature__src {
   color: var(--p-inv-muted);
 }
 
-/* the hero's list pieces fill their card instead of leaving a white void under the last row */
-.sk-hero .ly-piece.sk-card-plan {
-  grid-template-rows: auto auto 1fr;
-}
-.sk-hero .ly-piece.sk-card-plan > ul,
-.sk-hero .ly-piece.sk-card-counts > ul,
-.sk-hero .ly-piece.sk-card-report > ul,
-.sk-hero .ly-piece.sk-card-weather > ol {
-  align-content: stretch;
-}
-.sk-hero .ly-piece.sk-card-counts,
-.sk-hero .ly-piece.sk-card-report {
-  grid-template-rows: auto 1fr;
-}
-.sk-hero .ly-piece.sk-card-weather {
-  grid-template-rows: auto 1fr;
-}
-.sk-hero .ly-piece.sk-card-report {
-  grid-template-rows: auto 1fr auto;
-}
-
-/* a tablet: the hero button stays under half the container, so it never reads as a band */
-@media (min-width: 640px) and (max-width: 1023px) {
-  .sk-hero__cta {
-    max-width: 320px;
-  }
-}
-
 /* ------------------------------------------------------------------ landing refresh
    UI UX Pro Max "Trust & Authority + Accessible & Ethical", mapped to the docs/08 sea-blue
    identity (the generator's alert red was rejected: the brief asks for calm, not panic). */
-.sk-hero__eyebrow {
-  display: none;
-}
-@media (min-width: 640px) {
-  .sk-hero__eyebrow {
-    display: block;
-    margin: 0 0 var(--s-4);
-  }
-}
-/* three proof facts under the hero's one button, in the note's old place */
-.sk-hero__proof {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: var(--t-label);
-  color: var(--muted);
-}
-.sk-hero__proof li {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 5px;
-}
-.sk-hero__proof b {
-  font: 500 var(--t-small) / 1 var(--font-mono);
-  letter-spacing: -0.02em;
-  color: var(--p-ink);
-}
 /* the feature cards count themselves: 01 to 04 in the heading, no extra row */
 .sk-card-index {
   margin-right: 8px;

@@ -23,6 +23,11 @@ export const PALETTE = {
   invLink: "#66c2ff",
   danger: "#c62828", // the 112 button: red text on dangerBg, Cloudy White text on red
   dangerBg: "#fdecec",
+  // the landing sky's layers: hero text (ink) and the focus ring may lie over them
+  skyTop: "#cbe8ff",
+  cityFar: "#b3dcfb",
+  city: "#8cc8f3",
+  water: "#5cb3ee",
 } as const;
 
 export type PaletteKey = keyof typeof PALETTE;
@@ -48,4 +53,8 @@ export const PALETTE_TOKENS: Record<PaletteKey, string> = {
   invLink: "--p-inv-link",
   danger: "--p-danger",
   dangerBg: "--p-danger-bg",
+  skyTop: "--p-sky-top",
+  cityFar: "--p-city-far",
+  city: "--p-city",
+  water: "--p-water",
 };

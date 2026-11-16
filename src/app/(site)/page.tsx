@@ -14,14 +14,17 @@ import {
   Search,
   type LucideIcon,
 } from "lucide-react";
-import { HeroCollage } from "@/components/site/hero-collage";
-import { DistrictSearch } from "@/features/risk/components/district-search";
+import { HeroSky } from "@/components/site/hero-sky";
+import {
+  DistrictSearch,
+  HeroDistrictSearch,
+} from "@/features/risk/components/district-search";
 import { RiskBadge } from "@/components/risk-badge";
 import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
 import type { DistrictSummary } from "@/features/risk/types";
 import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
 import { connection } from "next/server";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import { LoadingStatus, Skeleton } from "@/components/ui/skeleton";
 import {
   FeatureDemo,
@@ -29,6 +32,7 @@ import {
   FeatureDemoToggle,
 } from "@/components/site/feature-demo";
 import { CountUp, Magnetic, Reveal } from "@/components/site/landing-motion";
+import Link from "next/link";
 import { PlanPreview } from "@/components/site/plan-preview";
 
 const LEGEND: { level: RiskLevel; range: string; dot: string }[] = [
@@ -103,18 +107,36 @@ const FAQ = [
   },
 ];
 
-/** The #cek panel: the only part of the landing that waits for live data. */
-async function DistrictSearchPanel() {
-  // live data: rendered per visit (the service caches its own upstream calls)
+/** Live data, rendered per visit; `cache` lets the hero and #cek share one load per request. */
+const loadDistricts = cache(async (): Promise<DistrictSummary[]> => {
   await connection();
-  let districts: DistrictSummary[] = [];
   try {
-    districts = await listDistrictsWithScore();
+    // the service caches its own upstream calls
+    return await listDistrictsWithScore();
   } catch (error) {
     console.error("GET districts for the landing failed", error);
-    districts = [];
+    return [];
   }
-  return <DistrictSearch districts={districts} />;
+});
+
+/** The hero's search: the only part of the hero that waits for live data. */
+async function HeroSearchPanel() {
+  return <HeroDistrictSearch districts={await loadDistricts()} />;
+}
+
+/** Same box as `.sk-hero-search`, so the search swaps in without moving the hero. */
+function HeroSearchSkeleton() {
+  return (
+    <div className="sk-hero-search" aria-busy="true">
+      <LoadingStatus />
+      <Skeleton className="sk-hero-search__field" />
+    </div>
+  );
+}
+
+/** The #cek panel. */
+async function DistrictSearchPanel() {
+  return <DistrictSearch districts={await loadDistricts()} />;
 }
 
 /** Same frame as `.sk-app`, so the panel swaps in without moving the sections below. */
@@ -138,56 +160,39 @@ function DistrictSearchSkeleton() {
 export default function HomePage() {
   return (
     <>
-      <section
-        className="hero hero--triptych sk-hero"
-        data-enter
-        aria-labelledby="hero-h"
-      >
+      <section className="hero sk-sky" data-enter aria-labelledby="hero-h">
+        <HeroSky />
         <div className="wrap">
-          <div className="hero-text grid hero__grid">
-            <div className="span-3">
-              <p className="sk-eyebrow sk-hero__eyebrow">
-                Mitigasi banjir · DKI Jakarta
-              </p>
-              <h1 id="hero-h">Risiko banjir Jakarta, tiap kecamatan.</h1>
-              <p className="hero__lead">
-                Cek skor risiko wilayahmu hari ini, lihat dari mana angkanya,
-                lalu susun rencana siaga keluarga. Tanpa akun dan tanpa data
-                pribadi.
-              </p>
-            </div>
-
-            <HeroCollage className="span-6" />
-
-            <div className="span-3 hero__cta">
-              <div className="sk-hero__cta">
-                <Magnetic>
-                  <a className="btn btn--primary" href="#cek">
-                    Cek risiko wilayah
-                  </a>
-                </Magnetic>
-                <ul
-                  className="sk-hero__proof"
-                  aria-label="Cakupan dan sumber data"
-                >
-                  <li>
-                    <b>
-                      <CountUp value={44} />
-                    </b>{" "}
-                    kecamatan
-                  </li>
-                  <li>
-                    <b>
-                      <CountUp value={3} /> hari
-                    </b>{" "}
-                    BMKG
-                  </li>
-                  <li>
-                    <b>112</b> darurat
-                  </li>
-                </ul>
-              </div>
-            </div>
+          <div className="hero-text sk-sky__copy">
+            <p className="sk-eyebrow">Mitigasi banjir · DKI Jakarta</p>
+            <h1 id="hero-h">Risiko banjir Jakarta, tiap kecamatan.</h1>
+            <p className="hero__lead">
+              Cek skor risiko wilayahmu hari ini, lalu susun rencana siaga
+              keluarga. Tanpa akun, tanpa data pribadi.
+            </p>
+            <Suspense fallback={<HeroSearchSkeleton />}>
+              <HeroSearchPanel />
+            </Suspense>
+            <ul className="sk-sky__stats" aria-label="Cakupan dan sumber data">
+              <li>
+                <b>
+                  <CountUp value={44} />
+                </b>{" "}
+                kecamatan
+              </li>
+              <li>
+                <b>
+                  <CountUp value={3} />
+                </b>{" "}
+                hari
+              </li>
+              <li>
+                <b>BMKG</b>
+              </li>
+            </ul>
+            <Link className="link" href="/peta">
+              Lihat peta risiko Jakarta
+            </Link>
           </div>
         </div>
       </section>
