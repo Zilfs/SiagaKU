@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { List } from "lucide-react";
-import { RiskMap } from "@/components/map/risk-map";
 import { UseLocation } from "@/components/map/use-location";
 import { RiskBadge } from "@/components/risk-badge";
+import { MapDashboard } from "@/features/risk/components/map-dashboard";
 import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
 import type { DistrictSummary } from "@/features/risk/types";
 import { RISK_LEVEL_LABELS, type RiskLevel } from "@/lib/risk/level";
@@ -38,6 +38,10 @@ export default async function MapPage() {
     console.error("GET districts for the map failed", error);
     districts = [];
   }
+  const top = districts.reduce<DistrictSummary | null>(
+    (best, d) => (best && best.score >= d.score ? best : d),
+    null,
+  );
   return (
     <article className="sk-page sk-peta">
       <div className="wrap">
@@ -45,9 +49,7 @@ export default async function MapPage() {
           <p className="sk-eyebrow">Peta risiko · DKI Jakarta</p>
           <h1>Peta risiko banjir Jakarta</h1>
           <p>
-            Satu lingkaran untuk tiap kecamatan, diwarnai sesuai level
-            risikonya. Klik untuk membuka skor, prakiraan hujan, riwayat
-            genangan, dan titik aman.
+            Klik lingkaran kecamatan untuk melihat cuaca dan prakiraan hujannya.
           </p>
           <ul className="sk-legend" aria-label="Arti level risiko">
             {LEGEND.map((item) => (
@@ -65,9 +67,7 @@ export default async function MapPage() {
           <UseLocation districts={districts} />
         </header>
 
-        <div className="sk-map-shell">
-          <RiskMap items={districts} />
-        </div>
+        <MapDashboard districts={districts} initialSlug={top?.slug ?? null} />
 
         <section className="sk-peta__list" aria-labelledby="daftar-h">
           <div className="sk-card__head">

@@ -1,11 +1,25 @@
 import { PageSkeleton, Skeleton } from "@/components/ui/skeleton";
+import { DashCardsSkeleton } from "@/features/risk/components/map-dashboard";
 
-/** The map while districts load: the head with legend, the map frame, then the district list. */
+/** The dashboard while districts load: the head, the live bar, map beside the cards, then the list. */
 export default function Loading() {
   return (
     <PageSkeleton className="sk-peta">
-      <div className="sk-map-shell">
-        <Skeleton className="sk-map rounded-none" />
+      <div className="sk-dash">
+        <div className="sk-dash__bar">
+          <Skeleton className="h-5 w-72 max-w-full" />
+          <Skeleton className="h-11 w-40" />
+        </div>
+        <div className="sk-dash__grid">
+          <div className="sk-dash__main">
+            <div className="sk-map-shell sk-dash__map">
+              <Skeleton className="sk-map rounded-none" />
+            </div>
+          </div>
+          <div className="sk-dash__aside">
+            <DashCardsSkeleton />
+          </div>
+        </div>
       </div>
       <div className="sk-peta__list">
         <Skeleton className="h-6 w-48" />

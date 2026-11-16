@@ -31,12 +31,22 @@ export default function RiskMapInner({
   items,
   reports = [],
   label = "Peta risiko banjir per kecamatan di Jakarta",
+  onSelect,
+  selectedSlug,
 }: {
   items: MapDistrict[];
   reports?: MapReport[];
   label?: string;
+  onSelect?: (slug: string) => void;
+  selectedSlug?: string;
 }) {
   const container = useRef<HTMLDivElement>(null);
+  const circles = useRef(new Map<string, L.CircleMarker>());
+  // read through a ref so a new callback never rebuilds the map
+  const onSelectRef = useRef(onSelect);
+  useEffect(() => {
+    onSelectRef.current = onSelect;
+  });
 
   useEffect(() => {
     const node = container.current;
@@ -54,8 +64,9 @@ export default function RiskMapInner({
       maxZoom: 19,
     }).addTo(map);
 
+    const markers = circles.current;
     for (const district of items) {
-      L.circleMarker([district.lat, district.lng], {
+      const circle = L.circleMarker([district.lat, district.lng], {
         radius: 14,
         color: "#ffffff",
         weight: 2,
@@ -67,7 +78,9 @@ export default function RiskMapInner({
           `<div class="sk-map__popup"><b>${escape(district.name)}</b>` +
             `<span>${RISK_LEVEL_LABELS[district.level]} · skor ${district.score}</span>` +
             `<a href="/wilayah/${district.slug}">Lihat detail</a></div>`,
-        );
+        )
+        .on("click", () => onSelectRef.current?.(district.slug));
+      markers.set(district.slug, circle);
     }
 
     const camera = L.divIcon({
@@ -100,16 +113,24 @@ export default function RiskMapInner({
 
     return () => {
       window.clearTimeout(timer);
+      markers.clear();
       map.remove();
     };
   }, [items, reports]);
 
+  // selection only restyles the circles; the map itself stays
+  useEffect(() => {
+    for (const [slug, circle] of circles.current) {
+      const selected = slug === selectedSlug;
+      circle.setStyle({
+        color: selected ? "#0b1b26" : "#ffffff",
+        weight: selected ? 4 : 2,
+      });
+      if (selected) circle.bringToFront();
+    }
+  }, [items, selectedSlug]);
+
   return (
-    <div
-      ref={container}
-      className="sk-map"
-      role="region"
-      aria-label={label}
-    />
+    <div ref={container} className="sk-map" role="region" aria-label={label} />
   );
 }

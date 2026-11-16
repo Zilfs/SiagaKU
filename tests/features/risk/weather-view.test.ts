@@ -1,0 +1,120 @@
+import { describe, expect, it } from "vitest";
+import type { WeatherSlot } from "@/lib/data/bmkg";
+import {
+  jakartaHour,
+  kindFromCode,
+  kindFromDescription,
+  pickCurrentSlot,
+  pickNextRainSlot,
+  rainHeadline,
+} from "@/features/risk/weather-view";
+
+const slot = (
+  localTime: string,
+  description = "Berawan",
+  rainfallMm: number | null = 0,
+): WeatherSlot => ({
+  localTime,
+  description,
+  rainfallMm,
+  temperature: 28,
+  humidity: 80,
+  icon: null,
+  windSpeedKmh: 10,
+});
+
+// 16 Nov 2026 13:40 WIB
+const now = new Date("2026-11-16T06:40:00Z");
+
+describe("kindFromCode", () => {
+  it("maps WMO weather codes", () => {
+    expect(kindFromCode(0)).toBe("sun");
+    expect(kindFromCode(2)).toBe("cloud-sun");
+    expect(kindFromCode(3)).toBe("cloud");
+    expect(kindFromCode(45)).toBe("fog");
+    expect(kindFromCode(53)).toBe("drizzle");
+    expect(kindFromCode(63)).toBe("rain");
+    expect(kindFromCode(81)).toBe("rain");
+    expect(kindFromCode(95)).toBe("storm");
+  });
+  it("falls back to cloud for null or unknown codes", () => {
+    expect(kindFromCode(null)).toBe("cloud");
+    expect(kindFromCode(71)).toBe("cloud");
+  });
+});
+
+describe("kindFromDescription", () => {
+  it("maps BMKG descriptions", () => {
+    expect(kindFromDescription("Cerah")).toBe("sun");
+    expect(kindFromDescription("Cerah Berawan")).toBe("cloud-sun");
+    expect(kindFromDescription("Berawan Tebal")).toBe("cloud");
+    expect(kindFromDescription("Hujan Ringan")).toBe("drizzle");
+    expect(kindFromDescription("Hujan Lebat")).toBe("rain");
+    expect(kindFromDescription("Hujan Petir")).toBe("storm");
+    expect(kindFromDescription("Udara Kabur")).toBe("fog");
+    expect(kindFromDescription("Kabut")).toBe("fog");
+  });
+  it("falls back to cloud for an empty description", () => {
+    expect(kindFromDescription("")).toBe("cloud");
+  });
+});
+
+describe("pickCurrentSlot", () => {
+  it("returns the slot nearest to now in Asia/Jakarta time", () => {
+    const slots = [
+      slot("2026-11-16 09:00:00"),
+      slot("2026-11-16 12:00:00"),
+      slot("2026-11-16 15:00:00"),
+    ];
+    // 13:40 is 100 min after 12:00 and 80 min before 15:00
+    expect(pickCurrentSlot(slots, now)?.localTime).toBe("2026-11-16 15:00:00");
+  });
+  it("skips unparseable times and returns null for no slots", () => {
+    expect(pickCurrentSlot([], now)).toBeNull();
+    expect(pickCurrentSlot([slot("x")], now)).toBeNull();
+  });
+});
+
+describe("pickNextRainSlot", () => {
+  it("returns the first rainy slot within 24 hours", () => {
+    const slots = [
+      slot("2026-11-16 06:00:00", "Hujan Lebat", 12), // past
+      slot("2026-11-16 15:00:00", "Berawan", 0),
+      slot("2026-11-16 18:00:00", "Hujan Sedang", null), // rain by description
+      slot("2026-11-16 21:00:00", "Berawan", 3),
+    ];
+    expect(pickNextRainSlot(slots, now)?.localTime).toBe("2026-11-16 18:00:00");
+  });
+  it("counts rainfall above zero even with a dry description", () => {
+    const slots = [slot("2026-11-17 03:00:00", "Berawan", 0.4)];
+    expect(pickNextRainSlot(slots, now)?.localTime).toBe("2026-11-17 03:00:00");
+  });
+  it("ignores rain more than 24 hours ahead", () => {
+    const slots = [slot("2026-11-17 18:00:00", "Hujan Lebat", 20)];
+    expect(pickNextRainSlot(slots, now)).toBeNull();
+  });
+});
+
+describe("rainHeadline", () => {
+  it("names the time and district, today", () => {
+    expect(
+      rainHeadline(
+        slot("2026-11-16 15:00:00", "Hujan Lebat", 12),
+        now,
+        "Jatinegara",
+      ),
+    ).toBe("Hujan lebat diprakirakan 15:00 di Jatinegara.");
+  });
+  it("says besok for tomorrow and uses a generic word without a rain description", () => {
+    expect(
+      rainHeadline(slot("2026-11-17 03:00:00", "Berawan", 1), now, "Gambir"),
+    ).toBe("Hujan diprakirakan besok 03:00 di Gambir.");
+  });
+});
+
+describe("jakartaHour", () => {
+  it("returns the hour in Asia/Jakarta", () => {
+    expect(jakartaHour(now)).toBe(13);
+    expect(jakartaHour(new Date("2026-11-16T20:00:00Z"))).toBe(3);
+  });
+});
