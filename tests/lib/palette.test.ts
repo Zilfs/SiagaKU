@@ -41,6 +41,8 @@ const AA_PAIRS: [PaletteKey, PaletteKey][] = [
   ["invMuted", "invBand"],
   ["invLink", "invBg"],
   ["invLink", "invBand"],
+  ["invInk", "ink"], // dark cards: the chat's emergency and 112 cards
+  ["invMuted", "ink"],
   // the landing hero: ink over every sky layer, muted (eyebrow) on the sky's top
   ["ink", "skyTop"],
   ["ink", "cityFar"],
