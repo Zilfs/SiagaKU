@@ -98,11 +98,15 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
             : "Lokasi terdeteksi. Kami akan mencocokkannya dengan kecamatan terdekat.",
         );
       },
-      () => {
+      (error) => {
         setLocating(false);
-        setMessage("Izin lokasi ditolak. Pilih kecamatan dari daftar.");
+        setMessage(
+          error.code === error.TIMEOUT
+            ? "Lokasi belum ditemukan. Coba lagi atau pilih kecamatan dari daftar."
+            : "Izin lokasi ditolak. Pilih kecamatan dari daftar.",
+        );
       },
-      { enableHighAccuracy: true, timeout: 8000 },
+      { enableHighAccuracy: true, timeout: 10000 },
     );
   };
 

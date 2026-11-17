@@ -63,6 +63,22 @@ describe("findDistrictByPoint", () => {
       await findDistrictByPoint({ lat: -6.9175, lng: 107.6191 }, list),
     ).toBeNull();
   });
+
+  it("falls back to the nearest centre when the boundary chunk fails", async () => {
+    const failedLoad = async () => {
+      throw new Error("chunk load failed");
+    };
+    expect(
+      (
+        await findDistrictByPoint(
+          { lat: -6.3655, lng: 106.8865 },
+          list,
+          15,
+          failedLoad,
+        )
+      )?.slug,
+    ).toBe("cipayung");
+  });
 });
 
 describe("formatDistance", () => {

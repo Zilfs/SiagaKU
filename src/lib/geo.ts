@@ -1,7 +1,14 @@
+import type { DistrictBoundary } from "./district-boundaries";
+
 export type LatLng = { lat: number; lng: number };
 
 /** A district that can be matched to a GPS point. */
 export type DistrictCandidate = LatLng & { slug: string };
+
+/** Lazy loader for the boundary table; injected by tests to simulate a failed chunk. */
+export type BoundaryLoader = () => Promise<{
+  DISTRICT_BOUNDARIES: import("./district-boundaries").DistrictBoundary[];
+}>;
 
 /** Great-circle distance (haversine) in kilometres. */
 export function distanceKm(a: LatLng, b: LatLng): number {
@@ -77,17 +84,25 @@ function insidePolygon(lng: number, lat: number, rings: number[][]): boolean {
 /**
  * The district whose boundary contains the point, else the nearest centroid within `maxKm`.
  * Centroid matching alone put Cibubur (Ciracas) in Cipayung: the district's southern arm is
- * closer to Cipayung's centre than to Ciracas's. Boundaries are GADM level 3 (see
- * district-boundaries.ts) and load on first use, so the pages that never geolocate pay nothing.
+ * closer to Cipayung's centre than to Ciracas's. Boundaries are OpenStreetMap kecamatan
+ * polygons (see district-boundaries.ts) and load on first use, so pages that never geolocate
+ * pay nothing. A failed chunk load falls back to the centroid instead of leaving the UI stuck.
  */
 export async function findDistrictByPoint<T extends DistrictCandidate>(
   point: LatLng,
   list: T[],
   maxKm = 15,
+  loadBoundaries: BoundaryLoader = () => import("./district-boundaries"),
 ): Promise<T | null> {
-  const { DISTRICT_BOUNDARIES } = await import("./district-boundaries");
+  let boundaries: DistrictBoundary[];
+  try {
+    ({ DISTRICT_BOUNDARIES: boundaries } = await loadBoundaries());
+  } catch (error) {
+    console.error("district boundaries failed to load", error);
+    return findNearestDistrict(point, list, maxKm);
+  }
   const bySlug = new Map(list.map((district) => [district.slug, district]));
-  for (const boundary of DISTRICT_BOUNDARIES) {
+  for (const boundary of boundaries) {
     const district = bySlug.get(boundary.slug);
     if (!district || !insideBbox(point, boundary.bbox)) continue;
     if (

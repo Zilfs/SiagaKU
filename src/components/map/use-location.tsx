@@ -37,8 +37,12 @@ export function UseLocation({ districts }: { districts: DistrictSummary[] }) {
         }
         router.push(`/wilayah/${match.slug}`);
       },
-      () => {
-        setMessage("Izin lokasi ditolak. Pilih kecamatan dari daftar di bawah.");
+      (error) => {
+        setMessage(
+          error.code === error.TIMEOUT
+            ? "Lokasi belum ditemukan. Coba lagi atau pilih kecamatan dari daftar."
+            : "Izin lokasi ditolak. Pilih kecamatan dari daftar di bawah.",
+        );
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
     );
