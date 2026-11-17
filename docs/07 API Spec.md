@@ -115,11 +115,12 @@ Request:
 ```json
 {
   "messages": [ { "role": "user", "content": "Apa yang harus disiapkan untuk bayi saat banjir?" } ],
-  "kecamatan_id": 12
+  "district_id": 12
 }
 ```
 - `messages` maksimal 10 item, setiap `content` ≤ 1.000 karakter.
-- Stream mengirim, berurutan: (1) data `{ type: "darurat", aktif: true }` bila terdeteksi; (2) data `{ type: "sources", items: [...] }`; (3) teks jawaban; (4) data `{ type: "meta", provider, model, fallback, cached }`.
+- `district_id` opsional: id kecamatan untuk memberi konteks wilayah pada jawaban.
+- Stream mengirim, berurutan: (1) data part `emergency` `{ active: true }` bila terdeteksi; (2) data part `sources` `{ items: [...] }`; (3) teks jawaban; (4) data part `meta` `{ provider, model, fallback, cached }`.
 
 ## POST `/api/laporan/upload-url`
 Rate limit: 5/jam per IP.

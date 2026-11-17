@@ -66,7 +66,7 @@ export async function handleChat(
 
   try {
     const stream = createChatStream(
-      { messages: body.messages, districtId: body.kecamatan_id },
+      { messages: body.messages, districtId: body.district_id },
       { areaContext: loadAreaContext, ...deps.chat, signal: req.signal },
     );
     return createUIMessageStreamResponse({ stream });

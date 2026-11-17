@@ -146,4 +146,34 @@ describe("POST /api/chat", () => {
       { role: "user", content: "Apa isi tas siaga?" },
     ]);
   });
+
+  it("passes district_id to the service as the district context", async () => {
+    const areaContextSpy = vi.fn(areaContext);
+    const res = await handleChat(
+      request({
+        messages: [{ role: "user", content: "Apa risiko banjir di sini?" }],
+        district_id: 12,
+      }),
+      deps({ areaContext: areaContextSpy }),
+    );
+
+    expect(res.status).toBe(200);
+    await sse(res);
+    expect(areaContextSpy).toHaveBeenCalledWith(12);
+  });
+
+  it("ignores the legacy kecamatan_id body field", async () => {
+    const areaContextSpy = vi.fn(areaContext);
+    const res = await handleChat(
+      request({
+        messages: [{ role: "user", content: "Apa risiko banjir di sini?" }],
+        kecamatan_id: 12,
+      }),
+      deps({ areaContext: areaContextSpy }),
+    );
+
+    expect(res.status).toBe(200);
+    await sse(res);
+    expect(areaContextSpy).not.toHaveBeenCalled();
+  });
 });

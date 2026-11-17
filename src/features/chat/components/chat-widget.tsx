@@ -6,11 +6,11 @@ import { ChatPanel } from "./chat-panel";
 
 /** The district page's floating chat: opens a compact panel with the district as context. */
 export function ChatWidget({
-  kecamatanId,
-  kecamatanName,
+  districtId,
+  districtName,
 }: {
-  kecamatanId: number;
-  kecamatanName: string;
+  districtId: number;
+  districtName: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -50,7 +50,7 @@ export function ChatWidget({
             id="chat-widget-panel"
             role="dialog"
             aria-modal="true"
-            aria-label={`Tanya soal ${kecamatanName}`}
+            aria-label={`Tanya soal ${districtName}`}
           >
             <button
               type="button"
@@ -62,8 +62,8 @@ export function ChatWidget({
             </button>
             <ChatPanel
               compact
-              kecamatanId={kecamatanId}
-              kecamatanName={kecamatanName}
+              districtId={districtId}
+              districtName={districtName}
             />
           </div>
         </>
