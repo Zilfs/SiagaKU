@@ -3,39 +3,37 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LocateFixed } from "lucide-react";
-import type { DistrictSummary } from "@/features/risk/types";
-import { findNearestDistrict } from "@/lib/geo";
+
 
 /**
  * "Use my location": finds the nearest district and opens its page. The 15 km limit in
  * `findNearestDistrict` covers the "outside Jakarta" case; a denied permission falls back to the list.
  */
-export function UseLocation({ districts }: { districts: DistrictSummary[] }) {
+export function UseLocation() {
   const router = useRouter();
   const [message, setMessage] = useState("");
 
   const locate = () => {
-    if (!districts.length) {
-      setMessage("Data risiko belum tersedia. Coba lagi nanti.");
-      return;
-    }
     if (!("geolocation" in navigator)) {
       setMessage("Perangkat ini tidak mendukung lokasi. Pilih kecamatan dari daftar.");
       return;
     }
     setMessage("Mencari kecamatan terdekat…");
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const point = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-        const nearest = findNearestDistrict(point, districts);
-        if (!nearest) {
-          setMessage("SiagaKU saat ini hanya untuk DKI Jakarta.");
-          return;
+      async (position) => {
+        try {
+          const response = await fetch(
+            `/api/location/nearest?lat=${position.coords.latitude}&lng=${position.coords.longitude}`,
+          );
+          if (!response.ok) {
+            setMessage("SiagaKU saat ini hanya untuk DKI Jakarta.");
+            return;
+          }
+          const { slug } = await response.json();
+          router.push(`/wilayah/${slug}`);
+        } catch {
+          setMessage("Gagal mencari lokasi. Coba lagi.");
         }
-        router.push(`/wilayah/${nearest.slug}`);
       },
       () => {
         setMessage("Izin lokasi ditolak. Pilih kecamatan dari daftar di bawah.");

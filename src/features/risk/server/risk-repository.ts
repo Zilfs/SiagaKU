@@ -1,4 +1,5 @@
 import "server-only";
+import { distanceKm } from "@/lib/geo";
 import { supabaseServer } from "@/lib/db/client";
 import type { District, FloodEvent, SafePoint } from "../types";
 
@@ -111,3 +112,36 @@ export async function listShelters(districtId: number): Promise<SafePoint[]> {
     lng: r.lng,
   }));
 }
+
+export async function findNearestDistrictByCoords(
+  lat: number,
+  lng: number,
+): Promise<{ slug: string } | null> {
+  const { data, error } = await supabaseServer()
+    .from("subdistricts")
+    .select("lat, lng, districts(slug)");
+  if (error) throw error;
+  if (!data || data.length === 0) return null;
+
+  let nearestSlug: string | null = null;
+  let minDistance = Infinity;
+
+  for (const row of data as Array<{
+    lat: number | null;
+    lng: number | null;
+    districts: { slug: string } | Array<{ slug: string }> | null;
+  }>) {
+    if (row.lat == null || row.lng == null || !row.districts) continue;
+    const dist = distanceKm({ lat, lng }, { lat: row.lat, lng: row.lng });
+    if (dist < minDistance) {
+      minDistance = dist;
+      const d = Array.isArray(row.districts) ? row.districts[0] : row.districts;
+      nearestSlug = d?.slug ?? null;
+    }
+  }
+
+  // max 15km limit
+  if (minDistance > 15) return null;
+  return nearestSlug ? { slug: nearestSlug } : null;
+}
+

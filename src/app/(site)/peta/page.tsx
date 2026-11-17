@@ -65,7 +65,7 @@ export default async function MapPage() {
               </li>
             ))}
           </ul>
-          <UseLocation districts={districts} />
+          <UseLocation />
         </header>
 
         <MapDashboard
