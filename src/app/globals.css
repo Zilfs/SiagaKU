@@ -386,11 +386,9 @@ body {
 .sk-search input::placeholder {
   color: var(--muted);
 }
-/* the focused field itself answers, not only the box around it (a keyboard user sees the caret's ring) */
+/* the box around the field carries the focus ring (border and halo above), so the input has none */
 .sk-search input:focus-visible {
-  outline: 2px solid var(--p-focus);
-  outline-offset: 1px;
-  border-radius: 4px;
+  outline: 0;
 }
 .sk-search svg {
   flex: 0 0 auto;
