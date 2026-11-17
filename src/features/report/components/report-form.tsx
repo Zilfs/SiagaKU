@@ -216,7 +216,7 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
       {result && !rejected ? (
         <div className="sk-report-result" role="status">
           <b>
-            {result.status === "menunggu"
+            {result.status === "pending"
               ? "Laporan diterima."
               : "Laporan diterima dan sudah diperiksa."}
           </b>

@@ -52,7 +52,7 @@ export async function insertReport(row: NewReport): Promise<string> {
 
 export async function finishReport(
   id: string,
-  status: "selesai" | "ditolak",
+  status: "done" | "rejected",
   result: VisionResult,
   provider: string,
 ): Promise<void> {
@@ -72,7 +72,7 @@ export async function listRecentReports(hours: number): Promise<ReportRow[]> {
       "id, lat, lng, photo_path, ai_status, ai_result, is_demo, created_at",
     )
     .gte("created_at", since)
-    .or("is_demo.eq.true,ai_status.in.(selesai,ditolak)")
+    .or("is_demo.eq.true,ai_status.in.(done,rejected)")
     .order("created_at", { ascending: false })
     .limit(200);
   if (error) throw error;
@@ -84,7 +84,7 @@ export async function signPhotoUrls(
 ): Promise<Map<string, string>> {
   if (paths.length === 0) return new Map();
   const { data, error } = await supabaseServer()
-    .storage.from("laporan")
+    .storage.from("reports")
     .createSignedUrls(paths, 3600);
   if (error || !data) return new Map();
   return new Map(data.map((item) => [item.path ?? "", item.signedUrl ?? ""]));
@@ -95,7 +95,7 @@ export async function createPhotoUploadUrl(
   path: string,
 ): Promise<{ signedUrl: string; token?: string }> {
   const { data, error } = await supabaseServer()
-    .storage.from("laporan")
+    .storage.from("reports")
     .createSignedUploadUrl(path);
   if (error || !data) throw error ?? new Error("no signed upload url");
   return { signedUrl: data.signedUrl, token: data.token };
@@ -104,7 +104,7 @@ export async function createPhotoUploadUrl(
 /** The photo bytes for the vision step. */
 export async function downloadPhoto(path: string): Promise<Uint8Array> {
   const { data, error } = await supabaseServer()
-    .storage.from("laporan")
+    .storage.from("reports")
     .download(path);
   if (error || !data) throw new Error("photo not found");
   return new Uint8Array(await data.arrayBuffer());

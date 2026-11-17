@@ -78,7 +78,7 @@ export function severityLabel(severity: number): string {
   return SEVERITY_LABELS[index];
 }
 
-/** Normalise the POST response. "ditolak"/"rejected" and `apakah_banjir: false` mean not shown. */
+/** Normalise the POST response. "rejected" and `apakah_banjir: false` mean not shown. */
 export function toReportResult(raw: RawReportCreated): ReportResult {
   const vision = raw.ai_hasil ?? raw.aiResult ?? {};
   const status = raw.ai_status ?? raw.aiStatus;
@@ -88,6 +88,6 @@ export function toReportResult(raw: RawReportCreated): ReportResult {
     status,
     summary: vision.ringkasan ?? vision.summary ?? "",
     waterHeight: vision.estimasi_tinggi_air ?? vision.estimatedWaterHeight ?? "",
-    rejected: status === "ditolak" || status === "rejected" || isFlood === false,
+    rejected: status === "rejected" || isFlood === false,
   };
 }
