@@ -61,6 +61,27 @@ describe("SubdistrictBreakdown", () => {
     const html = render({ unmatchedEventCount: 0, rows });
     expect(html).toContain("Lihat 2 kelurahan lainnya");
     expect(html).toContain("<details");
+    const details = html.indexOf("<details");
+    expect(html.indexOf("Kelurahan 4")).toBeLessThan(details);
+    expect(html.indexOf("Kelurahan 5")).toBeGreaterThan(details);
+  });
+
+  it("drops depth and RW count when they are null", () => {
+    const html = render({
+      unmatchedEventCount: 0,
+      rows: [
+        row("a", {
+          eventCount: 2,
+          maxDepthCm: null,
+          floodProne: true,
+          floodProneRwCount: null,
+        }),
+      ],
+    });
+    expect(html).toContain("2 kejadian");
+    expect(html).not.toContain("terdalam");
+    expect(html).toContain("Rawan 2023");
+    expect(html).not.toContain(" RW");
   });
 
   it("notes unmatched events", () => {

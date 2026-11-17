@@ -1367,7 +1367,7 @@ main > section#fitur {
   justify-items: start;
   min-width: 0;
 }
-.sk-subdistricts__name span,
+.sk-subdistricts__name > span:not(.sk-subdistricts__badge),
 .sk-subdistricts__near,
 .sk-subdistricts__note {
   color: var(--muted);
