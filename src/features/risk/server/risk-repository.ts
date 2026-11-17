@@ -1,6 +1,12 @@
 import "server-only";
 import { supabaseServer } from "@/lib/db/client";
-import type { District, FloodEvent, SafePoint } from "../types";
+import type {
+  District,
+  FloodEvent,
+  FloodProneSubdistrict,
+  SafePoint,
+  Subdistrict,
+} from "../types";
 
 const DISTRICT_COLUMNS =
   "id, slug, name, city, lat, lng, tidal_flood_prone, base_vulnerability, bmkg_adm4";
@@ -109,5 +115,36 @@ export async function listShelters(districtId: number): Promise<SafePoint[]> {
     isVerified: r.is_verified,
     lat: r.lat,
     lng: r.lng,
+  }));
+}
+
+export async function listSubdistricts(
+  districtId: number,
+): Promise<Subdistrict[]> {
+  const { data, error } = await supabaseServer()
+    .from("subdistricts")
+    .select("code, name, lat, lng")
+    .eq("district_id", districtId)
+    .order("name");
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    code: r.code,
+    name: r.name,
+    lat: r.lat,
+    lng: r.lng,
+  }));
+}
+
+export async function listFloodProneSubdistricts(
+  districtId: number,
+): Promise<FloodProneSubdistrict[]> {
+  const { data, error } = await supabaseServer()
+    .from("flood_prone_subdistricts")
+    .select("subdistrict, rw_count")
+    .eq("district_id", districtId);
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    subdistrict: r.subdistrict,
+    rwCount: r.rw_count,
   }));
 }
