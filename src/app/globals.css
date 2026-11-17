@@ -5740,8 +5740,10 @@ main > section#cek {
     text-align: left;
   }
 }
-.sk-chat {
-  height: min(60svh, 560px);
+@media (min-width: 640px) {
+  .sk-chat:not(.sk-chat--compact) {
+    height: min(60svh, 560px);
+  }
 }
 
 /* a disabled button reads as unavailable, not as a pale brand action */
