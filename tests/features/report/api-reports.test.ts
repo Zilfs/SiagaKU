@@ -54,7 +54,7 @@ const row = (over: Partial<ReportRow>): ReportRow => ({
   lat: -6.3,
   lng: 106.9,
   photo_path: validPath,
-  ai_status: "selesai",
+  ai_status: "done",
   ai_result: verdict,
   is_demo: false,
   created_at: "2026-11-17T03:00:00.000Z",
@@ -206,7 +206,7 @@ describe("POST /api/reports", () => {
     expect(downloadPhoto).not.toHaveBeenCalled();
   });
 
-  it("stores the report and marks it selesai when the photo shows water", async () => {
+  it("stores the report and marks it done when the photo shows water", async () => {
     const finish = vi.fn(async () => {});
     const res = await handleCreateReport(
       post("/api/reports", { path: validPath, lat: -6.3, lng: 106.9 }),
@@ -214,12 +214,12 @@ describe("POST /api/reports", () => {
     );
     expect(res.status).toBe(201);
     const body = await res.json();
-    expect(body.ai_status).toBe("selesai");
+    expect(body.ai_status).toBe("done");
     expect(body.ai_hasil.apakah_banjir).toBe(true);
-    expect(finish).toHaveBeenCalledWith("report-id", "selesai", verdict, "gemini");
+    expect(finish).toHaveBeenCalledWith("report-id", "done", verdict, "gemini");
   });
 
-  it("marks a photo without water as ditolak", async () => {
+  it("marks a photo without water as rejected", async () => {
     const finish = vi.fn(async () => {});
     const res = await handleCreateReport(
       post("/api/reports", { path: validPath, lat: -6.3, lng: 106.9 }),
@@ -239,16 +239,16 @@ describe("POST /api/reports", () => {
         }),
       }),
     );
-    expect((await res.json()).ai_status).toBe("ditolak");
+    expect((await res.json()).ai_status).toBe("rejected");
     expect(finish).toHaveBeenCalledWith(
       "report-id",
-      "ditolak",
+      "rejected",
       expect.objectContaining({ apakah_banjir: false }),
       "gemini",
     );
   });
 
-  it("keeps the report on menunggu when the vision call fails", async () => {
+  it("keeps the report on pending when the vision call fails", async () => {
     const finish = vi.fn(async () => {});
     const res = await handleCreateReport(
       post("/api/reports", { path: validPath, lat: -6.3, lng: 106.9 }),
@@ -260,7 +260,7 @@ describe("POST /api/reports", () => {
       }),
     );
     expect(res.status).toBe(201);
-    expect((await res.json()).ai_status).toBe("menunggu");
+    expect((await res.json()).ai_status).toBe("pending");
     expect(finish).not.toHaveBeenCalled();
   });
 
@@ -290,7 +290,7 @@ describe("GET /api/reports", () => {
       deps([
         row({}),
         row({ id: "r2", ai_result: { ...verdict, apakah_banjir: false } }),
-        row({ id: "r3", is_demo: true, ai_result: null, ai_status: "ditolak" }),
+        row({ id: "r3", is_demo: true, ai_result: null, ai_status: "rejected" }),
       ]),
     );
     const body = await res.json();

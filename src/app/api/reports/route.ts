@@ -42,7 +42,7 @@ export type ReportHandlerDeps = {
   signPhotos?: typeof signPhotoUrls;
 };
 
-/** POST /api/reports: keep the row first (status menunggu), then ask the vision model. */
+/** POST /api/reports: keep the row first (status pending), then ask the vision model. */
 export async function handleCreateReport(
   req: Request,
   deps: ReportHandlerDeps = {},
@@ -119,14 +119,15 @@ export async function handleCreateReport(
 
   const mediaType = MEDIA_TYPE[body.path.split(".").pop() ?? "jpg"] ?? "image/jpeg";
   let verdict: VisionResult | null = null;
-  let status = "menunggu";
+  let status: "pending" | "done" | "rejected" = "pending";
   try {
     const analysis = await analyze(bytes, mediaType);
     verdict = analysis.result;
-    status = isPublicReport(verdict) ? "selesai" : "ditolak";
-    await finish(id, status as "selesai" | "ditolak", verdict, analysis.provider);
+    const outcome = isPublicReport(verdict) ? "done" : "rejected";
+    await finish(id, outcome, verdict, analysis.provider);
+    status = outcome;
   } catch (error) {
-    // The photo is already stored; the row stays 'menunggu' instead of failing the upload.
+    // The photo is already stored; the row stays 'pending' instead of failing the upload.
     console.error("report vision failed", id, error);
   }
 

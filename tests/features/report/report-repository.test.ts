@@ -38,7 +38,7 @@ describe("report storage calls", () => {
       error: null,
     });
     expect(Array.from(await downloadPhoto(path))).toEqual([1, 2, 3]);
-    expect(storage.bucket).toBe("laporan");
+    expect(storage.bucket).toBe("reports");
     expect(storage.download).toHaveBeenCalledWith(path);
   });
 
@@ -56,7 +56,7 @@ describe("report storage calls", () => {
       signedUrl: "https://s/upload",
       token: "t",
     });
-    expect(storage.bucket).toBe("laporan");
+    expect(storage.bucket).toBe("reports");
     expect(storage.createSignedUploadUrl).toHaveBeenCalledWith(path);
   });
 
