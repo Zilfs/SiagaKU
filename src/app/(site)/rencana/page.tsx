@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import { ListChecks, ShieldCheck } from "lucide-react";
 import { PlanWizard } from "@/features/plan/components/plan-wizard";
 import type { PlanDistrict } from "@/features/plan/ui-types";
 import { listDistrictsWithScore } from "@/features/risk/server/risk-service";
@@ -46,7 +47,44 @@ export default async function RencanaPage({
           </p>
         </header>
 
-        <PlanWizard districts={districts} initialSlug={initialSlug} />
+        <div className="sk-rencana__grid">
+          <PlanWizard districts={districts} initialSlug={initialSlug} />
+
+          <aside className="sk-aside" aria-label="Tentang rencana siaga">
+            <section className="sk-card" aria-labelledby="rencana-isi">
+              <div className="sk-card__head">
+                <h2 id="rencana-isi" className="sk-heading-icon">
+                  <ListChecks size={18} aria-hidden="true" />
+                  Isi rencanamu
+                </h2>
+              </div>
+              <ul className="sk-aside__list">
+                <li>Checklist tas siaga sesuai anggota keluarga.</li>
+                <li>Langkah sebelum, saat, dan setelah banjir.</li>
+                <li>Catatan untuk bayi, lansia, dan disabilitas.</li>
+                <li>Titik aman terdekat dan kontak darurat.</li>
+              </ul>
+            </section>
+
+            <section className="sk-card" aria-labelledby="rencana-privasi">
+              <div className="sk-card__head">
+                <h2 id="rencana-privasi" className="sk-heading-icon">
+                  <ShieldCheck size={18} aria-hidden="true" />
+                  Tanpa akun
+                </h2>
+              </div>
+              <p>
+                Rencana disimpan di balik tautan yang bisa kamu bagikan atau
+                cetak. Tidak ada nama, alamat lengkap, atau nomor telepon yang
+                diminta.
+              </p>
+              <p className="sk-field__hint">
+                Rencana memakai data risiko wilayah hari ini, bukan perkiraan
+                cuaca esok hari.
+              </p>
+            </section>
+          </aside>
+        </div>
       </div>
     </article>
   );
