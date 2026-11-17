@@ -1340,6 +1340,54 @@ main > section#fitur {
 .sk-detail-grid > :is(.sk-breakdown, .sk-weather, .sk-history, .sk-safepoints) {
   align-self: stretch;
 }
+.sk-detail-grid > .sk-subdistricts {
+  grid-column: 1 / -1;
+}
+.sk-subdistricts__list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sk-subdistricts__list li {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 4px var(--s-4);
+  align-items: start;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.sk-subdistricts__list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.sk-subdistricts__name {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+  min-width: 0;
+}
+.sk-subdistricts__name span,
+.sk-subdistricts__near,
+.sk-subdistricts__note {
+  color: var(--muted);
+  font-size: var(--t-small);
+  overflow-wrap: anywhere;
+}
+.sk-subdistricts__note {
+  margin: 0;
+}
+.sk-subdistricts__badge {
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--p-ink);
+}
+@media (max-width: 639px) {
+  .sk-subdistricts__list li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .sk-safepoints__more > summary {
   padding: 10px 0;
   border-top: 1px solid var(--line);
@@ -5547,13 +5595,13 @@ main > section#cek {
 
 /* a card grid is not a panel: the frame only ever added a hole under the shorter column */
 :is(
-    .sk-detail-grid,
-    .sk-tanya__grid,
-    .sk-alert-grid,
-    .sk-lapor-grid,
-    .sk-about__grid,
-    .sk-report-feed
-  ) {
+  .sk-detail-grid,
+  .sk-tanya__grid,
+  .sk-alert-grid,
+  .sk-lapor-grid,
+  .sk-about__grid,
+  .sk-report-feed
+) {
   padding: 0;
   background: transparent;
   border-radius: 0;
