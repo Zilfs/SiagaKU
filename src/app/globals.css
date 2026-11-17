@@ -386,11 +386,9 @@ body {
 .sk-search input::placeholder {
   color: var(--muted);
 }
-/* the focused field itself answers, not only the box around it (a keyboard user sees the caret's ring) */
+/* the box around the field carries the focus ring (border and halo above), so the input has none */
 .sk-search input:focus-visible {
-  outline: 2px solid var(--p-focus);
-  outline-offset: 1px;
-  border-radius: 4px;
+  outline: 0;
 }
 .sk-search svg {
   flex: 0 0 auto;
@@ -1102,13 +1100,6 @@ main > section#fitur {
   :root {
     --display-tracking: -0.03em;
   }
-  /* stacking needs the second screen: nothing overlaps, the air goes under the last row */
-  section#cek,
-  section#cara,
-  section#data,
-  section#tanya {
-    --hm: 2;
-  }
   /* the step's number sits above its title, so the words start on the container's left line */
   .sk-steps li {
     grid-template-columns: minmax(0, 1fr);
@@ -1413,6 +1404,8 @@ main > section#fitur {
   margin: 0;
   padding: 0 0 6px;
   list-style: none;
+  /* contains the absolutely placed .sr-only labels, which otherwise widen the whole page */
+  position: relative;
   overflow-x: auto;
   scroll-snap-type: x proximity;
   scrollbar-width: thin;
@@ -3023,6 +3016,10 @@ section[tabindex="-1"]:focus,
 @media (max-width: 639px) {
   .sk-watch__search {
     flex-direction: column;
+  }
+  /* stacked, flex: 1 would shrink the field to its text height */
+  .sk-watch__search .sk-search {
+    flex: none;
   }
   .sk-watch__search .btn {
     width: 100%;
@@ -5515,4 +5512,30 @@ main > section#cek {
 }
 .sk-whatif b {
   justify-self: end;
+}
+
+/* ------------------------------------------------------------------ phone tidy-up
+   Sections end where their content ends instead of filling whole screens, the three weather facts
+   fit their tiles, and the chat button shrinks to its icon so it stops covering the rows. */
+@media (max-width: 639px) {
+  main > :is(section, .section):not(.hero, .section--hero) {
+    min-height: 0;
+  }
+  .sk-dash__facts div {
+    padding: 8px 6px;
+  }
+  .sk-dash__facts dt {
+    font-size: 11px;
+  }
+  .sk-dash__facts dt svg {
+    display: none;
+  }
+  .sk-chat-fab {
+    justify-content: center;
+    width: 48px;
+    padding: 0;
+  }
+  .sk-chat-fab__label {
+    display: none;
+  }
 }

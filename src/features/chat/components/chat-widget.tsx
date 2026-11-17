@@ -30,10 +30,11 @@ export function ChatWidget({
         className="sk-chat-fab"
         aria-expanded={open}
         aria-controls="chat-widget-panel"
+        aria-label="Tanya soal wilayah ini"
         onClick={() => setOpen(true)}
       >
         <MessageCircle size={18} aria-hidden="true" />
-        Tanya soal wilayah ini
+        <span className="sk-chat-fab__label">Tanya soal wilayah ini</span>
       </button>
 
       {open ? (
