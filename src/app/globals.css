@@ -5539,3 +5539,218 @@ main > section#cek {
     display: none;
   }
 }
+
+/* ------------------------------------------------------------------ redesign pass 2 (Nov 17)
+   Composition before decoration: cards sit on the page instead of a second tinted frame, the
+   pages that were one narrow column now use their second column, and the reading measure is
+   capped where a card runs the full width. No component, route or copy behaviour changes. */
+
+/* a card grid is not a panel: the frame only ever added a hole under the shorter column */
+:is(
+    .sk-detail-grid,
+    .sk-tanya__grid,
+    .sk-alert-grid,
+    .sk-lapor-grid,
+    .sk-about__grid,
+    .sk-report-feed
+  ) {
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  gap: var(--s-6);
+}
+
+/* /rencana: the wizard keeps the page's left column, the aside answers the three questions a
+   first-time visitor has. Before, the wizard was capped at 920px on a 1180px page. */
+.sk-rencana__grid {
+  display: grid;
+  gap: var(--s-7);
+  align-items: start;
+}
+.sk-rencana__grid .sk-wizard {
+  max-width: none;
+}
+@media (min-width: 1024px) {
+  .sk-rencana__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+  }
+}
+.sk-aside {
+  display: grid;
+  gap: var(--s-4);
+}
+@media (min-width: 1024px) {
+  .sk-aside {
+    position: sticky;
+    top: calc(var(--nav) + var(--s-5));
+  }
+}
+.sk-aside__list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.sk-aside__list li::marker {
+  color: var(--p-blue);
+}
+.sk-aside .sk-card p {
+  line-height: 1.6;
+}
+
+/* /peringatan: the four statuses explained once, above the tool. The dot is the same one the
+   live status uses, so the legend and the result read as one system. */
+.sk-alert-legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3) var(--s-5);
+  margin-bottom: var(--s-6);
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--p-surface);
+}
+.sk-alert-legend p {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--s-3);
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+  line-height: 1.5;
+}
+.sk-alert-legend .sk-status {
+  font-weight: 500;
+}
+@media (min-width: 900px) {
+  .sk-alert-legend {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .sk-alert-legend p {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    align-content: start;
+  }
+}
+@media (max-width: 639px) {
+  .sk-alert-legend {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sk-alert-legend p {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+}
+
+/* the explanation cards on /lapor and /peringatan follow the reader down the form */
+@media (min-width: 1024px) {
+  .sk-lapor-aside,
+  .sk-alert-how,
+  .sk-tanya__aside {
+    position: sticky;
+    top: calc(var(--nav) + var(--s-5));
+  }
+}
+
+/* page heads: the lede carries the reading size, the eyebrow stops competing with the title */
+.sk-page-head {
+  gap: var(--s-3);
+  margin-bottom: var(--s-8);
+}
+.sk-page-head h1 {
+  text-wrap: balance;
+}
+.sk-page-head > p:last-child {
+  font-size: var(--t-lead);
+  line-height: 1.55;
+  max-width: 58ch;
+}
+.sk-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+
+/* long-form card copy keeps a readable measure even when the card spans the page */
+.sk-card > p,
+.sk-card > ol > li,
+.sk-card > ul > li {
+  max-width: 68ch;
+}
+.sk-about .sk-card p,
+.sk-about .sk-card li {
+  line-height: 1.65;
+}
+
+/* /tanya: the empty chat states its examples as a list, not three floating pills */
+.sk-chat__empty {
+  align-content: start;
+}
+
+/* /peta: both columns end on the same line, and the rail keeps its cards equal in weight */
+.sk-dash__rail {
+  align-content: start;
+}
+
+/* phones: a two-column legend or a sticky aside would only squeeze the content */
+@media (max-width: 1023px) {
+  .sk-aside,
+  .sk-lapor-aside,
+  .sk-alert-how,
+  .sk-tanya__aside {
+    position: static;
+  }
+}
+
+/* /tentang is the page people read, not scan: its prose runs at body size on every card */
+.sk-about__section > p,
+.sk-about__section > ol > li,
+.sk-about__section > ul > li {
+  font-size: var(--t-body);
+  line-height: 1.65;
+}
+
+/* /lapor: the aside now holds two cards, so it is a column, not a card */
+.sk-lapor-aside {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+}
+
+/* the chat's empty state names its examples and lists them where there is room */
+.sk-chat__prompt-label {
+  margin: 0;
+  font: 500 var(--t-label) / 1.3 var(--font-text);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+@media (min-width: 640px) {
+  .sk-chat__empty .sk-chips {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    max-width: 46ch;
+  }
+  .sk-chat__empty .sk-chip {
+    justify-content: flex-start;
+    border-radius: var(--r-md);
+    text-align: left;
+  }
+}
+.sk-chat {
+  height: min(60svh, 560px);
+}
+
+/* a disabled button reads as unavailable, not as a pale brand action */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  background: var(--p-surface);
+  border-color: var(--line);
+  color: var(--muted);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 1;
+}
