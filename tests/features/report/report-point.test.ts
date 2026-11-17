@@ -63,7 +63,7 @@ describe("toReportResult", () => {
     expect(
       toReportResult({
         id: "abc",
-        ai_status: "selesai",
+        ai_status: "done",
         ai_hasil: {
           apakah_banjir: true,
           ringkasan: "Air setinggi lutut",
@@ -72,7 +72,7 @@ describe("toReportResult", () => {
       }),
     ).toEqual({
       id: "abc",
-      status: "selesai",
+      status: "done",
       summary: "Air setinggi lutut",
       waterHeight: "30-50 cm",
       rejected: false,
@@ -80,16 +80,16 @@ describe("toReportResult", () => {
   });
 
   it("treats a rejected or non-flood photo as not shown", () => {
-    expect(toReportResult({ ai_status: "ditolak" }).rejected).toBe(true);
+    expect(toReportResult({ ai_status: "rejected" }).rejected).toBe(true);
     expect(
       toReportResult({ aiResult: { isFlood: false, summary: "Bukan banjir" } }).rejected,
     ).toBe(true);
   });
 
   it("keeps a pending report visible and readable", () => {
-    const result = toReportResult({ aiStatus: "menunggu" });
+    const result = toReportResult({ aiStatus: "pending" });
     expect(result.rejected).toBe(false);
-    expect(result.status).toBe("menunggu");
+    expect(result.status).toBe("pending");
     expect(result.summary).toBe("");
   });
 });

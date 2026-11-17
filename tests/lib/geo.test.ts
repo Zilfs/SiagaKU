@@ -4,6 +4,7 @@ import {
   findDistrictByPoint,
   findNearestDistrict,
   formatDistance,
+  roundPoint,
 } from "@/lib/geo";
 
 const monas = { lat: -6.1754, lng: 106.8272 };
@@ -78,6 +79,13 @@ describe("findDistrictByPoint", () => {
         )
       )?.slug,
     ).toBe("cipayung");
+  });
+});
+
+describe("roundPoint", () => {
+  it("rounds a coordinate to three decimals (~110 m)", () => {
+    expect(roundPoint(-6.365512)).toBe(-6.366);
+    expect(roundPoint(106.886449)).toBe(106.886);
   });
 });
 

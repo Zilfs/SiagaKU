@@ -44,6 +44,34 @@ export type SafePoint = {
   lng: number | null;
 };
 
+export type Subdistrict = {
+  code: string;
+  name: string;
+  lat: number | null;
+  lng: number | null;
+};
+
+export type FloodProneSubdistrict = {
+  subdistrict: string;
+  rwCount: number | null;
+};
+
+export type SubdistrictSummary = {
+  code: string;
+  name: string;
+  eventCount: number;
+  maxDepthCm: number | null; // null when no event has a depth
+  lastEventDate: string | null; // "YYYY-MM-DD"
+  floodProne: boolean; // listed in flood_prone_subdistricts (2023)
+  floodProneRwCount: number | null;
+  nearestSafePoint: { name: string; km: number } | null;
+};
+
+export type SubdistrictBreakdown = {
+  rows: SubdistrictSummary[];
+  unmatchedEventCount: number;
+};
+
 /** Body of GET /api/risk/[id]. */
 export type RiskDetail = {
   district: Pick<

@@ -14,7 +14,12 @@ import { ScoreBreakdown } from "@/features/risk/components/score-breakdown";
 import { WeatherStrip } from "@/features/risk/components/weather-strip";
 import { riskAction } from "@/features/risk/risk-copy";
 import { findDistrict } from "@/features/risk/server/risk-repository";
-import { getRiskDetail } from "@/features/risk/server/risk-service";
+import {
+  getRiskDetail,
+  getSubdistrictBreakdown,
+} from "@/features/risk/server/risk-service";
+import { SubdistrictBreakdown } from "@/features/risk/components/subdistrict-breakdown";
+import type { SubdistrictBreakdown as SubdistrictBreakdownData } from "@/features/risk/types";
 import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
 
 // the page reads live risk data; `connection()` keeps it out of the static build
@@ -75,6 +80,13 @@ export default async function DistrictPage({
     safePoints,
   } = detail;
   const label = RISK_LEVEL_LABELS[level];
+
+  let subdistricts: SubdistrictBreakdownData | null = null;
+  try {
+    subdistricts = await getSubdistrictBreakdown(district.id, safePoints);
+  } catch (error) {
+    console.error("GET subdistrict breakdown failed", slug, error);
+  }
 
   return (
     <article className="sk-page sk-detail">
@@ -141,6 +153,10 @@ export default async function DistrictPage({
           <SafePoints
             points={safePoints}
             origin={{ lat: district.lat, lng: district.lng }}
+          />
+          <SubdistrictBreakdown
+            breakdown={subdistricts}
+            districtName={district.name}
           />
           <ClimateCard />
         </div>
