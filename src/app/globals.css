@@ -5590,6 +5590,7 @@ main > section#cek {
   gap: 10px;
   margin: 0;
   padding-left: 18px;
+  list-style: disc;
   color: var(--muted);
   line-height: 1.55;
 }
@@ -5694,20 +5695,9 @@ main > section#cek {
   align-content: start;
 }
 
-/* phones: a two-column legend or a sticky aside would only squeeze the content */
-@media (max-width: 1023px) {
-  .sk-aside,
-  .sk-lapor-aside,
-  .sk-alert-how,
-  .sk-tanya__aside {
-    position: static;
-  }
-}
-
 /* /tentang is the page people read, not scan: its prose runs at body size on every card */
-.sk-about__section > p,
-.sk-about__section > ol > li,
-.sk-about__section > ul > li {
+.sk-about__section p,
+.sk-about__section li {
   font-size: var(--t-body);
   line-height: 1.65;
 }
@@ -5739,8 +5729,6 @@ main > section#cek {
     border-radius: var(--r-md);
     text-align: left;
   }
-}
-@media (min-width: 640px) {
   .sk-chat:not(.sk-chat--compact) {
     height: min(60svh, 560px);
   }

@@ -88,9 +88,9 @@ export default async function LaporPage() {
                 </h2>
               </div>
               <p>
-                Foto dikompres di perangkatmu. Data EXIF, termasuk lokasi GPS,
-                dihapus sebelum diunggah, dan yang disimpan hanya titik
-                koordinat kecamatan.
+                Foto dikirim tanpa data EXIF, termasuk lokasi GPS. Yang
+                disimpan hanya titik koordinat: kecamatan yang kamu pilih, atau
+                lokasimu bila kamu memakai tombol lokasi. Bukan alamat.
               </p>
               <p className="sk-field__hint">
                 Jangan memotret wajah orang lain atau data pribadi di sekitar

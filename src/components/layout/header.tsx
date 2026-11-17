@@ -7,13 +7,13 @@ import { Menu, Siren, X } from "lucide-react";
 import { Mark } from "@/components/site/mark";
 import { EmergencyButton } from "./emergency-button";
 
-const LINKS: { href: string; label: string }[] = [
+const LINKS: { href: string; label: string; optional?: boolean }[] = [
   { href: "/#cari", label: "Cek risiko" },
   { href: "/peta", label: "Peta" },
   { href: "/rencana", label: "Rencana" },
   { href: "/tanya", label: "Tanya" },
   { href: "/lapor", label: "Lapor" },
-  { href: "/tentang", label: "Tentang" },
+  { href: "/tentang", label: "Tentang", optional: true },
 ];
 
 /** Route links only: a hash link on the landing (/#cari) is a section, not a page. */
@@ -47,7 +47,12 @@ export function Header() {
         </Link>
         <nav className="nav__links" id="menu-utama" aria-label="Utama">
           {LINKS.map((link) => (
-            <div className="nav__item" key={link.href}>
+            <div
+              className={
+                link.optional ? "nav__item nav__item--optional" : "nav__item"
+              }
+              key={link.href}
+            >
               <Link
                 className="nav__link"
                 href={link.href}
