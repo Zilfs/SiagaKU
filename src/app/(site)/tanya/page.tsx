@@ -47,7 +47,7 @@ export default async function TanyaPage({ searchParams }: PageProps<"/tanya">) {
         </header>
 
         <div className="sk-tanya__grid">
-          <ChatPanel kecamatanId={context?.id} kecamatanName={context?.name} />
+          <ChatPanel districtId={context?.id} districtName={context?.name} />
 
           <aside className="sk-tanya__aside" aria-label="Tentang jawaban">
             <div className="sk-card">

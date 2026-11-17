@@ -42,7 +42,7 @@ export const ChatRequestSchema = z.preprocess(
   normalizeMessages,
   z.object({
     messages: z.array(ChatMessageSchema).min(1).max(10),
-    kecamatan_id: z.number().int().positive().optional(),
+    district_id: z.number().int().positive().optional(),
   }),
 );
 
