@@ -30,8 +30,8 @@ function row(item: SubdistrictSummary) {
       </span>
       <span className="sk-subdistricts__near">
         {item.nearestSafePoint
-          ? `${item.nearestSafePoint.name} · ${formatDistance(item.nearestSafePoint.km)}`
-          : "—"}
+          ? `Titik aman terdekat: ${item.nearestSafePoint.name} · ${formatDistance(item.nearestSafePoint.km)}`
+          : "Titik aman terdekat: belum ada data lokasi"}
       </span>
     </li>
   );

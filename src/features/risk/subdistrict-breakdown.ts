@@ -8,7 +8,7 @@ import type {
   SubdistrictSummary,
 } from "./types";
 
-// Spelling variants between data releases, see data/README.md "Nama kelurahan mengikuti rilis".
+// Guard for raw BPBD spellings in future imports; the current CSV already uses official names (data/README.md).
 const ALIASES: Record<string, string> = {
   jelmbar: "jelambar",
   bidarancina: "bidaracina",

@@ -44,16 +44,19 @@ describe("SubdistrictBreakdown", () => {
     expect(html).toContain("Kelurahan di Jatinegara");
     expect(html).toContain("3 kejadian · terdalam 60 cm");
     expect(html).toContain("Rawan 2023 · 4 RW");
-    expect(html).toContain("Kantor Lurah Bali Mester · 400 m");
+    expect(html).toContain(
+      "Titik aman terdekat: Kantor Lurah Bali Mester · 400 m",
+    );
   });
 
   it("says no events recorded, never 'aman'", () => {
     const html = render({ unmatchedEventCount: 0, rows: [row("a")] });
     expect(html).toContain("Belum ada kejadian tercatat");
-    expect(html).toContain("—");
-    expect(html).not.toContain("aman<");
-    expect(html).not.toContain(" aman ");
-    expect(html).not.toContain("Aman");
+    expect(html).toContain("Titik aman terdekat: belum ada data lokasi");
+    const text = html.replaceAll("Titik aman terdekat", "");
+    expect(text).not.toContain("aman<");
+    expect(text).not.toContain(" aman ");
+    expect(text).not.toContain("Aman");
   });
 
   it("puts rows after the fifth inside details", () => {

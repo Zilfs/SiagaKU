@@ -19,6 +19,7 @@ import {
   getSubdistrictBreakdown,
 } from "@/features/risk/server/risk-service";
 import { SubdistrictBreakdown } from "@/features/risk/components/subdistrict-breakdown";
+import type { SubdistrictBreakdown as SubdistrictBreakdownData } from "@/features/risk/types";
 import { RISK_LEVEL_LABELS } from "@/lib/risk/level";
 
 // the page reads live risk data; `connection()` keeps it out of the static build
@@ -80,7 +81,7 @@ export default async function DistrictPage({
   } = detail;
   const label = RISK_LEVEL_LABELS[level];
 
-  let subdistricts = null;
+  let subdistricts: SubdistrictBreakdownData | null = null;
   try {
     subdistricts = await getSubdistrictBreakdown(district.id, safePoints);
   } catch (error) {
