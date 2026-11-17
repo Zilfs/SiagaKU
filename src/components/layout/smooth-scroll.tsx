@@ -6,6 +6,9 @@ import { wheelPixels } from "./wheel";
 /** Mouse users who have not asked for less motion; touch and trackpads keep native scrolling. */
 const SMOOTH_OK = "(prefers-reduced-motion: no-preference) and (pointer: fine)";
 
+/** Share of the remaining distance closed per millisecond (about 90% within a quarter second). */
+const FOLLOW_PER_MS = 0.009;
+
 /** True when the wheel belongs to something under the pointer that scrolls or zooms by itself. */
 function scrollsItself(start: EventTarget | null) {
   let el = start instanceof Element ? start : null;
@@ -31,30 +34,52 @@ export function SmoothScroll() {
 
     void import("gsap").then(({ default: gsap }) => {
       if (cancelled) return;
-      const position = { y: window.scrollY };
-      let target = position.y;
-      let tween: gsap.core.Tween | null = null;
-      const stop = () => tween?.kill();
+      let y = window.scrollY;
+      let target = y;
+      let running = false;
+
+      // One follower that closes a fixed share of the remaining distance per second. Restarting
+      // an eased tween on every notch made the speed dip mid-scroll, which read as stutter.
+      const tick = (_time: number, deltaMs: number) => {
+        // something else moved the page (scrollbar, keys, a link): let it win
+        if (Math.abs(window.scrollY - y) > 2) return stop();
+        const left = target - y;
+        y =
+          Math.abs(left) < 0.5
+            ? target
+            : y + left * (1 - Math.exp(-deltaMs * FOLLOW_PER_MS));
+        // "instant" so the stylesheet's scroll-behavior: smooth does not animate each step again
+        window.scrollTo({ top: y, behavior: "instant" });
+        if (y === target) stop();
+      };
+      function stop() {
+        running = false;
+        gsap.ticker.remove(tick);
+      }
 
       const onWheel = (event: WheelEvent) => {
         if (event.defaultPrevented) return;
         if (document.documentElement.dataset.motion === "off") return;
-        const pixels = wheelPixels(event);
+        let pixels = wheelPixels(event);
+        // mid-glide, small deltas (precision wheels, trackpads) join the glide instead of
+        // scrolling natively underneath it
+        if (
+          pixels === null &&
+          running &&
+          !event.ctrlKey &&
+          event.deltaMode === 0
+        )
+          pixels = event.deltaY;
         if (pixels === null || scrollsItself(event.target)) return;
         event.preventDefault();
-        // a new gesture starts from where the page really is (keys or the scrollbar may have moved it)
-        if (!tween?.isActive()) position.y = target = window.scrollY;
+        // a new gesture starts from where the page really is
+        if (!running) y = target = window.scrollY;
         const max = document.documentElement.scrollHeight - window.innerHeight;
         target = Math.min(max, Math.max(0, target + pixels));
-        tween = gsap.to(position, {
-          y: target,
-          duration: 0.7,
-          ease: "power3.out",
-          overwrite: true,
-          // "instant" so the stylesheet's scroll-behavior: smooth does not animate each step again
-          onUpdate: () =>
-            window.scrollTo({ top: position.y, behavior: "instant" }),
-        });
+        if (!running) {
+          running = true;
+          gsap.ticker.add(tick);
+        }
       };
 
       window.addEventListener("wheel", onWheel, { passive: false });
