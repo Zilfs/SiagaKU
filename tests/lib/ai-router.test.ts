@@ -270,6 +270,32 @@ describe("getProviderChain", () => {
     expect(withVision[0].modelId).toBe("groq-vision");
   });
 
+  it("puts groq first for vision so report photos spare the Gemini quota", () => {
+    const chain = getProviderChain("vision", {
+      ...baseEnv,
+      GEMINI_API_KEY: "g",
+      GEMINI_MODEL: "gemini-flash",
+      GROQ_API_KEY: "q",
+      GROQ_MODEL: "groq-llama",
+      GROQ_VISION_MODEL: "groq-vision",
+      ALT_AI_BASE_URL: "https://alt.example.com/v1",
+      ALT_AI_API_KEY: "a",
+      ALT_AI_MODEL: "alt-model",
+    });
+    expect(chain.map((p) => p.name)).toEqual(["groq", "gemini", "alt"]);
+  });
+
+  it("keeps gemini first for vision when groq has no vision model", () => {
+    const chain = getProviderChain("vision", {
+      ...baseEnv,
+      GEMINI_API_KEY: "g",
+      GEMINI_MODEL: "gemini-flash",
+      GROQ_API_KEY: "q",
+      GROQ_MODEL: "groq-llama",
+    });
+    expect(chain.map((p) => p.name)).toEqual(["gemini"]);
+  });
+
   it("omits providers in cooldown", () => {
     markCooldown("gemini", 60_000);
     const chain = getProviderChain("explanation", {

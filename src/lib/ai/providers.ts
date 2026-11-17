@@ -16,6 +16,7 @@ const CHAT_TIMEOUT_MS = 8_000;
 /**
  * Chat only needs to be fast to the first token, so it gets a shorter timeout.
  * Every other task uses the global AI_TIMEOUT_MS.
+ * Order: gemini -> groq -> alt, except vision, which tries groq first.
  */
 export function getProviderChain(task: AiTask, e: Env = env): ProviderEntry[] {
   const timeoutMs = task === "chat" ? CHAT_TIMEOUT_MS : e.AI_TIMEOUT_MS;
@@ -65,5 +66,13 @@ export function getProviderChain(task: AiTask, e: Env = env): ProviderEntry[] {
     });
   }
 
+  // Report photos run on Groq first so they spend Groq's free quota, not the Gemini quota that
+  // chat, plans and explanations share. Gemini, then alt (paid), stay as fallbacks.
+  if (task === "vision") {
+    return [
+      ...chain.filter((p) => p.name === "groq"),
+      ...chain.filter((p) => p.name !== "groq"),
+    ];
+  }
   return chain;
 }
