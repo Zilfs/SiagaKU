@@ -18,10 +18,9 @@ try {
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!url || !key) {
-  throw new Error(
-    "NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required",
-  );
+if (!url || !key || key === "local-preview-placeholder") {
+  console.warn("Supabase credentials missing or placeholder. Skipping seeding.");
+  process.exit(0);
 }
 const db = createClient(url, key, { auth: { persistSession: false } });
 
