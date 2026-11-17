@@ -1,7 +1,7 @@
 import { env } from "@/lib/env";
 import { HttpError, jsonError, parseJson } from "@/lib/http";
 import { getClientIp, hashIp } from "@/lib/rate-limit";
-import { findDistrictByPoint } from "@/lib/geo";
+import { findDistrictByPoint, roundPoint } from "@/lib/geo";
 import { listDistricts } from "@/features/risk/server/risk-repository";
 import type { District } from "@/features/risk/types";
 import {
@@ -27,11 +27,6 @@ const MEDIA_TYPE: Record<string, string> = {
   png: "image/png",
   webp: "image/webp",
 };
-
-/** ~110 m: precise enough for a flood map, too coarse to point at a front door. */
-export function roundPoint(value: number): number {
-  return Math.round(value * 1000) / 1000;
-}
 
 export type ReportHandlerDeps = {
   districts?: () => Promise<District[]>;

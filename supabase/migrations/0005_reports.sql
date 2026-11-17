@@ -1,25 +1,17 @@
--- Community flood reports (F4): one photo, a coarse location and the AI verdict.
+-- Community flood reports (F4): bring the `reports` table from 0001_init in line with the
+-- report API, and add the private photo bucket.
 -- Apply through the Supabase MCP, not `supabase db push` (remote history uses dated versions).
+-- The table was still empty when this ran, so the status change needs no data update.
 
-create table reports (
-  id            uuid primary key default gen_random_uuid(),
-  district_id   smallint references districts(id),
-  lat           double precision not null,
-  lng           double precision not null,
-  photo_path    text not null unique,
-  description   text,
-  ai_status     text not null default 'menunggu'
-                check (ai_status in ('menunggu', 'selesai', 'gagal', 'ditolak')),
-  ai_result     jsonb,
-  ai_provider   text,
-  is_demo       boolean not null default false,
-  ip_hash       text,
-  created_at    timestamptz not null default now()
-);
+-- The API writes menunggu (vision pending or failed), selesai and ditolak; 0001 used English
+-- placeholders with no check.
+alter table reports alter column ai_status set default 'menunggu';
+alter table reports
+  add constraint reports_ai_status_check
+  check (ai_status in ('menunggu', 'selesai', 'gagal', 'ditolak'));
 
-create index reports_created_at_idx on reports (created_at desc);
-
-alter table reports enable row level security;
+-- One uploaded photo becomes at most one report (the API answers 409 on a duplicate).
+alter table reports add constraint reports_photo_path_key unique (photo_path);
 
 -- The bucket is private: the browser only PUTs through a server-created signed URL,
 -- and the feed reads through signed download URLs. No storage policy is needed.
@@ -33,5 +25,6 @@ values (
   array['image/jpeg', 'image/png', 'image/webp']
 )
 on conflict (id) do update
-  set file_size_limit = excluded.file_size_limit,
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
       allowed_mime_types = excluded.allowed_mime_types;
