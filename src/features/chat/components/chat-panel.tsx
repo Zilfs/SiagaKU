@@ -54,21 +54,21 @@ function sourcesOf(value: unknown): ChatSource[] {
  * "Penjelasan" rather than "AI").
  */
 export function ChatPanel({
-  kecamatanId,
-  kecamatanName,
+  districtId,
+  districtName,
   compact = false,
 }: {
-  kecamatanId?: number;
-  kecamatanName?: string;
+  districtId?: number;
+  districtName?: string;
   compact?: boolean;
 }) {
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        body: kecamatanId ? { kecamatan_id: kecamatanId } : {},
+        body: districtId ? { district_id: districtId } : {},
       }),
-    [kecamatanId],
+    [districtId],
   );
   const { messages, sendMessage, status, error, stop } = useChat({ transport });
   const [input, setInput] = useState("");
@@ -117,7 +117,7 @@ export function ChatPanel({
       <header className="sk-chat__head">
         <div className="sk-chat__title">
           <b>Tanya SiagaKU</b>
-          {kecamatanName ? <span>Konteks: {kecamatanName}</span> : null}
+          {districtName ? <span>Konteks: {districtName}</span> : null}
         </div>
         <span className="sk-chat__status" role="status">
           {busy ? "Menjawab…" : "Siap"}

@@ -151,7 +151,7 @@ export default async function DistrictPage({
           lapangan. Untuk darurat, hubungi 112.
         </p>
 
-        <ChatWidget kecamatanId={district.id} kecamatanName={district.name} />
+        <ChatWidget districtId={district.id} districtName={district.name} />
       </div>
     </article>
   );
