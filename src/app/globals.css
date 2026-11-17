@@ -5695,8 +5695,9 @@ main > section#cek {
   align-content: start;
 }
 
-/* /tentang is the page people read, not scan: its prose runs at body size on every card */
-.sk-about__section p,
+/* /tentang is the page people read, not scan: its prose runs at body size on every card.
+   Field hints keep their smaller grey size. */
+.sk-about__section p:not(.sk-field__hint),
 .sk-about__section li {
   font-size: var(--t-body);
   line-height: 1.65;
