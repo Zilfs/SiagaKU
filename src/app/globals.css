@@ -1357,6 +1357,10 @@ main > section#fitur {
   padding: 12px 0;
   border-top: 1px solid var(--line);
 }
+/* full-width card: rows span it, unlike the 68ch reading cap on half-width cards */
+.sk-card > .sk-subdistricts__list > li {
+  max-width: none;
+}
 .sk-subdistricts__list li:first-child {
   border-top: 0;
   padding-top: 0;
@@ -2072,6 +2076,10 @@ main > section#fitur {
   }
   .sk-detail-score {
     justify-items: start;
+  }
+  /* one column: eleven empty gaps between twelve tracks are wider than a phone */
+  .sk-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 @media (max-width: 767px) {
