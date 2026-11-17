@@ -26,6 +26,13 @@ const render = (breakdown: Breakdown | null) =>
     <SubdistrictBreakdown breakdown={breakdown} districtName="Jatinegara" />,
   );
 
+/** Visible and screen-reader text with tags removed, as a reader hears it. */
+const text = (html: string) =>
+  html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ");
+
 describe("SubdistrictBreakdown", () => {
   it("shows counts, depth, flood-prone badge and nearest point", () => {
     const html = render({
@@ -41,22 +48,21 @@ describe("SubdistrictBreakdown", () => {
         }),
       ],
     });
-    expect(html).toContain("Kelurahan di Jatinegara");
-    expect(html).toContain("3 kejadian · terdalam 60 cm");
-    expect(html).toContain("Rawan 2023 · 4 RW");
-    expect(html).toContain(
-      "Titik aman terdekat: Kantor Lurah Bali Mester · 400 m",
-    );
+    const t = text(html);
+    expect(t).toContain("Kelurahan di Jatinegara");
+    expect(t).toContain("3 kejadian");
+    expect(t).toContain("terdalam 60 cm");
+    expect(t).toContain("Rawan 2023 · 4 RW");
+    expect(t).toContain("Titik aman terdekat: Kantor Lurah Bali Mester 400 m");
   });
 
   it("says no events recorded, never 'aman'", () => {
     const html = render({ unmatchedEventCount: 0, rows: [row("a")] });
-    expect(html).toContain("Belum ada kejadian tercatat");
-    expect(html).toContain("Titik aman terdekat: belum ada data lokasi");
-    const text = html.replaceAll("Titik aman terdekat", "");
-    expect(text).not.toContain("aman<");
-    expect(text).not.toContain(" aman ");
-    expect(text).not.toContain("Aman");
+    const t = text(html);
+    expect(t).toContain("Belum ada kejadian tercatat");
+    expect(t).toContain("Titik aman terdekat: belum ada data lokasi");
+    const rest = t.replaceAll("Titik aman terdekat", "");
+    expect(rest).not.toMatch(/\baman\b/i);
   });
 
   it("puts rows after the fifth inside details", () => {
@@ -81,10 +87,48 @@ describe("SubdistrictBreakdown", () => {
         }),
       ],
     });
-    expect(html).toContain("2 kejadian");
-    expect(html).not.toContain("terdalam");
-    expect(html).toContain("Rawan 2023");
-    expect(html).not.toContain(" RW");
+    const t = text(html);
+    expect(t).toContain("2 kejadian");
+    expect(t).not.toContain("terdalam");
+    expect(t).toContain("Rawan 2023");
+    expect(t).not.toContain(" RW");
+  });
+
+  it("summarises how many subdistricts have events and are flood-prone", () => {
+    const html = render({
+      unmatchedEventCount: 0,
+      rows: [
+        row("a", { eventCount: 3, maxDepthCm: 60, floodProne: true }),
+        row("b", { eventCount: 1, maxDepthCm: 30 }),
+        row("c"),
+      ],
+    });
+    expect(text(html)).toContain(
+      "2 dari 3 kelurahan punya kejadian tercatat · 1 masuk daftar rawan 2023",
+    );
+  });
+
+  it("scales the bar to the subdistrict with the most events", () => {
+    const html = render({
+      unmatchedEventCount: 0,
+      rows: [
+        row("a", { eventCount: 4, maxDepthCm: 30 }),
+        row("b", { eventCount: 1, maxDepthCm: 60 }),
+      ],
+    });
+    expect(html).toContain("--share:100%");
+    expect(html).toContain("--share:25%");
+  });
+
+  it("labels each cell for screen readers and hides the visual column header", () => {
+    const html = render({
+      unmatchedEventCount: 0,
+      rows: [row("a", { eventCount: 1, maxDepthCm: 30 })],
+    });
+    expect(html).toMatch(
+      /<div class="sk-subdistricts__cols" aria-hidden="true">/,
+    );
+    expect(text(html)).toContain("Genangan tercatat:");
   });
 
   it("notes unmatched events", () => {
