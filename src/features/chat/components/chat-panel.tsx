@@ -137,6 +137,7 @@ export function ChatPanel({
               Halo! Tanyakan apa saja soal persiapan menghadapi banjir. Jawaban
               kami bersumber dari pedoman BNPB dan BPBD.
             </p>
+            <p className="sk-chat__prompt-label">Contoh pertanyaan</p>
             <SuggestionChips onPick={send} />
           </div>
         ) : null}

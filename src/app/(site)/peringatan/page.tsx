@@ -35,6 +35,31 @@ export default async function PeringatanPage({
           </p>
         </header>
 
+        <div className="sk-alert-legend" aria-label="Arti status peringatan">
+          <p>
+            <span className="sk-status sk-status--normal">Normal</span>
+            <span className="sk-alert-legend__text">Tidak ada hujan berarti.</span>
+          </p>
+          <p>
+            <span className="sk-status sk-status--waspada">Waspada</span>
+            <span className="sk-alert-legend__text">
+              Hujan berpotensi, risiko masih sedang.
+            </span>
+          </p>
+          <p>
+            <span className="sk-status sk-status--siaga">Siaga</span>
+            <span className="sk-alert-legend__text">
+              Risiko tinggi: siapkan tas siaga.
+            </span>
+          </p>
+          <p>
+            <span className="sk-status sk-status--awas">Awas</span>
+            <span className="sk-alert-legend__text">
+              Risiko sangat tinggi: siap evakuasi.
+            </span>
+          </p>
+        </div>
+
         <div className="sk-alert-grid">
           <WatchArea districtName={districtName} />
 
