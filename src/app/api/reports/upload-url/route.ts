@@ -2,8 +2,8 @@ import { randomUUID } from "node:crypto";
 import { env } from "@/lib/env";
 import { HttpError, jsonError, parseJson } from "@/lib/http";
 import { checkRateLimit, limitRequest } from "@/lib/rate-limit";
-import { supabaseServer } from "@/lib/db/client";
 import { UploadPhotoSchema, type UploadPhotoInput } from "@/features/report/schemas";
+import { createPhotoUploadUrl } from "@/features/report/server/report-repository";
 
 const EXTENSION: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -48,15 +48,7 @@ export async function handleUploadUrl(
   const id = (deps.uuid ?? randomUUID)();
   const path = `${yyyy}/${mm}/${dd}/${id}.${EXTENSION[body.content_type]}`;
 
-  const create =
-    deps.createSignedUrl ??
-    (async (target: string) => {
-      const { data, error } = await supabaseServer()
-        .storage.from("laporan")
-        .createSignedUploadUrl(target);
-      if (error || !data) throw error ?? new Error("no signed upload url");
-      return { signedUrl: data.signedUrl, token: data.token };
-    });
+  const create = deps.createSignedUrl ?? createPhotoUploadUrl;
 
   try {
     const signed = await create(path);

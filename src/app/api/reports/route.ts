@@ -1,12 +1,6 @@
 import { env } from "@/lib/env";
 import { HttpError, jsonError, parseJson } from "@/lib/http";
-import {
-  checkRateLimit,
-  getClientIp,
-  hashIp,
-  limitRequest,
-} from "@/lib/rate-limit";
-import { supabaseServer } from "@/lib/db/client";
+import { getClientIp, hashIp } from "@/lib/rate-limit";
 import { findDistrictByPoint } from "@/lib/geo";
 import { listDistricts } from "@/features/risk/server/risk-repository";
 import type { District } from "@/features/risk/types";
@@ -14,16 +8,16 @@ import {
   CreateReportSchema,
   ReportsQuerySchema,
   isPublicReport,
-  parseVisionResult,
   type CreateReportInput,
   type VisionResult,
 } from "@/features/report/schemas";
+import { toPublicReport } from "@/features/report/public-report";
 import {
+  downloadPhoto,
   finishReport,
   insertReport,
   listRecentReports,
-  signPhotoUrl,
-  type PublicReport,
+  signPhotoUrls,
   type ReportRow,
 } from "@/features/report/server/report-repository";
 import { analyzePhoto, type VisionAnalysis } from "@/features/report/server/vision";
@@ -34,41 +28,24 @@ const MEDIA_TYPE: Record<string, string> = {
   webp: "image/webp",
 };
 
-/** Row -> API item. A report without a confident flood verdict never reaches this function. */
-export function toPublicReport(row: ReportRow, photoUrl: string): PublicReport {
-  const result = parseVisionResult(row.ai_result);
-  return {
-    id: row.id,
-    lat: row.lat,
-    lng: row.lng,
-    foto_url: photoUrl,
-    keparahan: Math.min(4, Math.max(0, Math.round(result?.keparahan ?? 0))),
-    ringkasan: result?.ringkasan ?? "",
-    is_demo: row.is_demo,
-    created_at: row.created_at,
-  };
+/** ~110 m: precise enough for a flood map, too coarse to point at a front door. */
+export function roundPoint(value: number): number {
+  return Math.round(value * 1000) / 1000;
 }
 
 export type ReportHandlerDeps = {
-  rateLimit?: typeof checkRateLimit;
   districts?: () => Promise<District[]>;
-  matchDistrict?: (point: { lat: number; lng: number }, list: District[]) => Promise<District | null>;
+  matchDistrict?: (
+    point: { lat: number; lng: number },
+    list: District[],
+  ) => Promise<District | null>;
   downloadPhoto?: (path: string) => Promise<Uint8Array>;
   analyze?: (bytes: Uint8Array, mediaType: string) => Promise<VisionAnalysis>;
   insert?: typeof insertReport;
   finish?: typeof finishReport;
   listRecent?: typeof listRecentReports;
-  signPhoto?: typeof signPhotoUrl;
-  now?: () => Date;
+  signPhotos?: typeof signPhotoUrls;
 };
-
-async function downloadPhoto(path: string): Promise<Uint8Array> {
-  const { data, error } = await supabaseServer()
-    .storage.from("laporan")
-    .download(path);
-  if (error || !data) throw new Error("photo not found");
-  return new Uint8Array(await data.arrayBuffer());
-}
 
 /** POST /api/reports: keep the row first (status menunggu), then ask the vision model. */
 export async function handleCreateReport(
@@ -83,13 +60,8 @@ export async function handleCreateReport(
     throw error;
   }
 
-  const limited = await limitRequest(
-    req,
-    "report",
-    env.IP_SALT,
-    deps.rateLimit ?? checkRateLimit,
-  );
-  if (limited) return limited;
+  const lat = roundPoint(body.lat);
+  const lng = roundPoint(body.lng);
 
   const match = deps.matchDistrict ?? findDistrictByPoint;
   const insert = deps.insert ?? insertReport;
@@ -98,12 +70,27 @@ export async function handleCreateReport(
   const download = deps.downloadPhoto ?? downloadPhoto;
 
   let districtId: number | null = null;
+  let districts: District[] | null = null;
   try {
-    const districts = await (deps.districts ?? listDistricts)();
-    const district = await match({ lat: body.lat, lng: body.lng }, districts);
-    districtId = district?.id ?? null;
+    districts = await (deps.districts ?? listDistricts)();
   } catch (error) {
+    // A DB hiccup must not block a report; it is stored without a district.
     console.error("GET districts for a report failed", error);
+  }
+  if (districts) {
+    try {
+      const district = await match({ lat, lng }, districts);
+      if (!district) {
+        return jsonError(
+          "INVALID_INPUT",
+          "SiagaKU saat ini hanya untuk DKI Jakarta.",
+          400,
+        );
+      }
+      districtId = district.id;
+    } catch (error) {
+      console.error("report district match failed", error);
+    }
   }
 
   let bytes: Uint8Array;
@@ -121,13 +108,16 @@ export async function handleCreateReport(
   try {
     id = await insert({
       districtId,
-      lat: body.lat,
-      lng: body.lng,
+      lat,
+      lng,
       photoPath: body.path,
       description: body.description ?? "",
       ipHash: hashIp(getClientIp(req), env.IP_SALT),
     });
   } catch (error) {
+    if ((error as { code?: string }).code === "23505") {
+      return jsonError("INVALID_INPUT", "Foto ini sudah pernah dilaporkan.", 409);
+    }
     console.error("POST /api/reports insert failed", error);
     return jsonError("INTERNAL", "Laporan gagal disimpan. Coba lagi.", 500);
   }
@@ -165,15 +155,16 @@ export async function handleListReports(
   }
 
   const listRecent = deps.listRecent ?? listRecentReports;
-  const sign = deps.signPhoto ?? signPhotoUrl;
+  const signPhotos = deps.signPhotos ?? signPhotoUrls;
 
   try {
-    const rows = await listRecent(parsed.data.hours);
+    const rows: ReportRow[] = await listRecent(parsed.data.hours);
     const visible = rows.filter(
       (row) => row.is_demo || isPublicReport(row.ai_result),
     );
-    const data = await Promise.all(
-      visible.map(async (row) => toPublicReport(row, await sign(row.photo_path))),
+    const urls = await signPhotos(visible.map((row) => row.photo_path));
+    const data = visible.map((row) =>
+      toPublicReport(row, urls.get(row.photo_path) ?? ""),
     );
     return Response.json({ data });
   } catch (error) {

@@ -5,9 +5,9 @@ vi.mock("@/lib/env", () => ({ env: { IP_SALT: "test-salt" } }));
 import {
   handleCreateReport,
   handleListReports,
-  toPublicReport,
   type ReportHandlerDeps,
 } from "@/app/api/reports/route";
+import { toPublicReport } from "@/features/report/public-report";
 import { handleUploadUrl } from "@/app/api/reports/upload-url/route";
 import {
   UploadPhotoSchema,
@@ -151,7 +151,6 @@ describe("upload-url", () => {
 
 describe("POST /api/reports", () => {
   const base = (over: Partial<ReportHandlerDeps> = {}): ReportHandlerDeps => ({
-    rateLimit: allow,
     districts: async () => [district],
     matchDistrict: async () => district,
     downloadPhoto: async () => new Uint8Array([1, 2, 3]),
@@ -164,6 +163,47 @@ describe("POST /api/reports", () => {
       fallback: false,
     }),
     ...over,
+  });
+
+  it("stores the rounded point the district was matched on", async () => {
+    const insert = vi.fn(async () => "report-id");
+    await handleCreateReport(
+      post("/api/reports", {
+        path: validPath,
+        lat: -6.30149,
+        lng: 106.90051,
+      }),
+      base({ insert }),
+    );
+    expect(insert).toHaveBeenCalledWith(
+      expect.objectContaining({ lat: -6.301, lng: 106.901 }),
+    );
+  });
+
+  it("returns 409 when the same photo is reported twice", async () => {
+    const res = await handleCreateReport(
+      post("/api/reports", { path: validPath, lat: -6.3, lng: 106.9 }),
+      base({
+        insert: async () => {
+          throw Object.assign(new Error("duplicate"), { code: "23505" });
+        },
+      }),
+    );
+    expect(res.status).toBe(409);
+  });
+
+  it("rejects a point outside Jakarta before downloading the photo", async () => {
+    const downloadPhoto = vi.fn(async () => new Uint8Array([1]));
+    const res = await handleCreateReport(
+      post("/api/reports", {
+        path: validPath,
+        lat: -6.9175,
+        lng: 107.6191,
+      }),
+      base({ matchDistrict: async () => null, downloadPhoto }),
+    );
+    expect(res.status).toBe(400);
+    expect(downloadPhoto).not.toHaveBeenCalled();
   });
 
   it("stores the report and marks it selesai when the photo shows water", async () => {
@@ -240,7 +280,8 @@ describe("POST /api/reports", () => {
 describe("GET /api/reports", () => {
   const deps = (rows: ReportRow[]): ReportHandlerDeps => ({
     listRecent: async () => rows,
-    signPhoto: async (path) => `https://storage.test/${path}`,
+    signPhotos: async (paths) =>
+      new Map(paths.map((path) => [path, `https://storage.test/${path}`])),
   });
 
   it("returns confident floods and demo rows only", async () => {

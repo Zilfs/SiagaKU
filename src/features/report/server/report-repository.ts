@@ -79,10 +79,33 @@ export async function listRecentReports(hours: number): Promise<ReportRow[]> {
   return (data ?? []) as ReportRow[];
 }
 
-export async function signPhotoUrl(path: string): Promise<string> {
+export async function signPhotoUrls(
+  paths: string[],
+): Promise<Map<string, string>> {
+  if (paths.length === 0) return new Map();
   const { data, error } = await supabaseServer()
     .storage.from("laporan")
-    .createSignedUrl(path, 3600);
-  if (error || !data) return "";
-  return data.signedUrl;
+    .createSignedUrls(paths, 3600);
+  if (error || !data) return new Map();
+  return new Map(data.map((item) => [item.path ?? "", item.signedUrl ?? ""]));
+}
+
+/** Server-side PUT URL for one photo path; the bucket is private. */
+export async function createPhotoUploadUrl(
+  path: string,
+): Promise<{ signedUrl: string; token?: string }> {
+  const { data, error } = await supabaseServer()
+    .storage.from("laporan")
+    .createSignedUploadUrl(path);
+  if (error || !data) throw error ?? new Error("no signed upload url");
+  return { signedUrl: data.signedUrl, token: data.token };
+}
+
+/** The photo bytes for the vision step. */
+export async function downloadPhoto(path: string): Promise<Uint8Array> {
+  const { data, error } = await supabaseServer()
+    .storage.from("laporan")
+    .download(path);
+  if (error || !data) throw new Error("photo not found");
+  return new Uint8Array(await data.arrayBuffer());
 }
