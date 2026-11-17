@@ -26,6 +26,8 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - [tsx](https://tsx.is) - menjalankan skrip TypeScript
 - [ESLint](https://eslint.org) dan [TypeScript](https://www.typescriptlang.org) - lint dan pengecekan tipe
 
+- Batas 44 kecamatan (termasuk Kepulauan Seribu) untuk deteksi lokasi "Gunakan lokasiku" (`src/lib/district-boundaries.ts`): Kontributor [OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL), relasi kecamatan (admin_level 6) DKI Jakarta, diunduh 17 Nov 2026 lalu disederhanakan ~15 m
+
 ## Dokumen pedoman (basis pengetahuan RAG)
 
 Kelima PDF di `data/guidelines/` dipakai sebagai sumber jawaban chatbot dan wajib

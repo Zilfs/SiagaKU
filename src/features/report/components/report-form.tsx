@@ -9,7 +9,7 @@ import {
   RotateCcw,
   Send,
 } from "lucide-react";
-import { findNearestDistrict } from "@/lib/geo";
+import { findDistrictByPoint } from "@/lib/geo";
 import { compressImage } from "../compress-image";
 import {
   toReportResult,
@@ -77,13 +77,13 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
     setLocating(true);
     setMessage("");
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const point = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
         setLocating(false);
-        const nearest = findNearestDistrict(point, districts);
+        const nearest = await findDistrictByPoint(point, districts);
         if (!nearest && districts.length > 0) {
           setMessage(
             "Lokasimu di luar DKI Jakarta. SiagaKU hanya untuk DKI Jakarta.",
@@ -98,11 +98,15 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
             : "Lokasi terdeteksi. Kami akan mencocokkannya dengan kecamatan terdekat.",
         );
       },
-      () => {
+      (error) => {
         setLocating(false);
-        setMessage("Izin lokasi ditolak. Pilih kecamatan dari daftar.");
+        setMessage(
+          error.code === error.TIMEOUT
+            ? "Lokasi belum ditemukan. Coba lagi atau pilih kecamatan dari daftar."
+            : "Izin lokasi ditolak. Pilih kecamatan dari daftar.",
+        );
       },
-      { enableHighAccuracy: true, timeout: 8000 },
+      { enableHighAccuracy: true, timeout: 10000 },
     );
   };
 

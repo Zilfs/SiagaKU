@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { distanceKm, findNearestDistrict, formatDistance } from "@/lib/geo";
+import {
+  distanceKm,
+  findDistrictByPoint,
+  findNearestDistrict,
+  formatDistance,
+} from "@/lib/geo";
 
 const monas = { lat: -6.1754, lng: 106.8272 };
 const hi = { lat: -6.195, lng: 106.823 };
@@ -25,6 +30,54 @@ describe("findNearestDistrict", () => {
     expect(
       findNearestDistrict({ lat: -6.9175, lng: 107.6191 }, list),
     ).toBeNull();
+  });
+});
+
+describe("findDistrictByPoint", () => {
+  const list = [
+    { slug: "ciracas", lat: -6.326063, lng: 106.875317 },
+    { slug: "cipayung", lat: -6.329055, lng: 106.893897 },
+    { slug: "gambir", lat: -6.176, lng: 106.818 },
+  ];
+
+  it("keeps Cibubur in Ciracas although Cipayung's centre is closer", async () => {
+    const cibubur = { lat: -6.3655, lng: 106.8865 };
+    expect(findNearestDistrict(cibubur, list)?.slug).toBe("cipayung");
+    expect((await findDistrictByPoint(cibubur, list))?.slug).toBe("ciracas");
+  });
+
+  it("matches Monas to Gambir by boundary", async () => {
+    expect((await findDistrictByPoint(monas, list))?.slug).toBe("gambir");
+  });
+
+  it("falls back to the nearest centre when no boundary contains the point", async () => {
+    const withoutCiracas = list.filter((district) => district.slug !== "ciracas");
+    expect(
+      (await findDistrictByPoint({ lat: -6.3655, lng: 106.8865 }, withoutCiracas))
+        ?.slug,
+    ).toBe("cipayung");
+  });
+
+  it("returns null outside Jakarta", async () => {
+    expect(
+      await findDistrictByPoint({ lat: -6.9175, lng: 107.6191 }, list),
+    ).toBeNull();
+  });
+
+  it("falls back to the nearest centre when the boundary chunk fails", async () => {
+    const failedLoad = async () => {
+      throw new Error("chunk load failed");
+    };
+    expect(
+      (
+        await findDistrictByPoint(
+          { lat: -6.3655, lng: 106.8865 },
+          list,
+          15,
+          failedLoad,
+        )
+      )?.slug,
+    ).toBe("cipayung");
   });
 });
 
