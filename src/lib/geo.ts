@@ -10,6 +10,11 @@ export type BoundaryLoader = () => Promise<{
   DISTRICT_BOUNDARIES: import("./district-boundaries").DistrictBoundary[];
 }>;
 
+/** ~110 m: precise enough for a flood map, too coarse to point at a front door. */
+export function roundPoint(value: number): number {
+  return Math.round(value * 1000) / 1000;
+}
+
 /** Great-circle distance (haversine) in kilometres. */
 export function distanceKm(a: LatLng, b: LatLng): number {
   const rad = (d: number) => (d * Math.PI) / 180;

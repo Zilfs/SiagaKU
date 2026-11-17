@@ -6,20 +6,29 @@ import {
   type RainOutlook,
 } from "@/lib/data/open-meteo";
 import { calculateRiskScore } from "@/lib/risk/score";
+import { summarizeSubdistricts } from "../subdistrict-breakdown";
 import { countFloodEvents, type FloodFrequency } from "../flood-frequency";
 import {
   monthlyFloodCounts,
   trendWindowEnd,
   type MonthlyFloodCount,
 } from "../flood-trend";
-import type { District, DistrictSummary, RiskDetail } from "../types";
+import type {
+  District,
+  DistrictSummary,
+  RiskDetail,
+  SafePoint,
+  SubdistrictBreakdown,
+} from "../types";
 import {
   findDistrict,
   listDistricts,
   listFloodEventDates,
   listFloodEventDistricts,
   listFloodEvents,
+  listFloodProneSubdistricts,
   listShelters,
+  listSubdistricts,
 } from "./risk-repository";
 
 async function scoreDistrict(d: District) {
@@ -127,4 +136,22 @@ export async function getFloodFrequency(
   return countFloodEvents(
     await listFloodEventDistricts(since.toISOString().slice(0, 10)),
   );
+}
+
+export async function getSubdistrictBreakdown(
+  districtId: number,
+  safePoints: SafePoint[],
+): Promise<SubdistrictBreakdown> {
+  // shortcut: PostgREST caps at 1000 rows, fine for ~240 events; aggregate in SQL if events grow past that
+  const [subdistricts, events, floodProne] = await Promise.all([
+    listSubdistricts(districtId),
+    listFloodEvents(districtId, 1000),
+    listFloodProneSubdistricts(districtId),
+  ]);
+  return summarizeSubdistricts({
+    subdistricts,
+    events,
+    floodProne,
+    safePoints,
+  });
 }

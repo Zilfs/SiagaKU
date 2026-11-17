@@ -1340,6 +1340,168 @@ main > section#fitur {
 .sk-detail-grid > :is(.sk-breakdown, .sk-weather, .sk-history, .sk-safepoints) {
   align-self: stretch;
 }
+.sk-detail-grid > .sk-subdistricts {
+  grid-column: 1 / -1;
+}
+.sk-subdistricts__summary {
+  margin: 0 0 var(--s-4);
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-subdistricts__list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* name | floods | nearest safe point: a comparison table on wide screens, stacked on phones */
+.sk-subdistricts__cols,
+.sk-subdistricts__list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 6px var(--s-5);
+}
+.sk-subdistricts__cols {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.sk-subdistricts__list li {
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+/* full-width card: rows span it, unlike the 68ch reading cap on half-width cards */
+.sk-card > .sk-subdistricts__list > li {
+  max-width: none;
+}
+.sk-subdistricts__cols + .sk-subdistricts__list > li:first-child {
+  border-top: 0;
+  padding-top: 12px;
+}
+.sk-subdistricts__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  min-width: 0;
+}
+.sk-subdistricts__name b {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.sk-subdistricts__badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--p-tint);
+  color: var(--p-ink);
+  font-size: var(--t-label);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.sk-subdistricts__floods {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.sk-subdistricts__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  font-size: var(--t-small);
+  color: var(--muted);
+}
+.sk-subdistricts__stats b {
+  color: var(--p-ink);
+  font-weight: 500;
+}
+.sk-subdistricts__bar {
+  position: relative;
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--p-surface);
+  overflow: hidden;
+}
+.sk-subdistricts__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--share);
+  border-radius: inherit;
+  background: var(--p-blue);
+}
+.sk-subdistricts__none {
+  color: var(--muted);
+  font-size: var(--t-small);
+}
+.sk-subdistricts__near {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: var(--t-small);
+}
+.sk-subdistricts__near > svg {
+  color: var(--p-link);
+}
+.sk-subdistricts__place {
+  overflow-wrap: anywhere;
+}
+.sk-subdistricts__dist {
+  color: var(--muted);
+  white-space: nowrap;
+}
+/* the column header names each cell on wide screens; the caption stays for screen readers */
+.sk-subdistricts__cap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.sk-subdistricts__list li.is-quiet .sk-subdistricts__name b {
+  font-weight: 500;
+  color: var(--muted);
+}
+.sk-subdistricts__note {
+  margin: var(--s-3) 0 0;
+  color: var(--muted);
+  font-size: var(--t-small);
+  overflow-wrap: anywhere;
+}
+@media (max-width: 767px) {
+  .sk-subdistricts__cols {
+    display: none;
+  }
+  .sk-subdistricts__list li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .sk-subdistricts__list > li:first-child,
+  .sk-subdistricts__cols + .sk-subdistricts__list > li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  /* no column header on phones: the safe point needs its label back; the flood figures
+     read on their own ("8 kejadian · terdalam 360 cm") */
+  .sk-subdistricts__near .sk-subdistricts__cap {
+    position: static;
+    grid-column: 1 / -1;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    color: var(--muted);
+    font-size: var(--t-label);
+  }
+}
 .sk-safepoints__more > summary {
   padding: 10px 0;
   border-top: 1px solid var(--line);
@@ -2024,6 +2186,10 @@ main > section#fitur {
   }
   .sk-detail-score {
     justify-items: start;
+  }
+  /* one column: eleven empty gaps between twelve tracks are wider than a phone */
+  .sk-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 @media (max-width: 767px) {
@@ -5547,13 +5713,13 @@ main > section#cek {
 
 /* a card grid is not a panel: the frame only ever added a hole under the shorter column */
 :is(
-    .sk-detail-grid,
-    .sk-tanya__grid,
-    .sk-alert-grid,
-    .sk-lapor-grid,
-    .sk-about__grid,
-    .sk-report-feed
-  ) {
+  .sk-detail-grid,
+  .sk-tanya__grid,
+  .sk-alert-grid,
+  .sk-lapor-grid,
+  .sk-about__grid,
+  .sk-report-feed
+) {
   padding: 0;
   background: transparent;
   border-radius: 0;
