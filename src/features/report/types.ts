@@ -3,6 +3,7 @@
 /** The fields the report form needs from a district. */
 export type ReportDistrict = {
   id: number;
+  slug: string;
   name: string;
   city: string;
   lat: number;

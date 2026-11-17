@@ -193,6 +193,11 @@ export function WatchArea({ districtName }: { districtName?: string }) {
             </button>
           </form>
 
+          <p className="sk-field__hint">
+            Pilih satu kelurahan. Setelah itu kamu bisa mengaktifkan notifikasi;
+            banner di halaman ini tetap muncul meski notifikasi ditolak.
+          </p>
+
           {results.length > 0 ? (
             <ul className="sk-watch__results">
               {results.map((item) => (

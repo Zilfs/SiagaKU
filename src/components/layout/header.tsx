@@ -11,10 +11,9 @@ const LINKS: { href: string; label: string; optional?: boolean }[] = [
   { href: "/#cari", label: "Cek risiko" },
   { href: "/peta", label: "Peta" },
   { href: "/rencana", label: "Rencana" },
-  { href: "/#cara", label: "Cara kerja", optional: true },
-  { href: "/#fitur", label: "Fitur", optional: true },
   { href: "/tanya", label: "Tanya" },
   { href: "/lapor", label: "Lapor" },
+  { href: "/tentang", label: "Tentang", optional: true },
 ];
 
 /** Route links only: a hash link on the landing (/#cari) is a section, not a page. */
