@@ -125,6 +125,16 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
     setMessage("");
     setResult(null);
 
+    const failure = async (response: Response, fallback: string) => {
+      if (response.status === 429) {
+        return "Kamu sudah mengirim beberapa laporan. Coba lagi nanti.";
+      }
+      const payload = (await response.json().catch(() => null)) as {
+        error?: { message?: string };
+      } | null;
+      return payload?.error?.message ?? fallback;
+    };
+
     try {
       setStep("uploading");
       const uploadResponse = await fetch("/api/reports/upload-url", {
@@ -137,9 +147,10 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
       });
       if (!uploadResponse.ok) {
         throw new Error(
-          uploadResponse.status === 429
-            ? "Kamu sudah mengirim beberapa laporan. Coba lagi nanti."
-            : "Laporan belum bisa dikirim. Coba lagi sebentar lagi.",
+          await failure(
+            uploadResponse,
+            "Laporan belum bisa dikirim. Coba lagi sebentar lagi.",
+          ),
         );
       }
       const upload = (await uploadResponse.json()) as {
@@ -170,9 +181,10 @@ export function ReportForm({ districts }: { districts: ReportDistrict[] }) {
       });
       if (!reportResponse.ok) {
         throw new Error(
-          reportResponse.status === 429
-            ? "Kamu sudah mengirim beberapa laporan. Coba lagi nanti."
-            : "Laporan belum bisa dikirim. Coba lagi sebentar lagi.",
+          await failure(
+            reportResponse,
+            "Laporan belum bisa dikirim. Coba lagi sebentar lagi.",
+          ),
         );
       }
       setResult(
