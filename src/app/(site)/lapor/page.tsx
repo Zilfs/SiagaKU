@@ -16,13 +16,16 @@ export default async function LaporPage() {
   await connection();
   let districts: ReportDistrict[] = [];
   try {
-    districts = (await listDistricts()).map(({ id, name, city, lat, lng }) => ({
-      id,
-      name,
-      city,
-      lat,
-      lng,
-    }));
+    districts = (await listDistricts()).map(
+      ({ id, slug, name, city, lat, lng }) => ({
+        id,
+        slug,
+        name,
+        city,
+        lat,
+        lng,
+      }),
+    );
   } catch (error) {
     console.error("GET districts for the report form failed", error);
   }

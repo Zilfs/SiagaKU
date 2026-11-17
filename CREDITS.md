@@ -26,6 +26,8 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - [tsx](https://tsx.is) - menjalankan skrip TypeScript
 - [ESLint](https://eslint.org) dan [TypeScript](https://www.typescriptlang.org) - lint dan pengecekan tipe
 
+- Batas 44 kecamatan untuk deteksi lokasi "Gunakan lokasiku" (`src/lib/district-boundaries.ts`): [GADM 4.1](https://gadm.org) level 3 (kecamatan), Provinsi DKI Jakarta, disederhanakan ~15 m; GADM bebas dipakai untuk kepentingan non-komersial dengan atribusi
+
 ## Dokumen pedoman (basis pengetahuan RAG)
 
 Kelima PDF di `data/guidelines/` dipakai sebagai sumber jawaban chatbot dan wajib

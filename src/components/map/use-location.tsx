@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LocateFixed } from "lucide-react";
 import type { DistrictSummary } from "@/features/risk/types";
-import { findNearestDistrict } from "@/lib/geo";
+import { findDistrictByPoint } from "@/lib/geo";
 
 /**
- * "Use my location": finds the nearest district and opens its page. The 15 km limit in
- * `findNearestDistrict` covers the "outside Jakarta" case; a denied permission falls back to the list.
+ * "Use my location": opens the district whose boundary contains the point, falling back to the
+ * nearest centre within 15 km (outside Jakarta). A denied permission keeps the user on the list.
  */
 export function UseLocation({ districts }: { districts: DistrictSummary[] }) {
   const router = useRouter();
@@ -23,24 +23,24 @@ export function UseLocation({ districts }: { districts: DistrictSummary[] }) {
       setMessage("Perangkat ini tidak mendukung lokasi. Pilih kecamatan dari daftar.");
       return;
     }
-    setMessage("Mencari kecamatan terdekat…");
+    setMessage("Mencari kecamatan…");
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const point = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-        const nearest = findNearestDistrict(point, districts);
-        if (!nearest) {
+        const match = await findDistrictByPoint(point, districts);
+        if (!match) {
           setMessage("SiagaKU saat ini hanya untuk DKI Jakarta.");
           return;
         }
-        router.push(`/wilayah/${nearest.slug}`);
+        router.push(`/wilayah/${match.slug}`);
       },
       () => {
         setMessage("Izin lokasi ditolak. Pilih kecamatan dari daftar di bawah.");
       },
-      { enableHighAccuracy: false, timeout: 8000 },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
     );
   };
 
