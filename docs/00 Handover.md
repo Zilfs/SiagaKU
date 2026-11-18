@@ -103,6 +103,8 @@ SELESAI:
 
 - README final (18 Nov, branch `docs/final-readme`): template `create-next-app` diganti sesuai struktur deliverable §7 (Tentang, Fitur + screenshot, Arsitektur Mermaid, tech stack, metodologi skor, cara menjalankan lokal, struktur folder, pengujian, kredit, batasan, tim, lisensi). Screenshot produksi `landing`, `peta`, dan `wilayah` ditambahkan di `docs/screenshots/`. Tautan video masih menyusul dan harus diisi sebelum final. Prettier bersih.
 
+- Penamaan universitas (18 Nov): singkatan UPNVJ di README dan surat pernyataan diganti menjadi `Universitas Pembangunan Nasional Veteran Jakarta`. Dua PR sebelumnya: #73 tidak memuat UPNVJ, #74 memuatnya di README dan sudah diperbaiki di branch yang sama.
+
 BELUM: uji `/lapor` dengan foto asli di production (unggah lewat signed URL + vision); T13 eval live (runner selesai, menunggu kredensial); T17 (README utama, proposal, video, Lighthouse, tag `v1.0.0`); uji push T14 di perangkat; minor chat: judul sumber menempel dengan penerbit tanpa spasi, AI kadang menulis `[SiagaKU]` seperti sitasi.
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,

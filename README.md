@@ -150,7 +150,7 @@ SiagaKU hanya mencakup 44 kecamatan DKI Jakarta dan menghasilkan estimasi, bukan
 Tim **SDLC** — Web Development IT RUSH 2026:
 
 - Habibi Ghufron Hilmiy — Universitas BSI
-- Hirzi Ahnaf Rapiyadi — Universitas UPNVJ
+- Hirzi Ahnaf Rapiyadi — Universitas Pembangunan Nasional Veteran Jakarta
 - Bagus Aliefya Kurniawan — Universitas Gunadarma
 - Syakirana Aurieli Pasa — Universitas Gunadarma
 
