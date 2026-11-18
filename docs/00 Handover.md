@@ -10,7 +10,7 @@ tags: [siagaku, handover]
 
 ```
 ## Konteks
-Aku (Rhein, mahasiswa Informatika UPNVJ) dan tim (4 orang) ikut Lomba Web Development
+Aku (Rhein, mahasiswa Informatika Universitas Pembangunan Nasional Veteran Jakarta) dan tim (4 orang) ikut Lomba Web Development
 IT RUSH 2026 (HIMATIF UNIB), subtema "Mitigasi Bencana dan Perubahan Iklim". Wajib ada fitur AI.
 Deadline submit: Jum 20 Nov 2026 23.59 WIB (target internal 20.00). Feature freeze Kam 19 Nov 12.00.
 Website wajib live sampai 30 Nov 2026; repo publik; riwayat commit tidak boleh dimanipulasi;
@@ -100,6 +100,15 @@ SELESAI:
 - Penamaan laporan (17 Nov, branch `fix/report-naming`): sesuai AGENTS.md §3, status laporan di DB dan API kembali ke bahasa Inggris (`pending` | `done` | `failed` | `rejected`, seperti `0001_init`), dan foto disimpan di bucket `reports` (privat, maks 1,5 MB, jpeg/png/webp) menggantikan `laporan`. `0005_reports.sql` dan `0006_reports_naming.sql` sudah dijalankan lewat Supabase MCP (tabel dan bucket masih kosong saat itu). Bucket `laporan` yang kosong masih ada dan perlu dihapus lewat dashboard Supabase (Storage), karena SQL tidak boleh menghapus bucket. Label Indonesia tetap hanya di UI. `docs/06` dan `docs/07` masih menulis status `menunggu/selesai/ditolak`; perlu diperbarui di vault.
 
 - Kontrak chat bahasa Inggris (17 Nov, branch `fix/chat-district-key` dari `dev`): field body `POST /api/chat` berganti `kecamatan_id` → `district_id` (`src/features/chat/schemas.ts`, `src/app/api/chat/route.ts`), prop `ChatPanel`/`ChatWidget` berganti `kecamatanId`/`kecamatanName` → `districtId`/`districtName` (dipakai `/tanya` dan `/wilayah/[slug]`). `docs/07` diperbarui: contoh request memakai `district_id` dan data part ditulis dengan nama sebenarnya (`emergency`, `sources`, `meta`). Dua tes baru: `district_id` diteruskan sebagai konteks wilayah, `kecamatan_id` lama diabaikan. 484 tes.
+
+- Identitas commit (18 Nov): 8 commit 16-18 Nov tercatat atas nama `Ukon <ukon@users.noreply.github.com>` karena AI assistant menulis commit dengan identitas itu; semuanya milik akun GitHub `habibighufronhilmiy`. History tidak ditulis ulang (aturan lomba); commit berikutnya memakai akun GitHub `habibighufronhilmiy`. Catatan yang sama ada di README, bagian Tim.
+
+- Kredit deliverable (18 Nov, branch `docs/remove-openai-credits`): sesuai keputusan tim, aplikasi tidak memakai layanan OpenAI/ChatGPT. `CREDITS.md` tetap menyebut paket `@ai-sdk/openai-compatible` (adapter format dari Vercel, dipakai untuk Vikey; bukan layanan OpenAI), mengikuti catatan review. Aset footer lama (hasil ChatGPT 16 Nov) diganti dengan ilustrasi vektor SVG buatan tim tanpa layanan image generation AI; sumber `public/images/footer-jakarta.svg`, hasil `public/images/footer-jakarta.webp` (1920×823) dan `footer-jakarta-960.webp` (960×411). Atribusi baru tercatat di `CREDITS.md`. Proposal revisi sudah diekspor ke `ITRUSH26_SDLC_SiagaKU.pdf` dengan nama tim resmi SDLC; video demo masih menyusul.
+
+- README final (18 Nov, branch `docs/final-readme`): template `create-next-app` diganti sesuai struktur deliverable §7 (Tentang, Fitur + screenshot, Arsitektur Mermaid, tech stack, metodologi skor, cara menjalankan lokal, struktur folder, pengujian, kredit, batasan, tim, lisensi). Screenshot produksi `landing`, `peta`, dan `wilayah` ditambahkan di `docs/screenshots/`. Tautan video masih menyusul dan harus diisi sebelum final. Prettier bersih.
+
+- Penamaan universitas (18 Nov): singkatan UPNVJ di README dan surat pernyataan diganti menjadi `Universitas Pembangunan Nasional Veteran Jakarta`. Dua PR sebelumnya: #73 tidak memuat UPNVJ, #74 memuatnya di README dan sudah diperbaiki di branch yang sama.
+- Perbaikan README sesuai review #74 (18 Nov): atribusi aset diperbaiki (ikon dari `lucide-react`, ilustrasi footer dari SVG buatan tim tanpa layanan image generation AI, selaras dengan keputusan #73), prasyarat dinaikkan ke Node.js >= 22 (CI memakai 24; `ai@7` mensyaratkan >= 22), dan angka tes dihapus karena cepat usang (pengukuran lokal terakhir: 486 tes di 54 berkas). Nama paket `@ai-sdk/openai-compatible` ikut disebut di tech stack agar tidak bertentangan dengan `CREDITS.md`.
 
 BELUM: uji `/lapor` dengan foto asli di production (unggah lewat signed URL + vision); T13 eval live (runner selesai, menunggu kredensial); T17 (README utama, proposal, video, Lighthouse, tag `v1.0.0`); uji push T14 di perangkat; minor chat: judul sumber menempel dengan penerbit tanpa spasi, AI kadang menulis `[SiagaKU]` seperti sitasi.
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
