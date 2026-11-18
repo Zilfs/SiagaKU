@@ -10,7 +10,7 @@ tags: [siagaku, handover]
 
 ```
 ## Konteks
-Aku (Rhein, mahasiswa Informatika UPNVJ) dan tim (4 orang) ikut Lomba Web Development
+Aku (Rhein, mahasiswa Informatika Universitas Pembangunan Nasional Veteran Jakarta) dan tim (4 orang) ikut Lomba Web Development
 IT RUSH 2026 (HIMATIF UNIB), subtema "Mitigasi Bencana dan Perubahan Iklim". Wajib ada fitur AI.
 Deadline submit: Jum 20 Nov 2026 23.59 WIB (target internal 20.00). Feature freeze Kam 19 Nov 12.00.
 Website wajib live sampai 30 Nov 2026; repo publik; riwayat commit tidak boleh dimanipulasi;
