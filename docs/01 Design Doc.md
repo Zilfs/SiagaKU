@@ -21,7 +21,7 @@ tags: [siagaku, lomba, it-rush-2026, design]
 **Kenapa banjir Jakarta:**
 - Banjir adalah bencana paling sering dan paling terasa di Jakarta. BPBD DKI (6 Nov 2026) memetakan sekitar 200 RW yang masih rawan banjir dan genangan menjelang musim hujan.
 - Banjir menghubungkan dua sisi subtema: **mitigasi bencana** (kesiapsiagaan) dan **perubahan iklim** (hujan ekstrem makin sering, banjir rob di pesisir utara).
-- Tim kuliah di Jakarta (UPNVJ), jadi ceritanya autentik untuk video dan proposal.
+- Tim kuliah di Jakarta (Universitas Pembangunan Nasional Veteran Jakarta), jadi ceritanya autentik untuk video dan proposal.
 - Data publik tersedia: prakiraan cuaca BMKG per kelurahan, data curah hujan Open-Meteo, rilis BPBD DKI.
 
 **Seperti apa sukses itu:**

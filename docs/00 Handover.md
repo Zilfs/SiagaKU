@@ -10,7 +10,7 @@ tags: [siagaku, handover]
 
 ```
 ## Konteks
-Aku (Rhein, mahasiswa Informatika UPNVJ) dan tim (4 orang) ikut Lomba Web Development
+Aku (Rhein, mahasiswa Informatika Universitas Pembangunan Nasional Veteran Jakarta) dan tim (4 orang) ikut Lomba Web Development
 IT RUSH 2026 (HIMATIF UNIB), subtema "Mitigasi Bencana dan Perubahan Iklim". Wajib ada fitur AI.
 Deadline submit: Jum 20 Nov 2026 23.59 WIB (target internal 20.00). Feature freeze Kam 19 Nov 12.00.
 Website wajib live sampai 30 Nov 2026; repo publik; riwayat commit tidak boleh dimanipulasi;
@@ -100,6 +100,8 @@ SELESAI:
 - Penamaan laporan (17 Nov, branch `fix/report-naming`): sesuai AGENTS.md §3, status laporan di DB dan API kembali ke bahasa Inggris (`pending` | `done` | `failed` | `rejected`, seperti `0001_init`), dan foto disimpan di bucket `reports` (privat, maks 1,5 MB, jpeg/png/webp) menggantikan `laporan`. `0005_reports.sql` dan `0006_reports_naming.sql` sudah dijalankan lewat Supabase MCP (tabel dan bucket masih kosong saat itu). Bucket `laporan` yang kosong masih ada dan perlu dihapus lewat dashboard Supabase (Storage), karena SQL tidak boleh menghapus bucket. Label Indonesia tetap hanya di UI. `docs/06` dan `docs/07` masih menulis status `menunggu/selesai/ditolak`; perlu diperbarui di vault.
 
 - Kontrak chat bahasa Inggris (17 Nov, branch `fix/chat-district-key` dari `dev`): field body `POST /api/chat` berganti `kecamatan_id` → `district_id` (`src/features/chat/schemas.ts`, `src/app/api/chat/route.ts`), prop `ChatPanel`/`ChatWidget` berganti `kecamatanId`/`kecamatanName` → `districtId`/`districtName` (dipakai `/tanya` dan `/wilayah/[slug]`). `docs/07` diperbarui: contoh request memakai `district_id` dan data part ditulis dengan nama sebenarnya (`emergency`, `sources`, `meta`). Dua tes baru: `district_id` diteruskan sebagai konteks wilayah, `kecamatan_id` lama diabaikan. 484 tes.
+
+- Kredit deliverable (18 Nov, branch `docs/remove-openai-credits`): sesuai keputusan tim, aplikasi tidak memakai layanan OpenAI/ChatGPT. `CREDITS.md` tetap menyebut paket `@ai-sdk/openai-compatible` (adapter format dari Vercel, dipakai untuk Vikey; bukan layanan OpenAI), mengikuti catatan review. Aset footer lama (hasil ChatGPT 16 Nov) diganti dengan ilustrasi vektor SVG buatan tim tanpa layanan image generation AI; sumber `public/images/footer-jakarta.svg`, hasil `public/images/footer-jakarta.webp` (1920×823) dan `footer-jakarta-960.webp` (960×411). Atribusi baru tercatat di `CREDITS.md`. Proposal revisi sudah diekspor ke `ITRUSH26_SDLC_SiagaKU.pdf` dengan nama tim resmi SDLC; video demo masih menyusul.
 
 - README final (18 Nov, branch `docs/final-readme`): template `create-next-app` diganti sesuai struktur deliverable §7 (Tentang, Fitur + screenshot, Arsitektur Mermaid, tech stack, metodologi skor, cara menjalankan lokal, struktur folder, pengujian, kredit, batasan, tim, lisensi). Screenshot produksi `landing`, `peta`, dan `wilayah` ditambahkan di `docs/screenshots/`. Tautan video masih menyusul dan harus diisi sebelum final. Prettier bersih.
 
