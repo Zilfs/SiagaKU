@@ -18,7 +18,7 @@ SiagaKU dibangun dengan pustaka dan alat sumber terbuka berikut:
 - Batas 42 kecamatan daratan Jakarta di peta frekuensi banjir (`src/features/risk/district-shapes.ts`): © kontributor [OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL), diunduh lewat Overpass API 16 Nov 2026 lalu disederhanakan menjadi path SVG
 - server-only (Vercel) - menjaga modul sisi server tidak masuk ke bundel browser
 - [Vercel AI SDK](https://ai-sdk.dev) (`ai`, `@ai-sdk/react`) - panggilan model AI, streaming, structured output, hook chat
-- [@ai-sdk/google](https://ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai), [@ai-sdk/groq](https://ai-sdk.dev/providers/ai-sdk-providers/groq), dan adapter AI SDK untuk Vikey - provider AI dan fallback
+- [@ai-sdk/google](https://ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai), [@ai-sdk/groq](https://ai-sdk.dev/providers/ai-sdk-providers/groq), dan @ai-sdk/openai-compatible (adapter format dari Vercel, dipakai untuk Vikey; bukan layanan OpenAI) - provider AI dan fallback
 - [unpdf](https://github.com/unjs/unpdf) - ekstraksi teks PDF per halaman untuk ingest RAG
 - [web-push](https://github.com/web-push-libs/web-push) (MPL-2.0) dan @types/web-push - pengiriman notifikasi peringatan dini (VAPID)
 - [Vitest](https://vitest.dev) dan @vitejs/plugin-react - pengujian
@@ -47,4 +47,4 @@ kontak darurat) beserta tautan verifikasi per baris ada di `data/README.md`.
 AI coding assistant: Claude Code (Anthropic) — digunakan untuk scaffolding dan implementasi.
 AI coding assistant: opencode — digunakan untuk implementasi router AI dan RAG (Task 5, Task 9).
 AI coding assistant: opencode (DeepSeek V4.1 Flash) — redesain UI/UX landing, halaman wilayah, dan peta (Task 8).
-Ilustrasi footer (`public/images/footer-jakarta.webp`): dibuat oleh tim, menggambarkan lanskap Jakarta (Sungai Ciliwung, Monas) bergaya ukiran dua warna (hitam dan gading); dibuat ulang 16 Nov 2026.
+Ilustrasi footer (`public/images/footer-jakarta.webp` dan `public/images/footer-jakarta-960.webp`; sumber vektor `public/images/footer-jakarta.svg`): ilustrasi SVG buatan tim dengan bantuan AI coding assistant, bukan layanan image generation AI (termasuk OpenAI/ChatGPT), dirasterisasi ke WebP pada 18 Nov 2026; menggambarkan lanskap Jakarta (Monas, Sungai Ciliwung, gedung kota) bergaya ukiran dua warna (hitam dan gading). Aset ChatGPT sebelumnya sudah diganti.
