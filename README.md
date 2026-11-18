@@ -149,10 +149,10 @@ SiagaKU hanya mencakup 44 kecamatan DKI Jakarta dan menghasilkan estimasi, bukan
 
 Tim **SDLC** — Web Development IT RUSH 2026:
 
-- Habibi Ghufron Hilmiy - Universitas BSI
-- Hirzi Ahnaf Rapiyadi - Universitas Pembangunan Nasional Veteran Jakarta
-- Bagus Aliefya Kurniawan - Universitas Gunadarma
-- Syakirana Aurieli Pasa - Universitas Gunadarma
+- Habibi Ghufron Hilmiy — Universitas BSI
+- Hirzi Ahnaf Rapiyadi — Universitas Pembangunan Nasional Veteran Jakarta
+- Bagus Aliefya Kurniawan — Universitas Gunadarma
+- Syakirana Aurieli Pasa — Universitas Gunadarma
 
 Delapan commit tanggal 16-18 November 2026 tercatat atas nama `Ukon <ukon@users.noreply.github.com>`: semuanya dikerjakan Habibi Ghufron Hilmiy. Riwayat tidak ditulis ulang karena aturan lomba melarang manipulasi history; commit berikutnya memakai akun GitHub `habibighufronhilmiy`.
 
