@@ -101,6 +101,8 @@ SELESAI:
 
 - Kontrak chat bahasa Inggris (17 Nov, branch `fix/chat-district-key` dari `dev`): field body `POST /api/chat` berganti `kecamatan_id` → `district_id` (`src/features/chat/schemas.ts`, `src/app/api/chat/route.ts`), prop `ChatPanel`/`ChatWidget` berganti `kecamatanId`/`kecamatanName` → `districtId`/`districtName` (dipakai `/tanya` dan `/wilayah/[slug]`). `docs/07` diperbarui: contoh request memakai `district_id` dan data part ditulis dengan nama sebenarnya (`emergency`, `sources`, `meta`). Dua tes baru: `district_id` diteruskan sebagai konteks wilayah, `kecamatan_id` lama diabaikan. 484 tes.
 
+- Identitas commit (18 Nov): 8 commit 16-18 Nov tercatat atas nama `Ukon <ukon@users.noreply.github.com>` karena AI assistant menulis commit dengan identitas itu; semuanya milik habibighufronhilmiy (Habibi). History tidak ditulis ulang (aturan lomba). Commit setelah ini memakai `habibighufronhilmiy <habibighufron11@gmail.com>`; catatan yang sama ada di README.
+
 BELUM: uji `/lapor` dengan foto asli di production (unggah lewat signed URL + vision); T13 eval live (runner selesai, menunggu kredensial); T17 (README utama, proposal, video, Lighthouse, tag `v1.0.0`); uji push T14 di perangkat; minor chat: judul sumber menempel dengan penerbit tanpa spasi, AI kadang menulis `[SiagaKU]` seperti sitasi.
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,

@@ -34,3 +34,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Identitas commit
+
+Commit atas nama **Ukon `<ukon@users.noreply.github.com>`** (8 commit, 16-18 Nov 2026)
+adalah milik **habibighufronhilmiy** (Habibi, W1 Frontend & UX). Identitas itu dipakai oleh
+AI coding assistant saat menulis commit. Riwayat tidak ditulis ulang karena aturan lomba
+melarang manipulasi history; commit berikutnya memakai
+`habibighufronhilmiy <habibighufron11@gmail.com>`.
