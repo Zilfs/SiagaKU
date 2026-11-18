@@ -67,7 +67,7 @@ Router teks mencoba **Gemini -> Groq -> Vikey**. Perpindahan terjadi pada kuota 
 - **Framework:** Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS 4, shadcn/ui, Base UI.
 - **Data:** Supabase Postgres + pgvector, Zod, server-only service role.
 - **Peta & visual:** Leaflet, OpenStreetMap, GSAP, lucide-react, font Plus Jakarta Sans.
-- **AI:** Vercel AI SDK dengan adapter Google, Groq, dan adapter AI SDK untuk Vikey; unpdf untuk ekstraksi PDF.
+- **AI:** Vercel AI SDK dengan `@ai-sdk/google`, `@ai-sdk/groq`, dan `@ai-sdk/openai-compatible` (adapter format untuk Vikey); unpdf untuk ekstraksi PDF.
 - **Notifikasi:** web-push + VAPID, GitHub Actions cron.
 - **Pengujian:** Vitest, ESLint, Prettier, tsx.
 
@@ -85,7 +85,7 @@ Sumber: BPBD DKI Jakarta, BMKG, Open-Meteo, BNPB, Kemendikbudristek, dan OpenStr
 
 ## Menjalankan lokal
 
-Prasyarat: Node.js >= 20 dan proyek Supabase.
+Prasyarat: Node.js >= 22 (CI memakai 24) dan proyek Supabase.
 
 ```bash
 npm ci
@@ -131,13 +131,13 @@ npm run check:bundle
 EVAL_BASE_URL=https://siaga-ku.vercel.app npm run eval
 ```
 
-Saat README ini ditulis, `npm test` lulus 434 tes di 49 berkas dan smoke produksi lulus 47 dari 47 pemeriksaan. Eval live memerlukan kredensial dan belum dijalankan di mesin lokal.
+Saat README ini ditulis, seluruh tes Vitest dan smoke produksi lulus. Jumlah tes sengaja tidak ditulis karena berubah setiap ada penambahan kasus; jalankan `npm test` untuk angka terkini. Eval live memerlukan kredensial dan belum dijalankan di mesin lokal.
 
 ## Penggunaan library, aset, & AI coding assistant
 
 SiagaKU memakai Next.js, React, Tailwind CSS, shadcn/ui, Base UI, lucide-react, GSAP, class-variance-authority, zod, Supabase JS, Leaflet, Vercel AI SDK, unpdf, web-push, Vitest, dan tsx.
 
-Aset: font Plus Jakarta Sans (SIL OFL), taste-skill (MIT), ubin dan batas wilayah OpenStreetMap (ODbL), ilustrasi footer dan ikon dibuat oleh tim, serta 5 PDF pedoman dari BPBD/BNPB/Kemendikbudristek.
+Aset: font Plus Jakarta Sans (SIL OFL), taste-skill (MIT), ubin dan batas wilayah OpenStreetMap (ODbL), ikon dari `lucide-react`, ilustrasi footer berupa SVG buatan tim tanpa layanan image generation AI (sumber dan atribusi ada di `CREDITS.md`), serta 5 PDF pedoman dari BPBD/BNPB/Kemendikbudristek.
 
 AI coding assistant yang dipakai: Claude Code (Anthropic) untuk scaffolding dan implementasi awal, serta opencode/DeepSeek V4.1 Flash untuk router AI, RAG, dan penyempurnaan UI. Rincian lisensi pihak ketiga ada di [`CREDITS.md`](CREDITS.md) dan [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
