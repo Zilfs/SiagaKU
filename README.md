@@ -154,6 +154,8 @@ Tim **SDLC** — Web Development IT RUSH 2026:
 - Bagus Aliefya Kurniawan — Universitas Gunadarma
 - Syakirana Aurieli Pasa — Universitas Gunadarma
 
+Delapan commit tanggal 16-18 November 2026 tercatat atas nama `Ukon <ukon@users.noreply.github.com>`: semuanya dikerjakan Habibi Ghufron Hilmiy. Riwayat tidak ditulis ulang karena aturan lomba melarang manipulasi history; commit berikutnya memakai akun GitHub `habibighufronhilmiy`.
+
 ## Lisensi
 
 Kode disediakan untuk keperluan kompetisi IT RUSH 2026. Pustaka dan aset pihak ketiga tetap berada di bawah lisensi masing-masing; rinciannya ada di `CREDITS.md` dan `THIRD_PARTY_NOTICES.md`.
