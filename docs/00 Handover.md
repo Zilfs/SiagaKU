@@ -110,6 +110,8 @@ SELESAI:
 - Penamaan universitas (18 Nov): singkatan UPNVJ di README dan surat pernyataan diganti menjadi `Universitas Pembangunan Nasional Veteran Jakarta`. Dua PR sebelumnya: #73 tidak memuat UPNVJ, #74 memuatnya di README dan sudah diperbaiki di branch yang sama.
 - Perbaikan README sesuai review #74 (18 Nov): atribusi aset diperbaiki (ikon dari `lucide-react`, ilustrasi footer dari SVG buatan tim tanpa layanan image generation AI, selaras dengan keputusan #73), prasyarat dinaikkan ke Node.js >= 22 (CI memakai 24; `ai@7` mensyaratkan >= 22), dan angka tes dihapus karena cepat usang (pengukuran lokal terakhir: 486 tes di 54 berkas). Nama paket `@ai-sdk/openai-compatible` ikut disebut di tech stack agar tidak bertentangan dengan `CREDITS.md`.
 
+- Ilustrasi footer (19 Nov, branch `fix/footer-original-art`): SVG pengganti dari #73 (latar krem berbingkai) dan gambar ulang #78 tidak menyatu dengan band footer `#080808`. Atas keputusan Rhein, gambar pertama (ChatGPT image generation, 16 Nov) dipulihkan dari history tanpa membuat gambar baru, dan `footer-jakarta.svg` dihapus. `CREDITS.md` dan README kembali mencantumkan ChatGPT/OpenAI sebagai asal gambar. Aplikasi tetap tidak memakai layanan OpenAI saat berjalan.
+
 BELUM: uji `/lapor` dengan foto asli di production (unggah lewat signed URL + vision); T13 eval live (runner selesai, menunggu kredensial); T17 (README utama, proposal, video, Lighthouse, tag `v1.0.0`); uji push T14 di perangkat; minor chat: judul sumber menempel dengan penerbit tanpa spasi, AI kadang menulis `[SiagaKU]` seperti sitasi.
 File dokumentasi ada di vault Obsidian: C:\Users\hirzi\Work\rhein-stash\Efforts\Projects\SiagaKU\
 (00 Handover, 01 Design Doc, 02 PRD, 03 Arsitektur Sistem, 04 Fitur & Alur Pengguna,

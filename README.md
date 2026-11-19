@@ -137,7 +137,7 @@ Saat README ini ditulis, seluruh tes Vitest dan smoke produksi lulus. Jumlah tes
 
 SiagaKU memakai Next.js, React, Tailwind CSS, shadcn/ui, Base UI, lucide-react, GSAP, class-variance-authority, zod, Supabase JS, Leaflet, Vercel AI SDK, unpdf, web-push, Vitest, dan tsx.
 
-Aset: font Plus Jakarta Sans (SIL OFL), taste-skill (MIT), ubin dan batas wilayah OpenStreetMap (ODbL), ikon dari `lucide-react`, ilustrasi footer berupa SVG buatan tim tanpa layanan image generation AI (sumber dan atribusi ada di `CREDITS.md`), serta 5 PDF pedoman dari BPBD/BNPB/Kemendikbudristek.
+Aset: font Plus Jakarta Sans (SIL OFL), taste-skill (MIT), ubin dan batas wilayah OpenStreetMap (ODbL), ikon dari `lucide-react`, ilustrasi footer dibuat dengan ChatGPT image generation (OpenAI) dari prompt tim (atribusi ada di `CREDITS.md`), serta 5 PDF pedoman dari BPBD/BNPB/Kemendikbudristek.
 
 AI coding assistant yang dipakai: Claude Code (Anthropic) untuk scaffolding dan implementasi awal, serta opencode/DeepSeek V4.1 Flash untuk router AI, RAG, dan penyempurnaan UI. Rincian lisensi pihak ketiga ada di [`CREDITS.md`](CREDITS.md) dan [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
