@@ -320,7 +320,7 @@ export default function AboutPage() {
               <Users size={18} aria-hidden="true" />
             </div>
             <p>
-              Dibuat untuk lomba IT RUSH 2026 oleh Ukon (frontend & UX), Rhein
+              Dibuat untuk lomba IT RUSH 2026 oleh Habibi (frontend & UX), Hirzi
               (backend & data), Bagus (AI), dan Syaki (data, konten &
               dokumentasi).
             </p>
